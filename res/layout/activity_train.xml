@@ -12,7 +12,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
         android:text="@string/train_id"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
         android:id="@+id/train_id"
@@ -23,15 +23,27 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="3dp"
         android:text="IC 2061"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="36dp"/>
+    <TextView
+            android:id="@+id/stations_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/textView1"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/train_id"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/stations"/>
 
     <ListView
         android:id="@+id/listView_stations"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView2"
+        android:layout_alignLeft="@+id/train_id"
+        android:layout_marginTop="5dp"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/textView2" >
+        android:layout_below="@+id/stations_header"
+        android:listSelector="@android:color/transparent">
 
     </ListView>
 </RelativeLayout>

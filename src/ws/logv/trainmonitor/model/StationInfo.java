@@ -1,11 +1,13 @@
 package ws.logv.trainmonitor.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class StationInfo {
 
 	private int arrival;
 	private int departure;
 	private Boolean scraped;
-	private int stationId;
+    @SerializedName("station_id")private int stationId;
 	private int delay;
 	private String delayCause;
 	

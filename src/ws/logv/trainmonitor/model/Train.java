@@ -12,7 +12,7 @@ public class Train {
 	private String trainId;
 	@DatabaseField(generatedId = true)
 	private int id;
-	@DatabaseField
+	@DatabaseField(index = true)
 	private TrainStatus status;
 	public String getTrainId() {
 		return trainId;

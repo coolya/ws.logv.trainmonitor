@@ -1,24 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:baselineAligned="false"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent" >
-        <TableLayout
-            android:id="@+id/text"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0.33" >
-		
-			    <TextView />
-			
-        </TableLayout>
-        <TableLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0.02" >
-            
-                <CheckBox android:id="@+id/checkbox" />
-         	
-        </TableLayout>
+        android:layout_height="wrap_content"
+        android:id="@+id/parent">
 
-    </LinearLayout>
+			    <TextView android:id="@+id/train_id"
+                          android:layout_marginTop="2dp"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerInParent="true"
+                        android:layout_below="@+id/parent"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:layout_marginLeft="5dp"/>
+
+			
+
+
+                <CheckBox android:id="@+id/fav"
+                          android:button="@drawable/check"
+                          android:layout_height="wrap_content"
+                          android:layout_width="wrap_content"
+                          android:layout_below="@+id/parent"
+                          android:layout_alignRight="@+id/train_id"
+                        android:layout_alignParentRight="true"/>
+         	
+
+
+    </RelativeLayout>

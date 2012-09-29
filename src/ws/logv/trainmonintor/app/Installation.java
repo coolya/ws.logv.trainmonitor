@@ -1,5 +1,7 @@
 package ws.logv.trainmonintor.app;
 
+import android.content.Context;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -10,11 +12,11 @@ public class Installation {
 
 	private static String ID;
 	
-	public static String Id()
+	public static String Id(Context ctx)
 	{
 		if(ID == null)
 		{
-			File file = new File(FILENAME);
+			File file = new File(ctx.getFilesDir(), FILENAME);
 			
 			if(file.exists())
 			{

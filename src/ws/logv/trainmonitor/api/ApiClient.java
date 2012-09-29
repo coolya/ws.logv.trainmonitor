@@ -1,6 +1,8 @@
 package ws.logv.trainmonitor.api;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -69,7 +71,7 @@ public class ApiClient {
 			}
         };
         ParameterMap params = httpClient.newParams();
-        params.add("install", Installation.Id());
+        params.add("install", Installation.Id(ctx));
         params.add("client", "ANDROID");
 		httpClient.get("trains", params, callback);	
 	}
@@ -97,10 +99,14 @@ public class ApiClient {
 			}
         };
         ParameterMap params = httpClient.newParams();
-        params.add("install", Installation.Id());
+        params.add("install", Installation.Id(ctx));
         params.add("client", "ANDROID");
-		httpClient.get("trains/" + trainId, params, callback);
-	}
+        try {
+            httpClient.get(URLEncoder.encode("trains/" + trainId, "UTF-8"), params, callback);
+        } catch (UnsupportedEncodingException e) {
+            apiCallback.onError(e);
+        }
+    }
 	
 	public void getStations(final IApiCallback<Collection<Station>> apiCallback)
 	{
@@ -115,8 +121,8 @@ public class ApiClient {
 				String data = httpResponse.getBodyAsString();				
 				try	{
 					JsonHelper helper = new JsonHelper();					
-					Collection<Station> ret = helper.fromJson(data, new TypeToken<Station[]>() {}.getType());
-					apiCallback.onComplete(ret);				
+					Station[] ret = helper.fromJson(data, new TypeToken<Station[]>() {}.getType());
+					apiCallback.onComplete(Arrays.asList(ret));
 				}
 				catch (Exception ex)
 				{
@@ -125,7 +131,7 @@ public class ApiClient {
 			}
         };
         ParameterMap params = httpClient.newParams();
-        params.add("install", Installation.Id());
+        params.add("install", Installation.Id(ctx));
         params.add("client", "ANDROID");
 		httpClient.get("stations",params , callback);
 	}	

@@ -3,9 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-<com.handmark.pulltorefresh.library.PullToRefreshListView
-    android:id="@+id/pull_to_refresh_listview"
-    android:layout_height="fill_parent"
-    android:layout_width="fill_parent" />
+    <ListView android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/listView_trains"/>
 
 </RelativeLayout>

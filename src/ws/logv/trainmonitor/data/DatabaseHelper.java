@@ -3,6 +3,7 @@ package ws.logv.trainmonitor.data;
 import java.sql.SQLException;
 import java.util.UUID;
 
+import ws.logv.trainmonitor.model.FavouriteTrain;
 import ws.logv.trainmonitor.model.Station;
 import ws.logv.trainmonitor.model.Subscribtion;
 import ws.logv.trainmonitor.model.Train;
@@ -25,6 +26,7 @@ public class DatabaseHelper  extends OrmLiteSqliteOpenHelper{
 		private Dao<Train, Integer> trainDao = null;
 		private Dao<Station, Integer> stationDao = null;
 		private Dao<Subscribtion, UUID> subscribtionDao = null;
+        private Dao<FavouriteTrain, Integer> favouriteTrainDao = null;
 
 		public DatabaseHelper(Context context) {
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -41,6 +43,7 @@ public class DatabaseHelper  extends OrmLiteSqliteOpenHelper{
 				TableUtils.createTable(connectionSource, Train.class);
 				TableUtils.createTable(connectionSource, Station.class);
 				TableUtils.createTable(connectionSource, Subscribtion.class);
+                TableUtils.createTable(connectionSource, FavouriteTrain.class);
 
 			} catch (SQLException e) {
 				Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
@@ -57,8 +60,9 @@ public class DatabaseHelper  extends OrmLiteSqliteOpenHelper{
 			Log.i(DatabaseHelper.class.getName(), "onUpgrade");
 			try {
 				TableUtils.dropTable(connectionSource, Train.class, true);
-				//TableUtils.dropTable(connectionSource, Station.class, true);
-				//TableUtils.dropTable(connectionSource, Subscribtion.class, true);
+				TableUtils.dropTable(connectionSource, Station.class, true);
+				TableUtils.dropTable(connectionSource, Subscribtion.class, true);
+                TableUtils.dropTable(connectionSource, FavouriteTrain.class, true);
 			} catch (SQLException e) {
 				Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
 				// TODO Auto-generated catch block
@@ -95,6 +99,15 @@ public class DatabaseHelper  extends OrmLiteSqliteOpenHelper{
 			}
 			return subscribtionDao;
 		}
+
+        public Dao<FavouriteTrain, Integer> getFavouriteTrainDao() throws SQLException {
+            if(favouriteTrainDao == null)
+            {
+                favouriteTrainDao = getDao(FavouriteTrain.class);
+            }
+
+            return favouriteTrainDao;
+        }
 
 		/**
 		 * Close the database connections and clear any cached DAOs.
