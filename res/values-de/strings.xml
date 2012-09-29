@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Zugmonitor Beta</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">Zugmonitor Beta</string>
+    <string name="title_activity_my_trains">Meine Züge</string>
+    <string name="title_activity_train">Zug</string>
+    <string name="train_details_error">Fehler beim Ermitteln der Zugdetails</string>
+    <string name="error_no_connection">Keine Internetverbindung verfügbar</string>
+    <string name="title_activity_all_trains">Züge</string>
+    <string name="train_id">Zugnummer:</string>
+    <string name="train_stations">Bahnhöfe:</string>
+    <string name="no_trains_added">You have no trains you are subscribed to</string>
+    <string name="error_getting_trains">Error getting trains from Server please check your connection</string>
+    <string name="tab_title_my_trains">Meine Züge</string>
+    <string name="tab_title_all_trains">Züge</string>
+    <string name="progess_getting_train_details">Ermittele Verbindungsdaten ...</string>
+    <string name="stations">Bahnhöfe:</string>
+</resources>
