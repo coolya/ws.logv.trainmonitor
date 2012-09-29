@@ -3,10 +3,16 @@ package ws.logv.trainmonitor.model;
 import java.util.Date;
 import java.util.UUID;
 
+import com.j256.ormlite.field.DatabaseField;
+
 public class Subscribtion {
+	@DatabaseField(id = true)
 	private UUID id;
+	@DatabaseField
 	private String train;
+	@DatabaseField
 	private Date notificationStart;
+	@DatabaseField
 	private Date notificationEnd;
 	private Device device;
 	public String getTrain() {

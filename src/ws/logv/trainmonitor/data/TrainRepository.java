@@ -74,7 +74,7 @@ public class TrainRepository
 						dao.createOrUpdate(train);
 					}
 					return true;
-				} catch (SQLException e) {
+				} catch (Exception e) {
 					return false;
 				}
 				finally

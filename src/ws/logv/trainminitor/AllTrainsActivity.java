@@ -79,7 +79,7 @@ public class AllTrainsActivity extends FragmentActivity {
                 Bundle savedInstanceState) {
             final View v = inflater.inflate(R.layout.activity_my_trains, container, false);
                                    
-        	PullToRefreshListView mPullRefreshListView;
+        	final PullToRefreshListView mPullRefreshListView;
         	final ArrayAdapter<String> mAdapter;
         	LinkedList<String> mListItems;
         	final Handler handler = new Handler();
@@ -98,7 +98,7 @@ public class AllTrainsActivity extends FragmentActivity {
 						}});					
 				}});
             
-            mPullRefreshListView.getRefreshableView()
+            
             mPullRefreshListView.getRefreshableView().setAdapter(mAdapter);            
             mPullRefreshListView.getRefreshableView().setOnItemClickListener(new OnItemClickListener() {
 
@@ -107,7 +107,7 @@ public class AllTrainsActivity extends FragmentActivity {
 					Log.v(this.getClass().getName(), "Clicked");
 					if(!trainsFromServer)
 					{
-						refreshDataFromServer(v, mAdapter, handler);
+						refreshDataFromServer(v, mAdapter, handler, mPullRefreshListView);
 					}else
 					{
 						String trainId = mAdapter.getItem(position);
@@ -122,14 +122,14 @@ public class AllTrainsActivity extends FragmentActivity {
             mPullRefreshListView.setOnRefreshListener(new OnRefreshListener<ListView>(){
 
 				public void onRefresh(final PullToRefreshBase<ListView> refreshView) {
-					refreshDataFromServer(v, mAdapter, handler);					
+					refreshDataFromServer(v, mAdapter, handler, refreshView);					
 				}		            	
             });            
             return v;
         }        
 		public void refreshDataFromServer(final View v,
 				final ArrayAdapter<String> mAdapter,
-				final Handler handler)
+				final Handler handler, final PullToRefreshBase<ListView> refreshView)
 		{
 			ApiClient api = new ApiClient(v.getContext());
 			api.getTrains(new IApiCallback<Collection<Train>>() {
@@ -145,13 +145,17 @@ public class AllTrainsActivity extends FragmentActivity {
 					toast.show();								
 				}
 
-				public void onComplete(final Collection<Train> data) {
+				public void onComplete(Collection<Train> data) {
+					final Collection<Train> list = data;
 					handler.post(new Runnable() {
+						Collection<Train> trains = list;
 						public void run() {									
-							refreshTrains(mAdapter, data, v.getContext());							
+							refreshTrains(mAdapter, trains, v.getContext());
+							// Call onRefreshComplete when the list has been refreshed.
+							refreshView.onRefreshComplete();
 						}});
 					
-					TrainRepository.saveTrains(v.getContext(), data, null);							
+					TrainRepository.saveTrains(v.getContext(), list, null);							
 				}						
 			});
 		}

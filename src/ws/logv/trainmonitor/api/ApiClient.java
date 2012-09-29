@@ -1,5 +1,7 @@
 package ws.logv.trainmonitor.api;
 
+import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Collection;
 
 import ws.logv.trainmonintor.app.Installation;
@@ -11,6 +13,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Log;
 
+import com.google.gson.reflect.TypeToken;
 import com.turbomanage.httpclient.AsyncCallback;
 import com.turbomanage.httpclient.HttpResponse;
 import com.turbomanage.httpclient.ParameterMap;
@@ -53,9 +56,10 @@ public class ApiClient {
 			public void onComplete(HttpResponse httpResponse) {				
 				String data = httpResponse.getBodyAsString();			
 				try	{
-					JsonHelper<Collection<Train>> helper = new JsonHelper<Collection<Train>>();
-					Collection<Train> ret = helper.fromJson(data);
-					apiCallback.onComplete(ret);				
+					JsonHelper helper = new JsonHelper();
+					Train[] ret = helper.fromJson(data,
+							 new TypeToken<Train[]>(){}.getType ());					
+					apiCallback.onComplete(Arrays.asList(ret));				
 				}
 				catch (Exception ex)
 				{
@@ -82,8 +86,8 @@ public class ApiClient {
 			public void onComplete(HttpResponse httpResponse) {				
 				String data = httpResponse.getBodyAsString();				
 				try	{
-					JsonHelper<Train> helper = new JsonHelper<Train>();					
-					Train ret = helper.fromJson(data);
+					JsonHelper helper = new JsonHelper();					
+					Train ret = helper.fromJson(data, new TypeToken<Train>() {}.getType());
 					apiCallback.onComplete(ret);				
 				}
 				catch (Exception ex)
@@ -110,8 +114,8 @@ public class ApiClient {
 			public void onComplete(HttpResponse httpResponse) {				
 				String data = httpResponse.getBodyAsString();				
 				try	{
-					JsonHelper<Collection<Station>> helper = new JsonHelper<Collection<Station>>();					
-					Collection<Station> ret = helper.fromJson(data);
+					JsonHelper helper = new JsonHelper();					
+					Collection<Station> ret = helper.fromJson(data, new TypeToken<Station[]>() {}.getType());
 					apiCallback.onComplete(ret);				
 				}
 				catch (Exception ex)
@@ -128,7 +132,7 @@ public class ApiClient {
 	
 	public void postSubscribtion(Subscribtion data, final IApiCallback<Subscribtion> apiCallback)
 	{
-		final JsonHelper<Subscribtion> jsonHelper = new JsonHelper<Subscribtion>();
+		final JsonHelper jsonHelper = new JsonHelper();
 		String json = jsonHelper.toJson(data);
 		
 		AsyncCallback callback = new AsyncCallback() {
@@ -141,7 +145,7 @@ public class ApiClient {
 			public void onComplete(HttpResponse httpResponse) {				
 				String data = httpResponse.getBodyAsString();				
 				try	{							
-					Subscribtion ret = jsonHelper.fromJson(data);
+					Subscribtion ret = jsonHelper.fromJson(data, new TypeToken<Subscribtion>() {}.getType());
 					apiCallback.onComplete(ret);				
 				}
 				catch (Exception ex)

@@ -8,21 +8,19 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-public class JsonHelper<T> {
+public class JsonHelper {
 
-	public T fromJson(String json)
+	public <T> T fromJson(String json, Type typeOfT)
 	{
 		GsonBuilder b = new GsonBuilder();
 		b.setDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 		b.registerTypeAdapter(TrainStatus.class, new TrainStatusDeserializer());
-		Gson gson = b.create();				
-
-		Type type = new TypeToken<T>(){}.getType();
-		
-		return gson.fromJson(json, type);
+		Gson gson = b.create();			
+	
+		return gson.fromJson(json, typeOfT);
 	}
 	
-	public String toJson(T data)
+	public String toJson(Object data)
 	{
 		GsonBuilder b = new GsonBuilder();
 		b.setDateFormat("yyyy-MM-dd'T'HH:mm:ss");				
