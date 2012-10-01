@@ -97,7 +97,7 @@ public class TrainRepository
 			public Boolean exec(Context param) {
 				DatabaseHelper databaseHelper = OpenHelperManager.getHelper(param, DatabaseHelper.class);
 				try {
-					Dao<Train, Integer> dao = databaseHelper.getTrainDataDao();			
+					Dao<Train, Integer> dao = databaseHelper.getTrainDataDao();
 					for(Train train : data)
 					{
 						dao.createOrUpdate(train);
@@ -117,9 +117,43 @@ public class TrainRepository
 				public void exec(Boolean param) {
 					if(callback != null)
 						callback.exec(param);
-					
+
 				}}).execute(ctx);
 	}
+    public static void saveTrains(Context ctx, final Collection<Train> data, final Action<Boolean> callback, final Action<Integer> progress)
+    {
+        new DatabaseTask<Boolean>(new Func2<Boolean, Context, Action<Integer>>(){
+            @Override
+            public Boolean exec(Context param, Action<Integer> param2) {
+                DatabaseHelper databaseHelper = OpenHelperManager.getHelper(param, DatabaseHelper.class);
+                try {
+                    Dao<Train, Integer> dao = databaseHelper.getTrainDataDao();
+                    int i = 0;
+                    for(Train train : data)
+                    {
+                        i++;
+                        dao.createOrUpdate(train);
+                        param2.exec(i);
+                    }
+                    return true;
+                } catch (Exception e) {
+                    return false;
+                }
+                finally
+                {
+                    OpenHelperManager.releaseHelper();
+                    databaseHelper = null;
+                }
+            }
+        },
+                new Action<Boolean>(){
+
+                    public void exec(Boolean param) {
+                        if(callback != null)
+                            callback.exec(param);
+
+                    }}, progress).execute(ctx);
+    }
 	
 	public static void deleteTrains(Context ctx, final Action<Boolean> callback)
 	{

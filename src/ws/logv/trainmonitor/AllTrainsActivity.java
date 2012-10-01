@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.view.*;
 import android.widget.AdapterView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
@@ -94,6 +96,7 @@ public class AllTrainsActivity extends FragmentActivity {
             
             mPullRefreshListView.setOnRefreshListener(new OnRefreshListener<ListView>(){
 				public void onRefresh(final PullToRefreshBase<ListView> refreshView) {
+                    refreshView.onRefreshComplete();
 					refreshDataFromServer(v, mAdapter, handler, refreshView);
 				}		            	
             });            
@@ -120,6 +123,13 @@ public class AllTrainsActivity extends FragmentActivity {
 				final TrainAdapter mAdapter,
 				final Handler handler, final PullToRefreshBase<ListView> refreshView)
 		{
+            final Context ctx = v.getContext();
+            final ProgressDialog dialog = new ProgressDialog(v.getContext());
+            dialog.setCancelable(false);
+            dialog.setIndeterminate(true);
+            dialog.setMessage(ctx.getString(R.string.refresh_trains_1));
+            dialog.show();
+
 			ApiClient api = new ApiClient(v.getContext());
 			api.getTrains(new IApiCallback<Collection<Train>>() {
 
@@ -135,18 +145,30 @@ public class AllTrainsActivity extends FragmentActivity {
 				}
 
 				public void onComplete(final Collection<Train> data) {
+                    dialog.setMessage(ctx.getString(R.string.refresh_trains_2));
+                    final Integer count = data.size();
                     TrainRepository.deleteTrains(v.getContext(), new Action<Boolean>() {
                         @Override
                         public void exec(Boolean param) {
                             TrainRepository.saveTrains(v.getContext(), data, new Action<Boolean>() {
                                 @Override
                                 public void exec(Boolean param) {
-                                    refreshView.onRefreshComplete();
+                                    dialog.dismiss();
                                     mAdapter.clear();
                                     mAdapter.refreshFavs(v.getContext());
                                     getNextFromDb(v, mAdapter, handler);
                                 }
-                            });
+                            }, new Action<Integer>() {
+                                        @Override
+                                        public void exec(final Integer param) {
+                                            handler.post(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    dialog.setMessage(ctx.getString(R.string.refresh_trains_3, param, count));
+                                                }
+                                            });
+                                        }
+                                    });
                         }
                     });
 				}						

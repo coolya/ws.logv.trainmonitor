@@ -2,6 +2,7 @@ package ws.logv.trainmonintor.app;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,14 +13,17 @@ import ws.logv.trainmonitor.R;
 import ws.logv.trainmonitor.data.Action;
 import ws.logv.trainmonitor.data.DatabaseTask;
 import ws.logv.trainmonitor.data.StationRepository;
+import ws.logv.trainmonitor.model.FavouriteTrain;
 import ws.logv.trainmonitor.model.Station;
 import ws.logv.trainmonitor.model.StationInfo;
 import ws.logv.trainmonitor.model.Train;
 
 import android.os.Handler;
 
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 
@@ -30,14 +34,14 @@ import java.util.concurrent.ExecutionException;
  * Time: 11:04 AM
  * To change this template use File | Settings | File Templates.
  */
-public class TrainDetailAdapter extends ArrayAdapter<StationInfo> {
+public class TrainDetailAdapter extends BaseArrayAdapter<StationInfo> {
 
     private Context mCtx;
     private final Handler mHandler = new Handler();
     private HashMap<Integer, Station> mStationCache = new HashMap<Integer, Station>();
     LayoutInflater mInflater = null;
 
-    public TrainDetailAdapter(Context context, int textViewResourceId, StationInfo[] objects) {
+    public TrainDetailAdapter(Context context, int textViewResourceId, List<StationInfo> objects) {
         super(context, textViewResourceId, objects);
         mCtx = context;
         mInflater = (LayoutInflater) mCtx
@@ -103,5 +107,6 @@ public class TrainDetailAdapter extends ArrayAdapter<StationInfo> {
         }
         return rowView;
     }
+
 
 }

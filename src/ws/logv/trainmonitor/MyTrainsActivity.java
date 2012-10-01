@@ -17,6 +17,7 @@ import ws.logv.trainmonitor.data.TrainRepository;
 import ws.logv.trainmonitor.model.FavouriteTrain;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -50,7 +51,9 @@ public class MyTrainsActivity extends FragmentActivity {
 
             try {
                 Collection<FavouriteTrain> trains = task.get();
-                final FavouriteTrainAdapter adapter = new FavouriteTrainAdapter(v.getContext(), 0, trains.toArray(new FavouriteTrain[] {}));
+                LinkedList<FavouriteTrain> list = new LinkedList<FavouriteTrain>();
+                list.addAll(trains);
+                final FavouriteTrainAdapter adapter = new FavouriteTrainAdapter(v.getContext(), 0, list);
                 lvTrains.setAdapter(adapter);
 
                 lvTrains.setOnItemClickListener(new AdapterView.OnItemClickListener() {

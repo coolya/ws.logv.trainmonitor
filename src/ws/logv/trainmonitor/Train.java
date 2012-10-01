@@ -20,6 +20,7 @@ import ws.logv.trainmonitor.data.StationRepository;
 import ws.logv.trainmonitor.model.Station;
 import ws.logv.trainmonitor.model.StationInfo;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import android.os.Handler;
 
@@ -64,6 +65,7 @@ public class Train extends Activity implements IApiCallback<ws.logv.trainmonitor
             ApiClient client = new ApiClient(this);
             final Context ctx = this;
             client.getStations(new IApiCallback<Collection<Station>>() {
+
                 @Override
                 public void onComplete(final Collection<Station> data) {
                     StationRepository.saveStations(ctx, data, new Action<Boolean>() {
@@ -82,12 +84,15 @@ public class Train extends Activity implements IApiCallback<ws.logv.trainmonitor
 
                 @Override
                 public void onError(Throwable tr) {
-                    //To change body of implemented methods use File | Settings | File Templates.
+                    Log.e(this.getClass().getName(), "Error getting train details ", tr);
+                    Toast toast = Toast.makeText(ctx,R.string.train_details_error, Toast.LENGTH_LONG);
+                    toast.show();
                 }
 
                 @Override
                 public void onNoConnection() {
-                    //To change body of implemented methods use File | Settings | File Templates.
+                    Toast toast = Toast.makeText(getApplicationContext(), R.string.error_no_connection, Toast.LENGTH_LONG);
+                    toast.show();
                 }
             });
         }
@@ -99,7 +104,7 @@ public class Train extends Activity implements IApiCallback<ws.logv.trainmonitor
     }
 
     private void setListView(ws.logv.trainmonitor.model.Train data) {
-        TrainDetailAdapter adapter = new TrainDetailAdapter(this, R.id.listView_stations, data.getStations().toArray(new StationInfo[]{}));
+        TrainDetailAdapter adapter = new TrainDetailAdapter(this, R.id.listView_stations, new ArrayList<StationInfo>(data.getStations()));
         ListView lv = (ListView) findViewById(R.id.listView_stations);
         lv.setAdapter(adapter);
     }

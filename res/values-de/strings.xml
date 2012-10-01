@@ -16,4 +16,7 @@
     <string name="tab_title_all_trains">Züge</string>
     <string name="progess_getting_train_details">Ermittele Verbindungsdaten ...</string>
     <string name="stations">Bahnhöfe:</string>
+    <string name="refresh_trains_1">Verbinde mit dem Server</string>
+    <string name="refresh_trains_2">Lösche lokalen Cache</string>
+    <string name="refresh_trains_3">Zug %1$s von %2$s verarbeitet</string>
 </resources>

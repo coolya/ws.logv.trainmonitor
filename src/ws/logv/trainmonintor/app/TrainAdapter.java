@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class TrainAdapter extends ArrayAdapter<Train>{
+public class TrainAdapter extends BaseArrayAdapter<Train>{
     private HashMap<String, Boolean> favs = new HashMap<String, Boolean>();
 
 	private Context ctx;

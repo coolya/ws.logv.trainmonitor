@@ -17,5 +17,8 @@
     <string name="tab_title_all_trains">All trains</string>
     <string name="progess_getting_train_details">Getting train details...</string>
     <string name="stations">Stations:</string>
+    <string name="refresh_trains_1">Contacting server</string>
+    <string name="refresh_trains_2">Clearing local cache</string>
+    <string name="refresh_trains_3">Processed train %1$s of %2$s</string>
 
 </resources>

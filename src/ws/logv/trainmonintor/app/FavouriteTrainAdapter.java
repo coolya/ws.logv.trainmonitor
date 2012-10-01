@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import ws.logv.trainmonitor.R;
 import ws.logv.trainmonitor.api.ApiClient;
@@ -30,10 +31,10 @@ import java.util.concurrent.ExecutionException;
  * Time: 5:20 PM
  * To change this template use File | Settings | File Templates.
  */
-public class FavouriteTrainAdapter extends ArrayAdapter<FavouriteTrain> {
+public class FavouriteTrainAdapter extends BaseArrayAdapter<FavouriteTrain> {
     private Context mCtx;
 
-    public FavouriteTrainAdapter(Context context, int textViewResourceId, FavouriteTrain[] objects) {
+    public FavouriteTrainAdapter(Context context, int textViewResourceId, List<FavouriteTrain> objects) {
         super(context, textViewResourceId, objects);
         mCtx = context;
     }
@@ -43,6 +44,17 @@ public class FavouriteTrainAdapter extends ArrayAdapter<FavouriteTrain> {
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         final View rowView = inflater.inflate(R.layout.my_trains_item, parent, false);
         final FavouriteTrain item = this.getItem(position);
+
+        final TextView tvNextStation = (TextView) rowView.findViewById(R.id.next_station);
+        final TextView tvDelay = (TextView) rowView.findViewById(R.id.delay);
+        final TextView tvArrival = (TextView) rowView.findViewById(R.id.arrival);
+        final ProgressBar pgb = (ProgressBar) rowView.findViewById(R.id.waiter);
+
+        pgb.setVisibility(View.VISIBLE);
+        tvNextStation.setVisibility(View.INVISIBLE);
+        tvDelay.setVisibility(View.INVISIBLE);
+        tvArrival.setVisibility(View.INVISIBLE);
+
         ApiClient apiClient = new ApiClient(mCtx);
 
         apiClient.getTrainDetail(item.getTrainId(), new IApiCallback<Train>() {
@@ -74,12 +86,7 @@ public class FavouriteTrainAdapter extends ArrayAdapter<FavouriteTrain> {
                 StationInfo nextStation = stationinfos[i];
 
                 DatabaseTask<Station> task = StationRepository.loadStation(nextStation.getStationId(), mCtx, null);
-
-                TextView tvNextStation = (TextView) rowView.findViewById(R.id.next_station);
-                TextView tvDelay = (TextView) rowView.findViewById(R.id.delay);
                 tvDelay.setText(String.valueOf(nextStation.getDelay()));
-
-                TextView tvArrival = (TextView) rowView.findViewById(R.id.arrival);
 
                 int seconds = nextStation.getArrival();
                 if(seconds == 0)
@@ -88,6 +95,12 @@ public class FavouriteTrainAdapter extends ArrayAdapter<FavouriteTrain> {
                 time.set(seconds * 60 * 1000);
                 String arrival = time.format("%H:%M");
                 tvArrival.setText(arrival);
+
+                pgb.setVisibility(View.INVISIBLE);
+
+                tvNextStation.setVisibility(View.VISIBLE);
+                tvDelay.setVisibility(View.VISIBLE);
+                tvArrival.setVisibility(View.VISIBLE);
 
                 try {
                     Station next = task.get();
