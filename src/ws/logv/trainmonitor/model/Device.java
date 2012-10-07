@@ -1,5 +1,8 @@
 package ws.logv.trainmonitor.model;
 
-public class Device {
+import java.util.UUID;
 
+public class Device {
+    private UUID id;
+    private String gcmRegId;
 }

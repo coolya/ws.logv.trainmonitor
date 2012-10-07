@@ -3,14 +3,27 @@
     android:versionCode="3"
     android:versionName="0.1.2" >
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    
-
-	
     <uses-sdk
         android:minSdkVersion="9"
         android:targetSdkVersion="16" />
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- GCM requires a Google account. -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+
+    <!-- Keeps the processor from sleeping when a message is received. -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <permission
+            android:name="com.google.android.gcm.demo.app.permission.C2D_MESSAGE"
+            android:protectionLevel="signature" />
+    <uses-permission
+            android:name="com.google.android.gcm.demo.app.permission.C2D_MESSAGE" />
+
+    <!-- This app has permission to register and receive data message. -->
+    <uses-permission
+            android:name="com.google.android.c2dm.permission.RECEIVE" />
 
     <uses-feature />
 
@@ -39,6 +52,20 @@
             android:label="@string/title_activity_train" >
 
         </activity>
+
+        <receiver
+                android:name="com.google.android.gcm.GCMBroadcastReceiver"
+                android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <!-- Receives the actual messages. -->
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <!-- Receives the registration id. -->
+                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+                <category android:name="com.google.android.gcm.demo.app" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name=".GCMIntentService" />
 
     </application>
 

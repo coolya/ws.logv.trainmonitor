@@ -1,12 +1,11 @@
 package ws.logv.trainmonitor.api;
 
 import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Type;
 import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Collection;
 
-import ws.logv.trainmonintor.app.Installation;
+import ws.logv.trainmonitor.app.Installation;
 import ws.logv.trainmonitor.model.Station;
 import ws.logv.trainmonitor.model.Subscribtion;
 import ws.logv.trainmonitor.model.Train;
@@ -163,5 +162,15 @@ public class ApiClient {
 		
 		httpClient.post("subscribtions", "application/json", json.getBytes(), callback);
 	}
+
+    public void registerGCMDevice(String regId, final IApiCallback<Boolean> callback)
+    {
+
+    }
+
+    public void unregisterGCMDevice(String regId, final IApiCallback<Boolean> callback)
+    {
+
+    }
 
 }

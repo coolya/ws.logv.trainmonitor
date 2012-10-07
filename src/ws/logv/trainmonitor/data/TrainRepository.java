@@ -185,10 +185,15 @@ public class TrainRepository
 	}
     public static Boolean isTrainFav(Context ctx, Train train)
     {
+        return isTrainFav(ctx, train.getTrainId());
+    }
+
+    public static Boolean isTrainFav(Context ctx, String trainId)
+    {
         DatabaseHelper databaseHelper = OpenHelperManager.getHelper(ctx, DatabaseHelper.class);
         try {
             Dao<FavouriteTrain, Integer> dao = databaseHelper.getFavouriteTrainDao();
-            return dao.countOf(dao.queryBuilder().setCountOf(true).where().eq("trainId", train.getTrainId()).prepare()) != 0;
+            return dao.countOf(dao.queryBuilder().setCountOf(true).where().eq("trainId",trainId).prepare()) != 0;
         } catch (Exception e) {
             return false;
         }
@@ -201,41 +206,54 @@ public class TrainRepository
 
     public static DatabaseTask<Boolean> favTrain(Context ctx, final Train train, final Action<Boolean> callback)
     {
+        DatabaseTask<Boolean> task = favTrain(ctx, train.getTrainId(), callback);
+        return task;
+    }
+
+    public static DatabaseTask<Boolean> favTrain(Context ctx, final String trainId, final Action<Boolean> callback)
+    {
         DatabaseTask<Boolean> task =
-        new DatabaseTask<Boolean>(new Func<Boolean, Context>(){
+                new DatabaseTask<Boolean>(new Func<Boolean, Context>(){
 
-            public Boolean exec(Context param) {
-                DatabaseHelper databaseHelper = OpenHelperManager.getHelper(param, DatabaseHelper.class);
-                try {
-                    Dao<FavouriteTrain, Integer> dao = databaseHelper.getFavouriteTrainDao();
+                    public Boolean exec(Context param) {
+                        DatabaseHelper databaseHelper = OpenHelperManager.getHelper(param, DatabaseHelper.class);
+                        try {
+                            Dao<FavouriteTrain, Integer> dao = databaseHelper.getFavouriteTrainDao();
 
-                    FavouriteTrain data = new FavouriteTrain();
-                    data.setTrainId(train.getTrainId());
-                    dao.create(data);
-                    return true;
-                } catch (Exception e) {
-                    return false;
-                }
-                finally
-                {
-                    OpenHelperManager.releaseHelper();
-                    databaseHelper = null;
-                }
-            }},
-                new Action<Boolean>(){
+                            FavouriteTrain data = new FavouriteTrain();
+                            data.setTrainId(trainId);
+                            dao.create(data);
+                            return true;
+                        } catch (Exception e) {
+                            return false;
+                        }
+                        finally
+                        {
+                            OpenHelperManager.releaseHelper();
+                            databaseHelper = null;
+                        }
+                    }},
+                        new Action<Boolean>(){
 
-                    public void exec(Boolean param) {
-                        if(listener != null)
-                            listener.onFavChanged();
-                        if(callback != null)
-                            callback.exec(param);
+                            public void exec(Boolean param) {
+                                if(listener != null)
+                                    listener.onFavChanged();
+                                if(callback != null)
+                                    callback.exec(param);
 
-                    }});
+                            }});
 
         task.execute(ctx);
         return task;
     }
+
     public static DatabaseTask<Boolean> unFavTrain(Context ctx, final Train train, final Action<Boolean> callback)
+    {
+        DatabaseTask<Boolean> task = unFavTrain(ctx, train.getTrainId(), callback);
+        return task;
+    }
+
+    public static DatabaseTask<Boolean> unFavTrain(Context ctx, final String trainId, final Action<Boolean> callback)
     {
         DatabaseTask<Boolean> task =
                 new DatabaseTask<Boolean>(new Func<Boolean, Context>(){
@@ -246,7 +264,7 @@ public class TrainRepository
                             Dao<FavouriteTrain, Integer> dao = databaseHelper.getFavouriteTrainDao();
                             DeleteBuilder<FavouriteTrain, Integer> builder =  dao.deleteBuilder();
 
-                            builder.setWhere(dao.queryBuilder().where().eq("trainId", train.getTrainId()));
+                            builder.setWhere(dao.queryBuilder().where().eq("trainId", trainId));
                             dao.delete(builder.prepare());
                             return true;
                         } catch (Exception e) {
@@ -304,5 +322,15 @@ public class TrainRepository
 
     public static void setFavChangedListener(FavChangedListener favChangedListener) {
         listener = favChangedListener;
+    }
+
+    public static Boolean hasTrains(Context ctx) {
+        DatabaseHelper databaseHelper = OpenHelperManager.getHelper(ctx, DatabaseHelper.class);
+        try {
+            Dao<Train, Integer> dao = databaseHelper.getTrainDataDao();
+            return dao.countOf() > 0;
+        } catch (SQLException e) {
+            return false;
+        }
     }
 }

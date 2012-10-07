@@ -2,11 +2,9 @@ package ws.logv.trainmonitor;
 
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.widget.ListView;
-import android.widget.TextView;
-import ws.logv.trainmonintor.app.Constants;
-import ws.logv.trainmonintor.app.TrainDetailAdapter;
-import ws.logv.trainmonitor.R;
+import android.widget.*;
+import ws.logv.trainmonitor.app.Constants;
+import ws.logv.trainmonitor.app.TrainDetailAdapter;
 import ws.logv.trainmonitor.api.ApiClient;
 import ws.logv.trainmonitor.api.IApiCallback;
 import android.os.Bundle;
@@ -14,9 +12,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
-import android.widget.Toast;
 import ws.logv.trainmonitor.data.Action;
 import ws.logv.trainmonitor.data.StationRepository;
+import ws.logv.trainmonitor.data.TrainRepository;
 import ws.logv.trainmonitor.model.Station;
 import ws.logv.trainmonitor.model.StationInfo;
 
@@ -37,11 +35,23 @@ public class Train extends Activity implements IApiCallback<ws.logv.trainmonitor
         
         if(intent != null)
         {
-        	String trainId = intent.getStringExtra(Constants.IntentsExtra.Train);
+        	final String trainId = intent.getStringExtra(Constants.IntentsExtra.Train);
             ApiClient client = new ApiClient(this);
             client.getTrainDetail(trainId, this);
             TextView tv = (TextView) findViewById(R.id.train_id);
             tv.setText(trainId);
+
+            CheckBox cbFav = (CheckBox) findViewById(R.id.fav);
+            final Context ctx = this;
+
+            cbFav.setChecked(TrainRepository.isTrainFav(this, trainId));
+            cbFav.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    if(b)
+                        TrainRepository.favTrain(ctx, trainId, null);
+                    else
+                        TrainRepository.unFavTrain(ctx, trainId, null); }});
 
             mDialog = new ProgressDialog(this);
             mDialog.setMessage(getString(R.string.progess_getting_train_details));
@@ -121,7 +131,7 @@ public class Train extends Activity implements IApiCallback<ws.logv.trainmonitor
         hideDialog();
 		Toast toast = Toast.makeText(this.getApplicationContext(),R.string.train_details_error, Toast.LENGTH_LONG);
 		toast.show();
-		this.finish();
+		//this.finish();
 	}
 
 	public void onNoConnection() {

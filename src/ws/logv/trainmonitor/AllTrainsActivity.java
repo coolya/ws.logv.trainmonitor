@@ -7,12 +7,12 @@ import java.util.List;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.view.*;
-import android.widget.AdapterView;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
-import ws.logv.trainmonintor.app.TrainAdapter;
+import ws.logv.trainmonitor.app.SyncManager;
+import ws.logv.trainmonitor.app.TrainAdapter;
 import ws.logv.trainmonitor.api.ApiClient;
 import ws.logv.trainmonitor.api.IApiCallback;
 import ws.logv.trainmonitor.data.Action;
@@ -43,6 +43,7 @@ public class AllTrainsActivity extends FragmentActivity {
     
     public static class AllTrainsFragment extends Fragment {
         int mNum;
+
 
         static AllTrainsFragment newInstance(int num) {
         	AllTrainsFragment f = new AllTrainsFragment();
@@ -83,9 +84,6 @@ public class AllTrainsActivity extends FragmentActivity {
             mPullRefreshListView = (PullToRefreshListView) v.findViewById(R.id.pull_to_refresh_listview);            
             mAdapter = new TrainAdapter(v.getContext(), android.R.layout.simple_list_item_1, mListItems);
 
-            getNextFromDb(v, mAdapter, handler);
-
-
             mPullRefreshListView.getRefreshableView().setAdapter(mAdapter);
             mPullRefreshListView.setOnLastItemVisibleListener(new PullToRefreshBase.OnLastItemVisibleListener() {
                 @Override
@@ -99,7 +97,17 @@ public class AllTrainsActivity extends FragmentActivity {
                     refreshView.onRefreshComplete();
 					refreshDataFromServer(v, mAdapter, handler, refreshView);
 				}		            	
-            });            
+            });
+
+            SyncManager adapter = new SyncManager(v.getContext());
+
+            if(adapter.trainsNeedSync())
+            {
+                refreshDataFromServer(v, mAdapter, handler, mPullRefreshListView);
+            } else {
+                getNextFromDb(v, mAdapter, handler);
+            }
+
             return v;
         }
 
@@ -119,60 +127,38 @@ public class AllTrainsActivity extends FragmentActivity {
             });
         }
 
-        public void refreshDataFromServer(final View v,
+        public static void refreshDataFromServer(final View v,
 				final TrainAdapter mAdapter,
 				final Handler handler, final PullToRefreshBase<ListView> refreshView)
 		{
             final Context ctx = v.getContext();
-            final ProgressDialog dialog = new ProgressDialog(v.getContext());
+            final ProgressDialog dialog = new ProgressDialog(ctx);
             dialog.setCancelable(false);
             dialog.setIndeterminate(true);
             dialog.setMessage(ctx.getString(R.string.refresh_trains_1));
             dialog.show();
 
-			ApiClient api = new ApiClient(v.getContext());
-			api.getTrains(new IApiCallback<Collection<Train>>() {
+            SyncManager mng = new SyncManager(ctx);
 
-				public void onError(Throwable tr) {
-					Log.e(this.getClass().getName(), "Error getting trains ", tr);
-					Toast toast = Toast.makeText(v.getContext(),R.string.error_getting_trains, Toast.LENGTH_LONG);
-					toast.show();							
-				}
-
-				public void onNoConnection() {
-					Toast toast = Toast.makeText(v.getContext(), R.string.error_no_connection, Toast.LENGTH_LONG);
-					toast.show();								
-				}
-
-				public void onComplete(final Collection<Train> data) {
-                    dialog.setMessage(ctx.getString(R.string.refresh_trains_2));
-                    final Integer count = data.size();
-                    TrainRepository.deleteTrains(v.getContext(), new Action<Boolean>() {
+            mng.syncTrains(new Action<String>() {
+                @Override
+                public void exec(final String param) {
+                    handler.post(new Runnable() {
                         @Override
-                        public void exec(Boolean param) {
-                            TrainRepository.saveTrains(v.getContext(), data, new Action<Boolean>() {
-                                @Override
-                                public void exec(Boolean param) {
-                                    dialog.dismiss();
-                                    mAdapter.clear();
-                                    mAdapter.refreshFavs(v.getContext());
-                                    getNextFromDb(v, mAdapter, handler);
-                                }
-                            }, new Action<Integer>() {
-                                        @Override
-                                        public void exec(final Integer param) {
-                                            handler.post(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    dialog.setMessage(ctx.getString(R.string.refresh_trains_3, param, count));
-                                                }
-                                            });
-                                        }
-                                    });
+                        public void run() {
+                            dialog.setMessage(param);
                         }
                     });
-				}						
-			});
+                }
+            }, new Action<Integer>() {
+                               @Override
+                               public void exec(Integer param) {
+                                   dialog.dismiss();
+                                   mAdapter.clear();
+                                   mAdapter.refreshFavs(ctx);
+                                   getNextFromDb(v, mAdapter, handler);
+                               }
+                           });
 		}
         private static void refreshTrains(TrainAdapter adapter, Collection<Train> data)
         {

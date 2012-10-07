@@ -3,6 +3,7 @@ package ws.logv.trainmonitor;
 import java.util.ArrayList;
 
 import android.view.Window;
+import com.google.android.gcm.GCMRegistrar;
 import ws.logv.trainmonitor.AllTrainsActivity;
 import ws.logv.trainmonitor.R;
 
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TabHost;
 import android.widget.TabWidget;
+import ws.logv.trainmonitor.app.Constants;
 
 public class MainActivity extends FragmentActivity {
     TabHost mTabHost;
@@ -39,6 +41,14 @@ public class MainActivity extends FragmentActivity {
                                         });
 
         setContentView(R.layout.activity_main);
+
+        GCMRegistrar.checkDevice(this);
+        GCMRegistrar.checkManifest(this);
+        final String regId = GCMRegistrar.getRegistrationId(this);
+        if (regId.equals("")) {
+            GCMRegistrar.register(this, Constants.GCM.SENDER_ID);
+        }
+
         mTabHost = (TabHost)findViewById(android.R.id.tabhost);
         mTabHost.setup();
 
