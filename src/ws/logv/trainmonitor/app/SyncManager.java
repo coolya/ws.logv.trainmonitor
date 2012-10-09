@@ -35,11 +35,13 @@ public class SyncManager {
                 Log.e(this.getClass().getName(), "Error getting trains ", tr);
                 Toast toast = Toast.makeText(mCtx, R.string.error_getting_trains, Toast.LENGTH_LONG);
                 toast.show();
+                complete.exec(0);
             }
 
             public void onNoConnection() {
                 Toast toast = Toast.makeText(mCtx, R.string.error_no_connection, Toast.LENGTH_LONG);
                 toast.show();
+                complete.exec(0);
             }
 
             public void onComplete(final Collection<Train> data) {
@@ -68,11 +70,11 @@ public class SyncManager {
 
     public Boolean trainsNeedSync()
     {
-        return TrainRepository.hasTrains(mCtx);
+        return !TrainRepository.hasTrains(mCtx);
     }
 
     public Boolean stationsNeedSync()
     {
-        return StationRepository.haveStations(mCtx);
+        return !StationRepository.haveStations(mCtx);
     }
 }

@@ -131,7 +131,7 @@ public class Train extends Activity implements IApiCallback<ws.logv.trainmonitor
         hideDialog();
 		Toast toast = Toast.makeText(this.getApplicationContext(),R.string.train_details_error, Toast.LENGTH_LONG);
 		toast.show();
-		//this.finish();
+		this.finish();
 	}
 
 	public void onNoConnection() {

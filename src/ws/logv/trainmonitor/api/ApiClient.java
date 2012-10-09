@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import ws.logv.trainmonitor.app.Installation;
+import ws.logv.trainmonitor.data.Action;
 import ws.logv.trainmonitor.model.Station;
 import ws.logv.trainmonitor.model.Subscribtion;
 import ws.logv.trainmonitor.model.Train;
@@ -58,9 +59,15 @@ public class ApiClient {
 				String data = httpResponse.getBodyAsString();			
 				try	{
 					JsonHelper helper = new JsonHelper();
-					Train[] ret = helper.fromJson(data,
-							 new TypeToken<Train[]>(){}.getType ());					
-					apiCallback.onComplete(Arrays.asList(ret));				
+					 helper.fromJsonAsync(data,
+                            new TypeToken<Train[]>() {
+                            }.getType(), new Action<Train[]>() {
+                        @Override
+                        public void exec(Train[] param) {
+                            apiCallback.onComplete(Arrays.asList(param));
+                        }
+                    });
+
 				}
 				catch (Exception ex)
 				{

@@ -62,6 +62,8 @@
       </library>
     </orderEntry>
     <orderEntry type="module" module-name="Android-PullToRefresh" />
+    <orderEntry type="module" module-name="ActionbarSherlock" />
+    <orderEntry type="library" name="android-support-v4" level="application" />
   </component>
 </module>
 

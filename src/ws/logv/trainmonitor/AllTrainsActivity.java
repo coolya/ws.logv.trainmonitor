@@ -7,10 +7,16 @@ import java.util.List;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.view.*;
+import android.view.Menu;
+import android.view.MenuInflater;
+import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.view.*;
+import com.actionbarsherlock.view.MenuItem;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
+import ws.logv.trainmonitor.app.IRefreshable;
 import ws.logv.trainmonitor.app.SyncManager;
 import ws.logv.trainmonitor.app.TrainAdapter;
 import ws.logv.trainmonitor.api.ApiClient;
@@ -41,7 +47,7 @@ public class AllTrainsActivity extends FragmentActivity {
         return true;
     }
     
-    public static class AllTrainsFragment extends Fragment {
+    public static class AllTrainsFragment extends SherlockFragment implements IRefreshable {
         int mNum;
 
 
@@ -65,6 +71,11 @@ public class AllTrainsActivity extends FragmentActivity {
             mNum = getArguments() != null ? getArguments().getInt("num") : 1;
 
         }
+
+        private View mView;
+        private TrainAdapter mAdapter;
+        private Handler mHandler;
+        private PullToRefreshListView mRefreshView;
         /**
          * The Fragment's UI is just a simple text view showing its
          * instance number.
@@ -73,39 +84,43 @@ public class AllTrainsActivity extends FragmentActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
 
+
             final View v = inflater.inflate(R.layout.activity_all_trains, container, false);
+            mView = v;
+
         	final PullToRefreshListView mPullRefreshListView;
-        	final TrainAdapter mAdapter;
+        	final TrainAdapter adapter;
         	LinkedList<Train> mListItems;
         	final Handler handler = new Handler();
-
+            mHandler = handler;
         	
         	mListItems = new LinkedList<Train>();
-            mPullRefreshListView = (PullToRefreshListView) v.findViewById(R.id.pull_to_refresh_listview);            
-            mAdapter = new TrainAdapter(v.getContext(), android.R.layout.simple_list_item_1, mListItems);
-
-            mPullRefreshListView.getRefreshableView().setAdapter(mAdapter);
+            mPullRefreshListView = (PullToRefreshListView) v.findViewById(R.id.pull_to_refresh_listview);
+            mRefreshView = mPullRefreshListView;
+            adapter = new TrainAdapter(v.getContext(), android.R.layout.simple_list_item_1, mListItems);
+            mAdapter = adapter;
+            mPullRefreshListView.getRefreshableView().setAdapter(adapter);
             mPullRefreshListView.setOnLastItemVisibleListener(new PullToRefreshBase.OnLastItemVisibleListener() {
                 @Override
                 public void onLastItemVisible() {
-                    getNextFromDb(v, mAdapter, handler);
+                    getNextFromDb(v, adapter, handler);
                 }
             });
             
             mPullRefreshListView.setOnRefreshListener(new OnRefreshListener<ListView>(){
 				public void onRefresh(final PullToRefreshBase<ListView> refreshView) {
                     refreshView.onRefreshComplete();
-					refreshDataFromServer(v, mAdapter, handler, refreshView);
+					refreshDataFromServer(v, adapter, handler, refreshView);
 				}		            	
             });
 
-            SyncManager adapter = new SyncManager(v.getContext());
+            SyncManager syncAdapter = new SyncManager(v.getContext());
 
-            if(adapter.trainsNeedSync())
+            if(syncAdapter.trainsNeedSync())
             {
-                refreshDataFromServer(v, mAdapter, handler, mPullRefreshListView);
+                refreshDataFromServer(v, adapter, handler, mPullRefreshListView);
             } else {
-                getNextFromDb(v, mAdapter, handler);
+                getNextFromDb(v, adapter, handler);
             }
 
             return v;
@@ -163,6 +178,11 @@ public class AllTrainsActivity extends FragmentActivity {
         private static void refreshTrains(TrainAdapter adapter, Collection<Train> data)
         {
             adapter.addAll(data);
+        }
+
+        @Override
+        public void refresh() {
+            refreshDataFromServer(mView, mAdapter, mHandler, mRefreshView);
         }
     }
 }

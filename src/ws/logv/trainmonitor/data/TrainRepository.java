@@ -4,17 +4,19 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
+import android.util.Log;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import android.content.Context;
 import com.j256.ormlite.stmt.DeleteBuilder;
+import com.j256.ormlite.support.DatabaseConnection;
 import ws.logv.trainmonitor.FavChangedListener;
 import ws.logv.trainmonitor.model.FavouriteTrain;
 import ws.logv.trainmonitor.model.Train;
 
 public class TrainRepository 
 {
-
+   private static final String TAG = "TrainRepository" ;
    private static FavChangedListener listener = null;
 	
 	public static void loadTrains(Context context,final Action<List<Train>> callback)
@@ -128,6 +130,7 @@ public class TrainRepository
                 DatabaseHelper databaseHelper = OpenHelperManager.getHelper(param, DatabaseHelper.class);
                 try {
                     Dao<Train, Integer> dao = databaseHelper.getTrainDataDao();
+
                     int i = 0;
                     for(Train train : data)
                     {
@@ -326,11 +329,15 @@ public class TrainRepository
 
     public static Boolean hasTrains(Context ctx) {
         DatabaseHelper databaseHelper = OpenHelperManager.getHelper(ctx, DatabaseHelper.class);
+        Boolean ret;
         try {
             Dao<Train, Integer> dao = databaseHelper.getTrainDataDao();
-            return dao.countOf() > 0;
-        } catch (SQLException e) {
-            return false;
+            long count = dao.countOf();
+            ret = count > 0l;
+        } catch (Exception e) {
+            Log.e(TAG, "Error in hasTrains", e);
+            ret = false;
         }
+        return ret;
     }
 }

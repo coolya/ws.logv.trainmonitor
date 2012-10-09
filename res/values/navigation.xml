@@ -1,0 +1,6 @@
+<resources>
+    <string-array name="navigation">
+        <item>All trains</item>
+        <item>My trains</item>
+    </string-array>
+</resources>

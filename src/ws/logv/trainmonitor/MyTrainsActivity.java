@@ -9,8 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import com.actionbarsherlock.app.SherlockFragment;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import ws.logv.trainmonitor.app.Constants;
 import ws.logv.trainmonitor.app.FavouriteTrainAdapter;
+import ws.logv.trainmonitor.app.IRefreshable;
 import ws.logv.trainmonitor.data.Action;
 import ws.logv.trainmonitor.data.DatabaseTask;
 import ws.logv.trainmonitor.data.TrainRepository;
@@ -27,9 +32,14 @@ import java.util.concurrent.ExecutionException;
  * Time: 5:04 PM
  * To change this template use File | Settings | File Templates.
  */
-public class MyTrainsActivity extends FragmentActivity {
+public class MyTrainsActivity extends FragmentActivity implements IRefreshable{
 
-    public static class MyTrainsFragment extends Fragment
+    @Override
+    public void refresh() {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    public static class MyTrainsFragment extends SherlockFragment
     {
         static MyTrainsFragment newInstance(int num) {
             MyTrainsFragment f = new MyTrainsFragment();
@@ -41,6 +51,7 @@ public class MyTrainsActivity extends FragmentActivity {
 
             return f;
         }
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
