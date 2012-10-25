@@ -76,7 +76,7 @@ public class TrainRepository
 				DatabaseHelper databaseHelper = OpenHelperManager.getHelper(param, DatabaseHelper.class);
 				try {
 					Dao<Train, Integer> dao = databaseHelper.getTrainDataDao();			
-					return dao.query(dao.queryBuilder().where().like("trainId", name).prepare());
+					return dao.query(dao.queryBuilder().orderBy("trainId", true).where().like("trainId", name + "%").prepare());
 				} catch (SQLException e) {
 					return null;
 				}

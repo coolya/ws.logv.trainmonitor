@@ -1,8 +1,14 @@
 package ws.logv.trainmonitor;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.SearchViewCompat;
+import android.util.Log;
 import android.view.Window;
 import android.widget.ArrayAdapter;
+
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.ActionProvider;
 import com.actionbarsherlock.view.Menu;
@@ -11,7 +17,9 @@ import com.actionbarsherlock.view.MenuItem;
 import android.os.Bundle;
 import android.content.Context;
 import android.support.v4.app.Fragment;
-import ws.logv.trainmonitor.app.IRefreshable;
+import com.actionbarsherlock.widget.SearchView;
+import com.google.android.gcm.GCMRegistrar;
+import ws.logv.trainmonitor.app.*;
 
 public class MainActivity extends SherlockFragmentActivity implements com.actionbarsherlock.app.ActionBar.OnNavigationListener {
 
@@ -19,6 +27,8 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
     private MenuItem mMenueSearch;
     private MenuItem mMenueRefresh;
     private IRefreshable mCurrentView;
+    private ISearchable mSearchable;
+    private static final String LOG_TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +49,33 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
 
         setContentView(R.layout.activity_main);
 
+        final MainActivity that = this;
+
+        if(!Installation.wasDisclaimerShown(this))
+        {
+
+            AlertDialog dialog = new AlertDialog.Builder(this).setTitle(R.string.disclaimer_header)
+                .setMessage(R.string.disclaimer)
+                .setPositiveButton(R.string.accept, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Installation.setDisclaimerShown(that);
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        that.finish();
+                    }
+                }).create();
+            dialog.show();
+
+        }
+
+        Installation.showMotd(this);
+
+
         Context context = getSupportActionBar().getThemedContext();
         ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(context, R.array.navigation, R.layout.sherlock_spinner_item);
         list.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
@@ -46,14 +83,19 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
         getSupportActionBar().setNavigationMode(com.actionbarsherlock.app.ActionBar.NAVIGATION_MODE_LIST);
         getSupportActionBar().setListNavigationCallbacks(list, this);
 
-       /* GCMRegistrar.checkDevice(this);
+        try{
+        GCMRegistrar.checkDevice(this);
         GCMRegistrar.checkManifest(this);
         final String regId = GCMRegistrar.getRegistrationId(this);
         if (regId.equals("")) {
             GCMRegistrar.register(this, Constants.GCM.SENDER_ID);
-        }     */
+        }
+        } catch (Exception e)
+        {
+            Log.e(LOG_TAG, "GCM not available", e);
+        }
 
-
+        new SyncManager(this).syncSubscribtions();
     }
 
     @Override
@@ -89,6 +131,13 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
         if(frag != null)
         {
             mCurrentView = (IRefreshable)frag;
+
+            if(frag instanceof ISearchable)
+                mSearchable = (ISearchable)frag;
+            else
+                mSearchable = null;
+
+
             FragmentTransaction ft =  getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.details, frag);
             ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
@@ -98,14 +147,44 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
         return false;
     }
 
+    public void performSearch(String query)
+    {
+        if(mSearchable != null)
+            mSearchable.query(query);
+    }
+
+    public void searchClosed()
+    {
+
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        final MainActivity that = this;
+
+        SearchView searchView = new SearchView(this);
+        searchView.setQueryHint("Search");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                that.performSearch(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if("".equals(newText))
+                    mSearchable.searchClosed();
+                return true;  //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
+
+
 
         //Used to put dark icons on light action bar
        mMenueSearch =  menu.add("Search");
        mMenueSearch.setIcon(R.drawable.ic_search)
-                .setActionView(R.layout.collapsible_edittext)
-
+                .setActionView(searchView)
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
 
         mMenueRefresh = menu.add("refresh");

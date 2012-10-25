@@ -12,7 +12,7 @@ public class Constants {
     public static class GCM
     {
         //todo add google api project id
-        public static final String SENDER_ID = null;
+        public static final String SENDER_ID = "";
     }
 
 }

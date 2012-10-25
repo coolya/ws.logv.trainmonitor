@@ -5,12 +5,14 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import com.google.android.gcm.GCMBaseIntentService;
 import com.google.android.gcm.GCMRegistrar;
 import ws.logv.trainmonitor.api.ApiClient;
 import ws.logv.trainmonitor.app.Constants;
 import ws.logv.trainmonitor.app.DeviceManager;
+import ws.logv.trainmonitor.app.SyncManager;
 
 /**
  * Created with IntelliJ IDEA.
@@ -50,6 +52,8 @@ public class GCMIntentService extends GCMBaseIntentService {
         if (GCMRegistrar.isRegisteredOnServer(context)) {
             DeviceManager mng = new DeviceManager(context);
             mng.unregisteredFromGCM(regId);
+            SyncManager snycMan = new SyncManager(context);
+            snycMan.syncSubscribtions();
         } else {
             // This callback results from the call to unregister made on
             // ServerUtilities when the registration to the server failed.
@@ -67,7 +71,8 @@ public class GCMIntentService extends GCMBaseIntentService {
 
         NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notification = new Notification(icon, message, when);
+
+
         String title = context.getString(R.string.app_name);
 
         Intent notificationIntent = new Intent(context, Train.class);
@@ -77,8 +82,14 @@ public class GCMIntentService extends GCMBaseIntentService {
                 Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent intent =
                 PendingIntent.getActivity(context, 0, notificationIntent, 0);
-        notification.setLatestEventInfo(context, title, message, intent);
-        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+
+        Notification notification = new NotificationCompat.Builder(context)
+                .setContentText(message)
+                .setContentTitle(title)
+                .setSmallIcon(icon)
+                .setWhen(when)
+                .setContentIntent(intent).build();
+
         notificationManager.notify(0, notification);
     }
 }

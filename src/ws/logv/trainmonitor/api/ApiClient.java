@@ -5,11 +5,10 @@ import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Collection;
 
+import android.util.Base64;
 import ws.logv.trainmonitor.app.Installation;
 import ws.logv.trainmonitor.data.Action;
-import ws.logv.trainmonitor.model.Station;
-import ws.logv.trainmonitor.model.Subscribtion;
-import ws.logv.trainmonitor.model.Train;
+import ws.logv.trainmonitor.model.*;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -142,7 +141,7 @@ public class ApiClient {
 		httpClient.get("stations",params , callback);
 	}	
 	
-	public void postSubscribtion(Subscribtion data, final IApiCallback<Subscribtion> apiCallback)
+	public void postSubscribtion(Collection<Subscribtion> data, final IApiCallback<Collection<Subscribtion>> apiCallback)
 	{
 		final JsonHelper jsonHelper = new JsonHelper();
 		String json = jsonHelper.toJson(data);
@@ -157,7 +156,7 @@ public class ApiClient {
 			public void onComplete(HttpResponse httpResponse) {				
 				String data = httpResponse.getBodyAsString();				
 				try	{							
-					Subscribtion ret = jsonHelper.fromJson(data, new TypeToken<Subscribtion>() {}.getType());
+					Collection<Subscribtion> ret = jsonHelper.fromJson(data, new TypeToken<Collection<Subscribtion>>() {}.getType());
 					apiCallback.onComplete(ret);				
 				}
 				catch (Exception ex)
@@ -170,14 +169,50 @@ public class ApiClient {
 		httpClient.post("subscribtions", "application/json", json.getBytes(), callback);
 	}
 
-    public void registerGCMDevice(String regId, final IApiCallback<Boolean> callback)
-    {
 
+    public void registerDevice(final IApiCallback<Device> apiCallback)
+    {
+        AsyncCallback callback = new AsyncCallback() {
+
+            @Override
+            public void onError(Exception e) {
+                apiCallback.onError(e);
+            }
+            @Override
+            public void onComplete(HttpResponse httpResponse) {
+                String data = httpResponse.getBodyAsString();
+                try	{
+                    JsonHelper helper = new JsonHelper();
+                    Device ret = helper.fromJson(data, new TypeToken<Device>() {}.getType());
+                    apiCallback.onComplete(ret);
+                }
+                catch (Exception ex)
+                {
+                    apiCallback.onError(ex);
+                }
+            }
+        };
+        ParameterMap params = httpClient.newParams();
+        params.add("type", "ANDROID");
+        httpClient.post("devices", params, callback);
     }
 
-    public void unregisterGCMDevice(String regId, final IApiCallback<Boolean> callback)
+    public void putDevice(Device device)
     {
+        AsyncCallback callback = new AsyncCallback() {
+            @Override
+            public void onComplete(HttpResponse httpResponse) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        };
 
+        JsonHelper helper = new JsonHelper();
+        String data = helper.toJson(device);
+        String devicePart = Base64.encodeToString(device.getId().toString().getBytes(), Base64.URL_SAFE);
+        try {
+            httpClient.put(URLEncoder.encode("devices/" + devicePart.substring(0, 22), "UTF-8"), "application/json", data.getBytes(), callback);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
-
 }

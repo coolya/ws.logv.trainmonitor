@@ -13,9 +13,9 @@ import android.content.Context;
 
 public class SubscribtionRepository {
 
-	public static void loadSubscribtions(Context context,final Action<List<Subscribtion>> callback)
-	{		
-		new DatabaseTask<List<Subscribtion>>(new Func<List<Subscribtion>, Context>(){
+	public static  DatabaseTask<List<Subscribtion>> loadSubscribtions(Context context,final Action<List<Subscribtion>> callback)
+	{
+        DatabaseTask<List<Subscribtion>> task = new DatabaseTask<List<Subscribtion>>(new Func<List<Subscribtion>, Context>(){
 	
 				public List<Subscribtion> exec(Context param) {
 					DatabaseHelper databaseHelper = OpenHelperManager.getHelper(param, DatabaseHelper.class);
@@ -34,12 +34,15 @@ public class SubscribtionRepository {
 				new Action<List<Subscribtion>>(){
 	
 					public void exec(List<Subscribtion> param) {
-						callback.exec(param);					
-					}}).execute(context);	
+						if(callback != null)
+                            callback.exec(param);
+					}});
+        task.execute(context);
+        return task;
 	}
-	public static void saveSubscribtions(Context context, final Collection<Subscribtion> data, final Action<Boolean> callback)
+	public static DatabaseTask<Boolean> saveSubscribtions(Context context, final Collection<Subscribtion> data, final Action<Boolean> callback)
 	{
-		new DatabaseTask<Boolean>(new Func<Boolean, Context>(){
+        DatabaseTask<Boolean> task = new DatabaseTask<Boolean>(new Func<Boolean, Context>(){
 			
 			public Boolean exec(Context param) {
 				DatabaseHelper databaseHelper = OpenHelperManager.getHelper(param, DatabaseHelper.class);
@@ -64,6 +67,13 @@ public class SubscribtionRepository {
 				public void exec(Boolean param) {
 					if(callback != null)
 						callback.exec(param);					
-				}}).execute(context);
+				}});
+        task.execute(context);
+        return task;
 	}
+
+    public static DatabaseTask<Subscribtion> getSubscribtionByTrain(String trainId, Action<Subscribtion> callback)
+    {
+        return null;
+    }
 }

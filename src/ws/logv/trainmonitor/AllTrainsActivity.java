@@ -17,6 +17,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
 import ws.logv.trainmonitor.app.IRefreshable;
+import ws.logv.trainmonitor.app.ISearchable;
 import ws.logv.trainmonitor.app.SyncManager;
 import ws.logv.trainmonitor.app.TrainAdapter;
 import ws.logv.trainmonitor.api.ApiClient;
@@ -47,7 +48,7 @@ public class AllTrainsActivity extends FragmentActivity {
         return true;
     }
     
-    public static class AllTrainsFragment extends SherlockFragment implements IRefreshable {
+    public static class AllTrainsFragment extends SherlockFragment implements IRefreshable, ISearchable {
         int mNum;
 
 
@@ -183,6 +184,31 @@ public class AllTrainsActivity extends FragmentActivity {
         @Override
         public void refresh() {
             refreshDataFromServer(mView, mAdapter, mHandler, mRefreshView);
+        }
+
+        @Override
+        public void query(String query) {
+            WindowMediator.RequestRefreshState();
+            mAdapter.clear();
+            TrainRepository.searchTrain (mView.getContext(), query, new Action<List<Train>>() {
+                @Override
+                public void exec(final List<Train> trains) {
+                    mHandler.post(new Runnable() {
+
+                        public void run() {
+                            refreshTrains(mAdapter, trains);
+                            WindowMediator.EndRefreshState();
+                        }
+                    });
+                }
+            });
+        }
+
+        @Override
+        public void searchClosed() {
+            WindowMediator.RequestRefreshState();
+            mAdapter.clear();
+            getNextFromDb(mView, mAdapter, mHandler);
         }
     }
 }

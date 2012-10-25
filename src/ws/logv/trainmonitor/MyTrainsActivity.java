@@ -32,14 +32,10 @@ import java.util.concurrent.ExecutionException;
  * Time: 5:04 PM
  * To change this template use File | Settings | File Templates.
  */
-public class MyTrainsActivity extends FragmentActivity implements IRefreshable{
+public class MyTrainsActivity extends FragmentActivity {
 
-    @Override
-    public void refresh() {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
 
-    public static class MyTrainsFragment extends SherlockFragment
+    public static class MyTrainsFragment extends SherlockFragment  implements IRefreshable
     {
         static MyTrainsFragment newInstance(int num) {
             MyTrainsFragment f = new MyTrainsFragment();
@@ -51,6 +47,8 @@ public class MyTrainsActivity extends FragmentActivity implements IRefreshable{
 
             return f;
         }
+        private View mView;
+        private FavouriteTrainAdapter mAdapter;
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,6 +56,7 @@ public class MyTrainsActivity extends FragmentActivity implements IRefreshable{
 
             final View v = inflater.inflate(R.layout.activity_my_trains, container, false);
             DatabaseTask<Collection<FavouriteTrain>> task =  TrainRepository.loadFavouriteTrains(v.getContext(), null);
+            mView = v;
             ListView lvTrains = (ListView) v.findViewById(R.id.listView_trains);
 
             try {
@@ -65,6 +64,7 @@ public class MyTrainsActivity extends FragmentActivity implements IRefreshable{
                 LinkedList<FavouriteTrain> list = new LinkedList<FavouriteTrain>();
                 list.addAll(trains);
                 final FavouriteTrainAdapter adapter = new FavouriteTrainAdapter(v.getContext(), 0, list);
+                mAdapter = adapter;
                 lvTrains.setAdapter(adapter);
 
                 lvTrains.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -95,6 +95,20 @@ public class MyTrainsActivity extends FragmentActivity implements IRefreshable{
                 e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
             return v;
+        }
+
+        @Override
+        public void refresh() {
+            mAdapter.clear();
+            DatabaseTask<Collection<FavouriteTrain>> task =  TrainRepository.loadFavouriteTrains(mView.getContext(), null);
+            try {
+                Collection<FavouriteTrain> trains = task.get();
+                mAdapter.addAll(trains);
+            } catch (InterruptedException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (ExecutionException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
         }
     }
 

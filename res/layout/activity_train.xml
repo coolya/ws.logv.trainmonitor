@@ -48,10 +48,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/train_id"
+        android:layout_above="@+id/next_refresh_label"
         android:layout_marginTop="5dp"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/stations_header"
         android:listSelector="@android:color/transparent">
 
     </ListView>
+    <TextView
+            android:id="@+id/next_refresh_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="@string/next_refresh"/>
+
+    <TextView
+            android:id="@+id/next_refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="10dp"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="Date"/>
+
 </RelativeLayout>

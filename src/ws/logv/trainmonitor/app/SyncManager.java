@@ -6,13 +6,16 @@ import android.widget.Toast;
 import ws.logv.trainmonitor.R;
 import ws.logv.trainmonitor.api.ApiClient;
 import ws.logv.trainmonitor.api.IApiCallback;
-import ws.logv.trainmonitor.data.Action;
-import ws.logv.trainmonitor.data.StationRepository;
-import ws.logv.trainmonitor.data.TrainRepository;
+import ws.logv.trainmonitor.data.*;
+import ws.logv.trainmonitor.model.Device;
+import ws.logv.trainmonitor.model.FavouriteTrain;
+import ws.logv.trainmonitor.model.Subscribtion;
 import ws.logv.trainmonitor.model.Train;
 
 import java.math.MathContext;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -76,5 +79,57 @@ public class SyncManager {
     public Boolean stationsNeedSync()
     {
         return !StationRepository.haveStations(mCtx);
+    }
+
+    public void syncSubscribtions()
+    {
+        DeviceManager devMng = new DeviceManager(mCtx);
+        Device dev = devMng.getsDevice();
+
+        if(dev == null || dev.getGcmRegId() == null ||dev.getGcmRegId().isEmpty())
+            return;
+
+        DatabaseTask<Collection<FavouriteTrain>> task =  TrainRepository.loadFavouriteTrains(mCtx, null);
+
+        try {
+            ArrayList<Subscribtion> subscribtions = new ArrayList<Subscribtion>();
+            ApiClient client = new ApiClient(mCtx);
+            for(FavouriteTrain train : task.get())
+            {
+                Subscribtion subscribtion = SubscribtionRepository
+                        .getSubscribtionByTrain(train.getTrainId(), null).get();
+                if(subscribtion == null)
+                {
+                    subscribtion = new Subscribtion();
+                    subscribtion.setDevice(dev.getId());
+                    subscribtion.setTrain(train.getTrainId());
+                }
+
+                subscribtions.add(subscribtion);
+            }
+            final Context ctx = mCtx;
+            client.postSubscribtion(subscribtions, new IApiCallback<Collection<Subscribtion>>() {
+                @Override
+                public void onComplete(Collection<Subscribtion> data) {
+                    SubscribtionRepository.saveSubscribtions(ctx, data, null);
+                }
+
+                @Override
+                public void onError(Throwable tr) {
+                    //todo
+                    //To change body of implemented methods use File | Settings | File Templates.
+                }
+
+                @Override
+                public void onNoConnection() {
+                    //todo
+                    //To change body of implemented methods use File | Settings | File Templates.
+                }
+            });
+        } catch (InterruptedException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (ExecutionException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 }

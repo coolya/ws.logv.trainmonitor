@@ -2,6 +2,7 @@ package ws.logv.trainmonitor;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.text.format.DateFormat;
 import android.widget.*;
 import ws.logv.trainmonitor.app.Constants;
 import ws.logv.trainmonitor.app.TrainDetailAdapter;
@@ -18,6 +19,7 @@ import ws.logv.trainmonitor.data.TrainRepository;
 import ws.logv.trainmonitor.model.Station;
 import ws.logv.trainmonitor.model.StationInfo;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import android.os.Handler;
@@ -117,6 +119,8 @@ public class Train extends Activity implements IApiCallback<ws.logv.trainmonitor
         TrainDetailAdapter adapter = new TrainDetailAdapter(this, R.id.listView_stations, new ArrayList<StationInfo>(data.getStations()));
         ListView lv = (ListView) findViewById(R.id.listView_stations);
         lv.setAdapter(adapter);
+        TextView tv = (TextView) findViewById(R.id.next_refresh);
+        tv.setText(DateFormat.getTimeFormat(this).format(data.getNextrun()) + " " + DateFormat.getMediumDateFormat(this).format(data.getNextrun()));
     }
 
     private void hideDialog() {

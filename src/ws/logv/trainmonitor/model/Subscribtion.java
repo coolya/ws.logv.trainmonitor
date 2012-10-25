@@ -3,18 +3,24 @@ package ws.logv.trainmonitor.model;
 import java.util.Date;
 import java.util.UUID;
 
+import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 
 public class Subscribtion {
 	@DatabaseField(id = true)
 	private UUID id;
 	@DatabaseField
+    @SerializedName("train_id")
 	private String train;
+    @SerializedName("notification_start")
 	@DatabaseField
 	private Date notificationStart;
+    @SerializedName("notification_end")
 	@DatabaseField
 	private Date notificationEnd;
-	private Device device;
+    @DatabaseField
+    @SerializedName("device")
+	private UUID device;
 	public String getTrain() {
 		return train;
 	}
@@ -45,14 +51,14 @@ public class Subscribtion {
 		Subscribtion ret = new Subscribtion();
 		
 		ret.id = UUID.randomUUID();
-		ret.device = device;
+		ret.device = device.getId();
 		
 		return ret;
 	}
-	public Device getDevice() {
+	public UUID getDevice() {
 		return device;
 	}
-	public void setDevice(Device device) {
+	public void setDevice(UUID device) {
 		this.device = device;
 	}
 	
