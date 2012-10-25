@@ -1,5 +1,7 @@
 package ws.logv.trainmonitor.test;
 
+import junit.framework.TestCase;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Kolja
@@ -7,5 +9,5 @@ package ws.logv.trainmonitor.test;
  * Time: 17:35
  * To change this template use File | Settings | File Templates.
  */
-public class SubscribtionTest {
+public class SubscribtionTest extends TestCase {
 }
