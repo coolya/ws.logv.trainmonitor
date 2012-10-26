@@ -21,6 +21,8 @@ import com.actionbarsherlock.widget.SearchView;
 import com.google.android.gcm.GCMRegistrar;
 import ws.logv.trainmonitor.app.*;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 public class MainActivity extends SherlockFragmentActivity implements com.actionbarsherlock.app.ActionBar.OnNavigationListener {
 
 
@@ -31,7 +33,7 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
     private static final String LOG_TAG = "MainActivity";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected synchronized  void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.Theme_Sherlock);
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
@@ -50,6 +52,7 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
         setContentView(R.layout.activity_main);
 
         final MainActivity that = this;
+        final ReentrantLock lock = new ReentrantLock();
 
         if(!Installation.wasDisclaimerShown(this))
         {
@@ -61,6 +64,7 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Installation.setDisclaimerShown(that);
+                        that.init();
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -70,9 +74,15 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
                     }
                 }).create();
             dialog.show();
-
+        }
+        else
+        {
+            init();
         }
 
+    }
+
+    private void init() {
         Installation.showMotd(this);
 
 
@@ -89,13 +99,15 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
         final String regId = GCMRegistrar.getRegistrationId(this);
         if (regId.equals("")) {
             GCMRegistrar.register(this, Constants.GCM.SENDER_ID);
+        }else
+        {
+            new DeviceManager(this).registeredToGCM(regId);
+            new SyncManager(this).syncSubscribtions();
         }
         } catch (Exception e)
         {
             Log.e(LOG_TAG, "GCM not available", e);
         }
-
-        new SyncManager(this).syncSubscribtions();
     }
 
     @Override

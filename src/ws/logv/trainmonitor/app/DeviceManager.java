@@ -27,11 +27,12 @@ public class DeviceManager {
     private final Context mCtx;
     private static final String FILENAME = "DEVICE";
     private static Device sDevice;
+    private static final Object _lock = new Object();
 
     public DeviceManager(Context ctx) {
         mCtx = ctx;
 
-        synchronized (DeviceManager.class)
+        synchronized (_lock)
         {
             if(sDevice == null)
                 prepare();
@@ -90,7 +91,10 @@ public class DeviceManager {
     public void registeredToGCM(String regId) {
 
         if(sDevice == null)
-            throw new IllegalStateException("The devices manager did not prepare correctly");
+        {
+            Log.w(LOG_TAG, "DeviceManager did not prepare!");
+            return;
+        }
 
         sDevice.setGcmRegId(regId);
 

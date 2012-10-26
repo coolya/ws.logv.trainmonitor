@@ -19,4 +19,10 @@
     <string name="refresh_trains_1">Verbinde mit dem Server</string>
     <string name="refresh_trains_2">Lösche lokalen Cache</string>
     <string name="refresh_trains_3">Zug %1$s von %2$s verarbeitet</string>
+    <string name="disclaimer_header">Disclaimer</string>
+    <string name="disclaimer">Diese Software steht in keiner direkten Beziehung zur Deutschen Bahn. Alle Informationen die, diese Software bereitstellt sind nicht von der Deutsche Bahn überprüft.
+        Für belastbare Informationen, ins besondere zur Reiseplanung verwenden Sie bitte die offiziellen Angebote der Deutsche Bahn.</string>
+    <string name="accept">Akzeptieren</string>
+    <string name="cancel">Ablehnen</string>
+    <string name="next_refresh">nächste Aktulisierung:</string>
 </resources>

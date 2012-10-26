@@ -76,6 +76,8 @@ public class Installation {
 
     public static void showMotd(Context ctx)
     {
+        return;
+        /*
         int versionCode = getVersion(ctx);
 
         File file = new File(ctx.getFilesDir(), MOTD_FILE);
@@ -110,7 +112,7 @@ public class Installation {
             writeFile(file, String.valueOf(versionCode).getBytes());
         } catch (Exception e) {
             Log.e(LOG_TAG, "Error writing MOTD file", e);
-        }
+        }                      */
 
     }
 

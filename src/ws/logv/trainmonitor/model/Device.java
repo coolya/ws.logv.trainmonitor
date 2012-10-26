@@ -35,7 +35,8 @@ public class Device {
 
         Device ret = new Device();
         ret.setId(UUID.fromString(parts[0]));
-        ret.setGcmRegId(parts[1]);
+        if(parts.length > 1)
+            ret.setGcmRegId(parts[1]);
 
         return ret;
     }

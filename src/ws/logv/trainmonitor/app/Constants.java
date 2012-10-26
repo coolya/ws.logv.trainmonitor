@@ -11,8 +11,7 @@ public class Constants {
 	}
     public static class GCM
     {
-        //todo add google api project id
-        public static final String SENDER_ID = "";
+        public static final String SENDER_ID = "643069411443";
     }
 
 }

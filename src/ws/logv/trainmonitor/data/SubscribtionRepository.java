@@ -48,7 +48,9 @@ public class SubscribtionRepository {
 				DatabaseHelper databaseHelper = OpenHelperManager.getHelper(param, DatabaseHelper.class);
 				try {
 					Dao<Subscribtion, UUID> dao = databaseHelper.getSubscribtionDao();			
-					
+					if(data == null)
+                        return true;
+
 					for(Subscribtion subscribtion : data)
 					{
 						dao.createOrUpdate(subscribtion);

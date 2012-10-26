@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.UUID;
 
 import android.util.Base64;
 import ws.logv.trainmonitor.app.Installation;
@@ -22,7 +23,7 @@ import com.turbomanage.httpclient.android.AndroidHttpClient;
 
 public class ApiClient {
 	private AndroidHttpClient httpClient;
-	private final String URI = "http://trainmonitor.logv.ws/api/v1/germany/";
+	private final String URI = "http://trainmonitor.logv.ws/api/v1/";
 	private final Context ctx;
 	
 	public ApiClient(Context ctx)
@@ -78,7 +79,7 @@ public class ApiClient {
         ParameterMap params = httpClient.newParams();
         params.add("install", Installation.Id(ctx));
         params.add("client", "ANDROID");
-		httpClient.get("trains", params, callback);	
+		httpClient.get("germany/trains", params, callback);
 	}
 	
 	public void getTrainDetail(String trainId, final IApiCallback<Train> apiCallback)
@@ -107,7 +108,7 @@ public class ApiClient {
         params.add("install", Installation.Id(ctx));
         params.add("client", "ANDROID");
         try {
-            httpClient.get(URLEncoder.encode("trains/" + trainId, "UTF-8"), params, callback);
+            httpClient.get(URLEncoder.encode("germany/trains/" + trainId, "UTF-8"), params, callback);
         } catch (UnsupportedEncodingException e) {
             apiCallback.onError(e);
         }
@@ -138,7 +139,7 @@ public class ApiClient {
         ParameterMap params = httpClient.newParams();
         params.add("install", Installation.Id(ctx));
         params.add("client", "ANDROID");
-		httpClient.get("stations",params , callback);
+		httpClient.get("germany/stations",params , callback);
 	}	
 	
 	public void postSubscribtion(Collection<Subscribtion> data, final IApiCallback<Collection<Subscribtion>> apiCallback)
@@ -193,8 +194,8 @@ public class ApiClient {
             }
         };
         ParameterMap params = httpClient.newParams();
-        params.add("type", "ANDROID");
-        httpClient.post("devices", params, callback);
+
+        httpClient.post("devices?type=ANDROID", params, callback);
     }
 
     public void putDevice(Device device)
@@ -208,11 +209,29 @@ public class ApiClient {
 
         JsonHelper helper = new JsonHelper();
         String data = helper.toJson(device);
-        String devicePart = Base64.encodeToString(device.getId().toString().getBytes(), Base64.URL_SAFE);
+        String devicePart = Base64.encodeToString(asByteArray(device.getId()), Base64.URL_SAFE);
         try {
-            httpClient.put(URLEncoder.encode("devices/" + devicePart.substring(0, 22), "UTF-8"), "application/json", data.getBytes(), callback);
-        } catch (UnsupportedEncodingException e) {
+            httpClient.put("devices/" + devicePart.substring(0, 22), "application/json", data.getBytes(), callback);
+        } catch (Exception e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
+
+    public static byte[] asByteArray(UUID uuid) {
+
+        long msb = uuid.getMostSignificantBits();
+        long lsb = uuid.getLeastSignificantBits();
+        byte[] buffer = new byte[16];
+
+        for (int i = 0; i < 8; i++) {
+            buffer[i] = (byte) (msb >>> 8 * (7 - i));
+        }
+
+        for (int i = 8; i < 16; i++) {
+            buffer[i] = (byte) (lsb >>> 8 * (7 - i));
+        }
+        return buffer;
+
+    }
+
 }

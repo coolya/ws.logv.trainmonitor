@@ -21,7 +21,8 @@
     <string name="refresh_trains_2">Clearing local cache</string>
     <string name="refresh_trains_3">Processed train %1$s of %2$s</string>
     <string name="disclaimer_header">Disclaimer</string>
-    <string name="disclaimer">Disclaimer goes here</string>
+    <string name="disclaimer">This program is not related with Deutsche Bahn. All information provided by this software are not official approved b Deutsche Bahn.
+        If you need reliable information please use the services provided directly by Deutsche Bahn.</string>
     <string name="accept">Accept</string>
     <string name="cancel">Cancel</string>
     <string name="next_refresh">next refresh:</string>
