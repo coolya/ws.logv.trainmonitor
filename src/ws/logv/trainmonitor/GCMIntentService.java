@@ -6,13 +6,18 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
+import android.text.format.Time;
 import android.util.Log;
 import com.google.android.gcm.GCMBaseIntentService;
 import com.google.android.gcm.GCMRegistrar;
 import ws.logv.trainmonitor.api.ApiClient;
+import ws.logv.trainmonitor.api.IApiCallback;
 import ws.logv.trainmonitor.app.Constants;
 import ws.logv.trainmonitor.app.DeviceManager;
 import ws.logv.trainmonitor.app.SyncManager;
+import ws.logv.trainmonitor.model.StationInfo;
+
+import java.util.Collection;
 
 /**
  * Created with IntelliJ IDEA.
@@ -30,8 +35,40 @@ public class GCMIntentService extends GCMBaseIntentService {
         super(Constants.GCM.SENDER_ID);
     }
     @Override
-    protected void onMessage(Context context, Intent intent) {
+    protected void onMessage(final Context context, Intent intent) {
+        ApiClient client = new ApiClient(context);
+        final String train = intent.getStringExtra("train");
 
+        client.getTrainDetail(train, new IApiCallback<ws.logv.trainmonitor.model.Train>() {
+            @Override
+            public void onComplete(ws.logv.trainmonitor.model.Train data) {
+                Collection<StationInfo> stations = data.getStations();
+                boolean late = false;
+                for (StationInfo station : stations)
+                {
+                    if(station.getDelay() > 0)
+                    {
+                        late = true;
+                        continue;
+                    }
+                }
+
+                if(late)
+                {
+                    generateNotification(context, train);
+                }
+            }
+
+            @Override
+            public void onError(Throwable tr) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void onNoConnection() {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
     }
 
     @Override
@@ -67,7 +104,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     private static void generateNotification(Context context, String trainId) {
         int icon = 0; //todo add icon for notification
         long when = System.currentTimeMillis();
-        String message = "";
+        String message = context.getString(R.string.notification_mesage, trainId);
 
         NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
