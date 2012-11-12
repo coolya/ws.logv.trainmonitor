@@ -8,6 +8,8 @@ import java.util.UUID;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 
+import ws.logv.trainmonitor.app.DeviceManager;
+import ws.logv.trainmonitor.app.Installation;
 import ws.logv.trainmonitor.model.Subscribtion;
 import android.content.Context;
 
@@ -74,8 +76,26 @@ public class SubscribtionRepository {
         return task;
 	}
 
-    public static DatabaseTask<Subscribtion> getSubscribtionByTrain(String trainId, Action<Subscribtion> callback)
+    public static DatabaseTask<Subscribtion> getSubscribtionByTrain(Context ctx, final String trainId, Action<Subscribtion> callback)
     {
-        return null;
+        DatabaseTask task = new DatabaseTask<Subscribtion>(new Func<Subscribtion, Context>() {
+            @Override
+            public Subscribtion exec(Context param) {
+                DatabaseHelper databaseHelper = OpenHelperManager.getHelper(param, DatabaseHelper.class);
+                try {
+                    Dao<Subscribtion, UUID> dao = databaseHelper.getSubscribtionDao();
+                    return dao.query(dao.queryBuilder().where().eq("train", trainId).prepare()).get(0);
+                } catch (Exception e) {
+                    return null;
+                }
+                finally
+                {
+                    OpenHelperManager.releaseHelper();
+                    databaseHelper = null;
+                }
+            }
+        }, callback);
+        task.doInBackground(ctx);
+        return task;
     }
 }

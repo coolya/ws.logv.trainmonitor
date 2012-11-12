@@ -35,7 +35,8 @@ public class DatabaseTask<T> extends AsyncTask<Context, Integer, T> {
 	@Override
 	protected void onPostExecute(T result)
 	{
-		callback.exec(result);
+        if(callback != null)
+		   callback.exec(result);
 	}
 
 }

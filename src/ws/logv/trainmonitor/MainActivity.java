@@ -93,21 +93,31 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
         getSupportActionBar().setNavigationMode(com.actionbarsherlock.app.ActionBar.NAVIGATION_MODE_LIST);
         getSupportActionBar().setListNavigationCallbacks(list, this);
 
-        try{
-        GCMRegistrar.checkDevice(this);
-        GCMRegistrar.checkManifest(this);
-        final String regId = GCMRegistrar.getRegistrationId(this);
-        if (regId.equals("")) {
-            GCMRegistrar.register(this, Constants.GCM.SENDER_ID);
-        }else
-        {
-            new DeviceManager(this).registeredToGCM(regId);
-            new SyncManager(this).syncSubscribtions();
-        }
-        } catch (Exception e)
-        {
-            Log.e(LOG_TAG, "GCM not available", e);
-        }
+        final  MainActivity that = this;
+
+        Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                try{
+                GCMRegistrar.checkDevice(that);
+                GCMRegistrar.checkManifest(that);
+                final String regId = GCMRegistrar.getRegistrationId(that);
+                if (regId.equals("")) {
+                    GCMRegistrar.register(that, Constants.GCM.SENDER_ID);
+                }else
+                {
+                    new DeviceManager(that).registeredToGCM(regId);
+                    new SyncManager(that).syncSubscribtions();
+                }
+            } catch (Exception e)
+            {
+                Log.e(LOG_TAG, "GCM not available", e);
+            }
+            }
+        };
+        //running registration on background thread
+        new Thread(runnable).start();
     }
 
     @Override

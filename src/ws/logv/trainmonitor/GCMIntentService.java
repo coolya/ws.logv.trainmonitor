@@ -104,7 +104,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     private static void generateNotification(Context context, String trainId) {
         int icon = 0; //todo add icon for notification
         long when = System.currentTimeMillis();
-        String message = context.getString(R.string.notification_mesage, trainId);
+        String message = "";//context.getString(R.string.notification_mesage, trainId);
 
         NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);

@@ -1,8 +1,10 @@
 package ws.logv.trainmonitor.model;
 
+import java.net.Authenticator;
 import java.util.Date;
 import java.util.UUID;
 
+import android.text.format.Time;
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
 
@@ -21,6 +23,9 @@ public class Subscribtion {
     @DatabaseField
     @SerializedName("device")
 	private UUID device;
+    @DatabaseField
+    @SerializedName("last_change")
+    private Date lastChange;
 	public String getTrain() {
 		return train;
 	}
@@ -45,15 +50,24 @@ public class Subscribtion {
 	public void setId(UUID id) {
 		this.id = id;
 	}
-	
+
+    private Subscribtion()
+    {
+
+    }
 	public static Subscribtion createNew(Device device)
 	{
 		Subscribtion ret = new Subscribtion();
 		
 		ret.id = UUID.randomUUID();
 		ret.device = device.getId();
-		
-		return ret;
+        Time now = new Time();
+        now.setToNow();
+        ret.lastChange = new Date();
+        ret.lastChange.setTime(now.toMillis(false));
+        ret.notificationStart = new Date();
+        ret.notificationEnd = new Date(24 * 60 * 60 * 1000 - 1);
+        return ret;
 	}
 	public UUID getDevice() {
 		return device;

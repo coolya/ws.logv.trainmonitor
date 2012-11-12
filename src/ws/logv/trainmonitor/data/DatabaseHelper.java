@@ -20,7 +20,7 @@ public class DatabaseHelper  extends OrmLiteSqliteOpenHelper{
 	// name of the database file for your application -- change to something appropriate for your app
 		private static final String DATABASE_NAME = "ws.logv.trainmonitor.db";
 		// any time you make changes to your database objects, you may have to increase the database version
-		private static final int DATABASE_VERSION = 3;
+		private static final int DATABASE_VERSION = 4;
 
 		// the DAO object we use to access the SimpleData table
 		private Dao<Train, Integer> trainDao = null;
@@ -59,17 +59,31 @@ public class DatabaseHelper  extends OrmLiteSqliteOpenHelper{
 		public void onUpgrade(SQLiteDatabase db, ConnectionSource connectionSource, int oldVersion, int newVersion) {
 			Log.i(DatabaseHelper.class.getName(), "onUpgrade");
 			try {
-				TableUtils.dropTable(connectionSource, Train.class, true);
-				TableUtils.dropTable(connectionSource, Station.class, true);
-				TableUtils.dropTable(connectionSource, Subscribtion.class, true);
-                TableUtils.dropTable(connectionSource, FavouriteTrain.class, true);
+                if(oldVersion == 3)
+                {
+                    TableUtils.dropTable(connectionSource, Subscribtion.class, true);
+                    TableUtils.createTable(connectionSource, Subscribtion.class);
+                }
+                else if (oldVersion < 3)
+                {
+                    TableUtils.dropTable(connectionSource, Train.class, true);
+                    TableUtils.dropTable(connectionSource, Station.class, true);
+                    TableUtils.dropTable(connectionSource, Subscribtion.class, true);
+                    TableUtils.dropTable(connectionSource, FavouriteTrain.class, true);
+                    // after we drop the old databases, we create the new ones
+                    onCreate(db, connectionSource);
+                }
+                else
+                {
+                    throw new IllegalStateException("No update strategy from " + String.valueOf(oldVersion) + " to " +
+                                                    String.valueOf(newVersion));
+                }
 			} catch (SQLException e) {
 				Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			// after we drop the old databases, we create the new ones
-			onCreate(db, connectionSource);
+
 		}
 
 		/**

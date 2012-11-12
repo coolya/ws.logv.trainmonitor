@@ -15,6 +15,7 @@ import ws.logv.trainmonitor.model.Train;
 import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -26,6 +27,8 @@ import java.util.concurrent.ExecutionException;
  */
 public class SyncManager {
     private final Context mCtx;
+    private static final String LOG_TAG = "SyncManager";
+
     public SyncManager(Context ctx)
     {
          mCtx = ctx;
@@ -96,12 +99,14 @@ public class SyncManager {
             ApiClient client = new ApiClient(mCtx);
             for(FavouriteTrain train : task.get())
             {
-                Subscribtion subscribtion = SubscribtionRepository
-                        .getSubscribtionByTrain(train.getTrainId(), null).get();
+
+                DatabaseTask<Subscribtion> innerTask =
+                        SubscribtionRepository.getSubscribtionByTrain(mCtx, train.getTrainId(), null);
+
+                Subscribtion subscribtion =  innerTask.get();
                 if(subscribtion == null)
                 {
-                    subscribtion = new Subscribtion();
-                    subscribtion.setDevice(dev.getId());
+                    subscribtion = Subscribtion.createNew(dev);
                     subscribtion.setTrain(train.getTrainId());
                 }
 
@@ -116,14 +121,12 @@ public class SyncManager {
 
                 @Override
                 public void onError(Throwable tr) {
-                    //todo
-                    //To change body of implemented methods use File | Settings | File Templates.
+                    Log.e(LOG_TAG, "Failed to post Subscribtions", tr);
                 }
 
                 @Override
                 public void onNoConnection() {
-                    //todo
-                    //To change body of implemented methods use File | Settings | File Templates.
+                    Log.i(LOG_TAG, "No Internet connection for sync, retrying on next start");
                 }
             });
         } catch (InterruptedException e) {
