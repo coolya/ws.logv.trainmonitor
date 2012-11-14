@@ -1,3 +1,19 @@
+/*
+ * Copyright 2012. Kolja Dummann <k.dummann@gmail.com>
+ *
+ *    Licensed under the Apache License, Version 2.0 (the "License");
+ *    you may not use this file except in compliance with the License.
+ *    You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *    Unless required by applicable law or agreed to in writing, software
+ *    distributed under the License is distributed on an "AS IS" BASIS,
+ *    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *    See the License for the specific language governing permissions and
+ *    limitations under the License.
+ */
+
 package ws.logv.trainmonitor;
 
 import android.app.Notification;
@@ -19,16 +35,10 @@ import ws.logv.trainmonitor.model.StationInfo;
 
 import java.util.Collection;
 
-/**
- * Created with IntelliJ IDEA.
- * User: Kolja
- * Date: 05.10.12
- * Time: 06:57
- * To change this template use File | Settings | File Templates.
- */
 public class GCMIntentService extends GCMBaseIntentService {
 
     private final String TAG = "GCMIntentService";
+    private static final int TRAIN = 1;
 
     public GCMIntentService()
     {
@@ -102,13 +112,12 @@ public class GCMIntentService extends GCMBaseIntentService {
      * Issues a notification to inform the user that server has sent a message.
      */
     private static void generateNotification(Context context, String trainId) {
-        int icon = 0; //todo add icon for notification
+        int icon = R.drawable.notification;
         long when = System.currentTimeMillis();
-        String message = "";//context.getString(R.string.notification_mesage, trainId);
+        String message = context.getString(R.string.notification_message, trainId);
 
         NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
-
 
         String title = context.getString(R.string.app_name);
 
@@ -127,6 +136,6 @@ public class GCMIntentService extends GCMBaseIntentService {
                 .setWhen(when)
                 .setContentIntent(intent).build();
 
-        notificationManager.notify(0, notification);
+        notificationManager.notify(TRAIN, notification);
     }
 }
