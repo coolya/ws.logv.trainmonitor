@@ -17,16 +17,13 @@
 package ws.logv.trainmonitor;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.widget.SearchViewCompat;
 import android.util.Log;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.ActionProvider;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 
@@ -134,6 +131,7 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
         };
         //running registration on background thread
         new Thread(runnable).start();
+
     }
 
     @Override

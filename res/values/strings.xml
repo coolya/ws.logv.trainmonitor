@@ -27,6 +27,7 @@
     <string name="cancel">Cancel</string>
     <string name="next_refresh">next refresh:</string>
     <string name="notification_message">Train %1$s is late</string>
+    <string name="notification_detail">%1$s minutes delayed</string>
 
 
 </resources>

@@ -22,7 +22,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
-import android.text.format.Time;
 import android.util.Log;
 import com.google.android.gcm.GCMBaseIntentService;
 import com.google.android.gcm.GCMRegistrar;
@@ -53,19 +52,17 @@ public class GCMIntentService extends GCMBaseIntentService {
             @Override
             public void onComplete(ws.logv.trainmonitor.model.Train data) {
                 Collection<StationInfo> stations = data.getStations();
-                boolean late = false;
+                int delay = 0;
                 for (StationInfo station : stations)
                 {
-                    if(station.getDelay() > 0)
-                    {
-                        late = true;
-                        continue;
-                    }
+                    if(station.getDelay() > delay)
+                        delay = station.getDelay();
+
                 }
 
-                if(late)
+                if(delay > 0)
                 {
-                    generateNotification(context, train);
+                    generateTrainLateNotification(context, train, delay);
                 }
             }
 
@@ -111,10 +108,11 @@ public class GCMIntentService extends GCMBaseIntentService {
     /**
      * Issues a notification to inform the user that server has sent a message.
      */
-    private static void generateNotification(Context context, String trainId) {
+    public static void generateTrainLateNotification(Context context, String trainId, int delay) {
         int icon = R.drawable.notification;
         long when = System.currentTimeMillis();
         String message = context.getString(R.string.notification_message, trainId);
+        String subText = context.getString(R.string.notification_detail, String.valueOf(delay));
 
         NotificationManager notificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
@@ -129,13 +127,17 @@ public class GCMIntentService extends GCMBaseIntentService {
         PendingIntent intent =
                 PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
-        Notification notification = new NotificationCompat.Builder(context)
+        NotificationCompat.Builder  builder =  new NotificationCompat.Builder(context)
                 .setContentText(message)
                 .setContentTitle(title)
                 .setSmallIcon(icon)
                 .setWhen(when)
-                .setContentIntent(intent).build();
+                .setAutoCancel(true)
+                .setSubText(subText)
+                .setContentIntent(intent);
 
-        notificationManager.notify(TRAIN, notification);
+        Notification notification = builder.build();
+
+        notificationManager.notify(trainId.hashCode(), notification);
     }
 }

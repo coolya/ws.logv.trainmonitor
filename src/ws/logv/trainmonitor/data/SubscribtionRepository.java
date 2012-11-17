@@ -92,15 +92,17 @@ public class SubscribtionRepository {
         return task;
 	}
 
-    public static DatabaseTask<Subscribtion> getSubscribtionByTrain(Context ctx, final String trainId, Action<Subscribtion> callback)
+    public static Subscribtion getSubscribtionByTrain(Context ctx, final String trainId)
     {
-        DatabaseTask task = new DatabaseTask<Subscribtion>(new Func<Subscribtion, Context>() {
-            @Override
-            public Subscribtion exec(Context param) {
-                DatabaseHelper databaseHelper = OpenHelperManager.getHelper(param, DatabaseHelper.class);
+
+                DatabaseHelper databaseHelper = OpenHelperManager.getHelper(ctx, DatabaseHelper.class);
                 try {
                     Dao<Subscribtion, UUID> dao = databaseHelper.getSubscribtionDao();
-                    return dao.query(dao.queryBuilder().where().eq("train", trainId).prepare()).get(0);
+
+                    List<Subscribtion> data = dao.query(dao.queryBuilder().where().eq("train", trainId).prepare());
+                    if(data.size() > 0)
+                        return data.get(0);
+                    return null;
                 } catch (Exception e) {
                     return null;
                 }
@@ -110,8 +112,5 @@ public class SubscribtionRepository {
                     databaseHelper = null;
                 }
             }
-        }, callback);
-        task.doInBackground(ctx);
-        return task;
     }
-}
+

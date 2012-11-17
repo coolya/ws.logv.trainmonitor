@@ -117,6 +117,7 @@ public class AllTrainsActivity extends FragmentActivity {
             adapter = new TrainAdapter(v.getContext(), android.R.layout.simple_list_item_1, mListItems);
             mAdapter = adapter;
             mPullRefreshListView.getRefreshableView().setAdapter(adapter);
+            mPullRefreshListView.setMode(PullToRefreshBase.Mode.DISABLED);
             mPullRefreshListView.setOnLastItemVisibleListener(new PullToRefreshBase.OnLastItemVisibleListener() {
                 @Override
                 public void onLastItemVisible() {

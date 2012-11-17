@@ -116,10 +116,7 @@ public class SyncManager {
             for(FavouriteTrain train : task.get())
             {
 
-                DatabaseTask<Subscribtion> innerTask =
-                        SubscribtionRepository.getSubscribtionByTrain(mCtx, train.getTrainId(), null);
-
-                Subscribtion subscribtion =  innerTask.get();
+               Subscribtion subscribtion =   SubscribtionRepository.getSubscribtionByTrain(mCtx, train.getTrainId());
                 if(subscribtion == null)
                 {
                     subscribtion = Subscribtion.createNew(dev);

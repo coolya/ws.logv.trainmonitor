@@ -81,8 +81,8 @@ public class Subscribtion {
         now.setToNow();
         ret.lastChange = new Date();
         ret.lastChange.setTime(now.toMillis(false));
-        ret.notificationStart = new Date();
-        ret.notificationEnd = new Date(24 * 60 * 60 * 1000 - 1);
+        ret.notificationStart = new Date(1);
+        ret.notificationEnd = new Date(24 * 59 * 60 * 1000 - 1);
         return ret;
 	}
 	public UUID getDevice() {
