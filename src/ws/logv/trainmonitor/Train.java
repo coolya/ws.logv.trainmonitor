@@ -21,6 +21,7 @@ import android.content.Context;
 import android.text.format.DateFormat;
 import android.widget.*;
 import ws.logv.trainmonitor.app.Constants;
+import ws.logv.trainmonitor.app.SyncManager;
 import ws.logv.trainmonitor.app.TrainDetailAdapter;
 import ws.logv.trainmonitor.api.ApiClient;
 import ws.logv.trainmonitor.api.IApiCallback;
@@ -43,7 +44,13 @@ import android.os.Handler;
 public class Train extends Activity implements IApiCallback<ws.logv.trainmonitor.model.Train>{
     private ProgressDialog mDialog;
     private final Handler mHander = new Handler();
-	
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleIntent(intent);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,31 +60,37 @@ public class Train extends Activity implements IApiCallback<ws.logv.trainmonitor
         
         if(intent != null)
         {
-        	final String trainId = intent.getStringExtra(Constants.IntentsExtra.Train);
-            ApiClient client = new ApiClient(this);
-            client.getTrainDetail(trainId, this);
-            TextView tv = (TextView) findViewById(R.id.train_id);
-            tv.setText(trainId);
-
-            CheckBox cbFav = (CheckBox) findViewById(R.id.fav);
-            final Context ctx = this;
-
-            cbFav.setChecked(TrainRepository.isTrainFav(this, trainId));
-            cbFav.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    if(b)
-                        TrainRepository.favTrain(ctx, trainId, null);
-                    else
-                        TrainRepository.unFavTrain(ctx, trainId, null); }});
-
-            mDialog = new ProgressDialog(this);
-            mDialog.setMessage(getString(R.string.progess_getting_train_details));
-            mDialog.setIndeterminate(true);
-            mDialog.setCancelable(false);
-            mDialog.show();
+            handleIntent(intent);
         }
 
+    }
+
+    private void handleIntent(Intent intent) {
+        final String trainId = intent.getStringExtra(Constants.IntentsExtra.Train);
+        ApiClient client = new ApiClient(this);
+        client.getTrainDetail(trainId, this);
+        TextView tv = (TextView) findViewById(R.id.train_id);
+        tv.setText(trainId);
+
+        CheckBox cbFav = (CheckBox) findViewById(R.id.fav);
+        final Context ctx = this;
+
+        cbFav.setChecked(TrainRepository.isTrainFav(this, trainId));
+        cbFav.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b)
+                    TrainRepository.favTrain(ctx, trainId, null);
+                else
+                    TrainRepository.unFavTrain(ctx, trainId, null);
+                new SyncManager(ctx).syncSubscribtions();
+            }});
+
+        mDialog = new ProgressDialog(this);
+        mDialog.setMessage(getString(R.string.progess_getting_train_details));
+        mDialog.setIndeterminate(true);
+        mDialog.setCancelable(false);
+        mDialog.show();
     }
 
     @Override

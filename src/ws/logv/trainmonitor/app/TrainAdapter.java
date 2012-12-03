@@ -82,6 +82,7 @@ public class TrainAdapter extends BaseArrayAdapter<Train>{
                   TrainRepository.favTrain(ctx, item, null);
                 else
                     TrainRepository.unFavTrain(ctx, item, null);
+                new SyncManager(ctx).syncSubscribtions();
             }
         });
         rowView.setOnClickListener(new View.OnClickListener() {

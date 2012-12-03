@@ -3,9 +3,9 @@
   <component name="CompilerConfiguration">
     <option name="DEFAULT_COMPILER" value="Javac" />
     <excludeFromCompile>
-      <directory url="file://$PROJECT_DIR$/../../../GitHub/Android-PullToRefresh/library/gen" includeSubdirectories="true" />
+      <directory url="file://$USER_HOME$/GitHub/Android-PullToRefresh/library/gen" includeSubdirectories="true" />
       <directory url="file://$PROJECT_DIR$/gen" includeSubdirectories="true" />
-      <directory url="file://$USER_HOME$/Documents/Code/Android-PullToRefresh/library/gen" includeSubdirectories="true" />
+      <directory url="file://$PROJECT_DIR$/../../Code/Android-PullToRefresh/library/gen" includeSubdirectories="true" />
       <directory url="file://$PROJECT_DIR$/../JakeWharton-ActionBarSherlock-88fc341/library/gen" includeSubdirectories="true" />
     </excludeFromCompile>
     <resourceExtensions />

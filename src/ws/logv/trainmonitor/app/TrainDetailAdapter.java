@@ -18,11 +18,16 @@ package ws.logv.trainmonitor.app;
 
 import android.content.Context;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 import ws.logv.trainmonitor.R;
+import ws.logv.trainmonitor.api.ApiClient;
+import ws.logv.trainmonitor.api.IApiCallback;
+import ws.logv.trainmonitor.data.Action;
 import ws.logv.trainmonitor.data.DatabaseTask;
 import ws.logv.trainmonitor.data.StationRepository;
 import ws.logv.trainmonitor.model.Station;
@@ -30,6 +35,7 @@ import ws.logv.trainmonitor.model.StationInfo;
 
 import android.os.Handler;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -87,7 +93,9 @@ public class TrainDetailAdapter extends BaseArrayAdapter<StationInfo> {
                 seconds = item.getDeparture();
 
             time.set(seconds * 60 * 1000);
-            time.normalize(true);
+            time.hour = time.hour -1;
+
+            time.normalize(false);
             String arrival = time.format("%H:%M");
             tvArrival.setText(arrival);
             if(delay == 0)
@@ -105,10 +113,51 @@ public class TrainDetailAdapter extends BaseArrayAdapter<StationInfo> {
             if(station == null)
             {
                 station = task.get();
+                if(station == null)
+                {
+                    final Object lock = new Object();
+                    final Context ctx = this.getContext();
+                    ApiClient client = new ApiClient(ctx);
+                    client.getStations(new IApiCallback<Collection<Station>>() {
+
+                        @Override
+                        public void onComplete(final Collection<Station> data) {
+                            StationRepository.saveStations(ctx, data, new Action<Boolean>() {
+                                @Override
+                                public void exec(Boolean param) {
+                                    mHandler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            lock.notify();
+                                        }
+                                    });
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onError(Throwable tr) {
+                            Log.e(this.getClass().getName(), "Error getting train details ", tr);
+                            Toast toast = Toast.makeText(ctx,R.string.train_details_error, Toast.LENGTH_LONG);
+                            toast.show();
+                        }
+
+                        @Override
+                        public void onNoConnection() {
+                            Toast toast = Toast.makeText(ctx, R.string.error_no_connection, Toast.LENGTH_LONG);
+                            toast.show();
+                        }
+                    });
+                    lock.wait();
+                    station = StationRepository.loadStation(item.getStationId(), this.getContext(), null).get();
+                }
+
                 mStationCache.put(item.getStationId(), station);
             }
 
-            tvName.setText(station.getName());
+            if(station != null && tvName != null)
+                tvName.setText(station.getName());
+
         } catch (InterruptedException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         } catch (ExecutionException e) {

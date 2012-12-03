@@ -3,8 +3,8 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../JakeWharton-ActionBarSherlock-88fc341/library/ActionbarSherlock.iml" filepath="$PROJECT_DIR$/../JakeWharton-ActionBarSherlock-88fc341/library/ActionbarSherlock.iml" />
-      <module fileurl="file://$USER_HOME$/Documents/Code/Android-PullToRefresh/library/Android-PullToRefresh.iml" filepath="$USER_HOME$/Documents/Code/Android-PullToRefresh/library/Android-PullToRefresh.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../../../GitHub/Android-PullToRefresh/library/Library.iml" filepath="$PROJECT_DIR$/../../../GitHub/Android-PullToRefresh/library/Library.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../Code/Android-PullToRefresh/library/Android-PullToRefresh.iml" filepath="$PROJECT_DIR$/../../Code/Android-PullToRefresh/library/Android-PullToRefresh.iml" />
+      <module fileurl="file://$USER_HOME$/GitHub/Android-PullToRefresh/library/Library.iml" filepath="$USER_HOME$/GitHub/Android-PullToRefresh/library/Library.iml" />
       <module fileurl="file://$PROJECT_DIR$/Zugmonitor.iml" filepath="$PROJECT_DIR$/Zugmonitor.iml" />
     </modules>
   </component>

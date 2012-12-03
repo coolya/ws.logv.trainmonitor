@@ -75,7 +75,7 @@ public class FavouriteTrainAdapter extends BaseArrayAdapter<FavouriteTrain> {
             public void onComplete(Train data) {
                 Time time = new Time();
                 time.setToNow();
-                time.normalize(true);
+                time.normalize(false);
                 int current = time.hour * 60 + time.minute;
                 int i  = 0;
                 Collection<StationInfo> stations =  data.getStations();
@@ -106,7 +106,8 @@ public class FavouriteTrainAdapter extends BaseArrayAdapter<FavouriteTrain> {
                     seconds = nextStation.getDeparture();
 
                 time.set(seconds * 60 * 1000);
-                time.normalize(true);
+                time.normalize(false);
+                time.hour = time.hour -1;
                 String arrival = time.format("%H:%M");
                 tvArrival.setText(arrival);
 
