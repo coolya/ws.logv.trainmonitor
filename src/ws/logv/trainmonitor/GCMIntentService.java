@@ -21,15 +21,19 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import com.google.android.gcm.GCMBaseIntentService;
 import com.google.android.gcm.GCMRegistrar;
+import ws.logv.trainmonitor.R;
+import ws.logv.trainmonitor.ui.Train;
 import ws.logv.trainmonitor.api.ApiClient;
 import ws.logv.trainmonitor.api.IApiCallback;
 import ws.logv.trainmonitor.app.Constants;
-import ws.logv.trainmonitor.app.DeviceManager;
-import ws.logv.trainmonitor.app.SyncManager;
+import ws.logv.trainmonitor.app.manager.DeviceManager;
+import ws.logv.trainmonitor.app.manager.SyncManager;
 import ws.logv.trainmonitor.model.StationInfo;
 
 import java.util.Collection;
@@ -46,7 +50,27 @@ public class GCMIntentService extends GCMBaseIntentService {
     @Override
     protected void onMessage(final Context context, Intent intent) {
         ApiClient client = new ApiClient(context);
+
+        if(intent.hasExtra("command"))
+        {
+
+            String command = intent.getStringExtra("command");
+
+            if("sync".equals(command))
+            {
+                String type = intent.getStringExtra("type");
+
+                if("subscription".equals(type))
+                {
+                    new SyncManager(context).pullSubscriptions();
+                }
+            }
+
+        }
+        else
+        {
         final String train = intent.getStringExtra("train");
+
 
         client.getTrainDetail(train, new IApiCallback<ws.logv.trainmonitor.model.Train>() {
             @Override
@@ -76,6 +100,7 @@ public class GCMIntentService extends GCMBaseIntentService {
                 //To change body of implemented methods use File | Settings | File Templates.
             }
         });
+        }
     }
 
     @Override
@@ -88,6 +113,7 @@ public class GCMIntentService extends GCMBaseIntentService {
         Log.i(TAG, "Registered to GCM");
         DeviceManager mng = new DeviceManager(context);
         mng.registeredToGCM(regId);
+        new SyncManager(context).pushSubscriptions();
     }
 
     @Override
@@ -97,7 +123,7 @@ public class GCMIntentService extends GCMBaseIntentService {
             DeviceManager mng = new DeviceManager(context);
             mng.unregisteredFromGCM(regId);
             SyncManager snycMan = new SyncManager(context);
-            snycMan.syncSubscribtions();
+            snycMan.pushSubscriptions();
         } else {
             // This callback results from the call to unregister made on
             // ServerUtilities when the registration to the server failed.
@@ -109,6 +135,12 @@ public class GCMIntentService extends GCMBaseIntentService {
      * Issues a notification to inform the user that server has sent a message.
      */
     public static void generateTrainLateNotification(Context context, String trainId, int delay) {
+
+        SharedPreferences pref = context.getSharedPreferences(Constants.Settings.PERF, 0);
+
+        if(!pref.getBoolean(Constants.Settings.NOTIFICATION_ON, true))
+            return;
+
         int icon = R.drawable.notification;
         long when = System.currentTimeMillis();
         String message = context.getString(R.string.notification_message, trainId);
@@ -135,6 +167,7 @@ public class GCMIntentService extends GCMBaseIntentService {
                 .setAutoCancel(true)
                 .setSubText(subText)
                 .setContentIntent(intent);
+        builder.setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND | Notification.FLAG_SHOW_LIGHTS);
 
         Notification notification = builder.build();
 

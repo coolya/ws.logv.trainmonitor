@@ -17,10 +17,7 @@
 package ws.logv.trainmonitor.app;
 
 public class Constants {
-	public class Perferences
-	{
-		public static final String Installation = "Installation";
-	}
+
 	public class IntentsExtra
 	{
 		public static final String Train = "ws.logv.trainmonitor.train";
@@ -32,8 +29,10 @@ public class Constants {
 
     public static class Settings
     {
+        public static final String PERF ="trainmonitor";
         public static  final String CURRENT_ACCOUNT ="current_account";
         public static final String LICENSE = "about_license";
+        public  static final String NOTIFICATION_ON = "notify_on";
     }
 
 

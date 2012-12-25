@@ -27,10 +27,7 @@
     <string name="title_activity_all_trains">All Trains</string>
     <string name="train_id">Train number:</string>
     <string name="train_stations">Stations:</string>
-    <string name="no_trains_added">You have no trains you are subscribed to</string>
     <string name="error_getting_trains">Error getting trains from Server please check your connection</string>
-    <string name="tab_title_my_trains">My trains</string>
-    <string name="tab_title_all_trains">All trains</string>
     <string name="progess_getting_train_details">Getting train details...</string>
     <string name="stations">Stations:</string>
     <string name="refresh_trains_1">Contacting server</string>
@@ -57,5 +54,7 @@
     <string name="settings_about_donate">Donate</string>
     <string name="settings_summary_notify">Whenever a train is late, Trainmonitor display a notification.</string>
     <string name="settings_notify">Notifications</string>
+    <string name="settings_summary_account">Tab to choose an account</string>
+    <string name="settings_account">Account</string>
 
 </resources>

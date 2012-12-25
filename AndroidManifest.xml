@@ -52,8 +52,8 @@
             android:label="@string/title_activity_train" >
 
         </activity>
-        <activity android:name=".ui.ChooseAccount"/>
         <activity android:name=".ui.SettingsActivity"/>
+        <activity android:name=".ui.ChooseAccountActivity"/>
 
         <receiver
                 android:name="com.google.android.gcm.GCMBroadcastReceiver"

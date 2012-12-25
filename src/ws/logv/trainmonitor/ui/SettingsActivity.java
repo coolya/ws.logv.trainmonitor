@@ -16,15 +16,16 @@
 
 package ws.logv.trainmonitor.ui;
 
-import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
-import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import ws.logv.trainmonitor.R;
 import ws.logv.trainmonitor.app.Constants;
+import ws.logv.trainmonitor.ui.fragments.ChooseAccountFragment;
 import ws.logv.trainmonitor.ui.fragments.SettingsFragment;
 
 import java.io.IOException;
@@ -65,6 +66,10 @@ public class SettingsActivity extends PreferenceActivity {
                     return true;
                 }
             });
+            final SharedPreferences pref = getSharedPreferences(Constants.Settings.PERF, 0);
+            Preference preference = this.findPreference(Constants.Settings.CURRENT_ACCOUNT);
+            preference.setSummary(pref.getString(Constants.Settings.CURRENT_ACCOUNT, ""));
+
         }
     }
 }

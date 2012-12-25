@@ -14,33 +14,29 @@
  *    limitations under the License.
  */
 
-package ws.logv.trainmonitor.ui.fragments;
+package ws.logv.trainmonitor.ui;
 
-import android.app.Fragment;
+import android.app.Activity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
-import ws.logv.trainmonitor.R;
-
-import java.io.IOException;
-import java.io.InputStream;
+import android.support.v4.app.FragmentActivity;
+import ws.logv.trainmonitor.ui.fragments.ChooseAccountFragment;
 
 /**
  * Created with IntelliJ IDEA.
  * User: kdummann
- * Date: 11.12.12
- * Time: 07:06
+ * Date: 25.12.12
+ * Time: 12:06
  * To change this template use File | Settings | File Templates.
  */
-public class LicenseFragment extends Fragment {
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View newView = inflater.inflate(R.layout.license, container, false);
-
-        TextView tvMain = (TextView) newView.findViewById(R.id.license_view);
-
-        return newView;
+public class ChooseAccountActivity extends FragmentActivity {
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        final ChooseAccountActivity that = this;
+        new ChooseAccountFragment(new Runnable() {
+            @Override
+            public void run() {
+                that.finish();
+            }
+        }).show(getSupportFragmentManager(),"choose_account");
     }
 }

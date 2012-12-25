@@ -40,7 +40,7 @@ License
     See the License for the specific language governing permissions and
     limitations under the License.
 
-##############################################################################
+##############################################
 
 Pull To Refresh Views for Android
 =================================
@@ -64,7 +64,7 @@ License
     See the License for the specific language governing permissions and
     limitations under the License.
 
-##############################################################################
+##############################################
 
 Support Libraries for Android. V4
 =================================

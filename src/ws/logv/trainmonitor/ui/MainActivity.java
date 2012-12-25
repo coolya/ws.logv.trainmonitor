@@ -20,6 +20,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Window;
@@ -40,11 +41,11 @@ import ws.logv.trainmonitor.app.*;
 import ws.logv.trainmonitor.app.manager.DeviceManager;
 import ws.logv.trainmonitor.app.manager.SyncManager;
 import ws.logv.trainmonitor.app.manager.UserManager;
+import ws.logv.trainmonitor.ui.fragments.ChooseAccountFragment;
 
 import java.util.concurrent.locks.ReentrantLock;
 
 public class MainActivity extends SherlockFragmentActivity implements com.actionbarsherlock.app.ActionBar.OnNavigationListener {
-
 
     private MenuItem mMenueSearch;
     private MenuItem mMenueRefresh;
@@ -52,9 +53,11 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
     private ISearchable mSearchable;
     private static final String LOG_TAG = "MainActivity";
 
+
     @Override
     protected synchronized  void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.Theme_Sherlock);
+
         super.onCreate(savedInstanceState);
         PreferenceManager.setDefaultValues(this, R.xml.settings, false);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
@@ -73,7 +76,6 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
         setContentView(R.layout.activity_main);
 
         final MainActivity that = this;
-        final ReentrantLock lock = new ReentrantLock();
 
         showDisclaimer(that);
 
@@ -107,7 +109,7 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
         }
     }
 
-    public void chooseAccount(final MainActivity that)
+    private void chooseAccount(final MainActivity that)
     {
         if(!Installation.wasChooseAccountShown(this))
         {
@@ -165,10 +167,6 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
 
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-    }
 
     @Override
     public boolean onNavigationItemSelected(int i, long l) {
@@ -214,15 +212,10 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
         return false;
     }
 
-    public void performSearch(String query)
+    private void performSearch(String query)
     {
         if(mSearchable != null)
             mSearchable.query(query);
-    }
-
-    public void searchClosed()
-    {
-
     }
 
     @Override
@@ -277,5 +270,6 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
 
         return true;
     }
+
 
 }

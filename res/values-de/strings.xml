@@ -43,4 +43,20 @@
     <string name="next_refresh">nächste Aktulisierung:</string>
     <string name="notification_message">%1$s ist verspätet</string>
     <string name="notification_detail">%1$s Minuten Verspätung</string>
+
+    <string name="choose_account_title">Account auswählen</string>
+
+    <!-- Settings strings -->
+    <string name="settings_summary_general">Allgemeine Einstellungen</string>
+    <string name="settings_general">Allgemeine Einstellungen</string>
+    <string name="settings_summary_about">Information über diese Anwendunge</string>
+    <string name="settings_about">Über</string>
+    <string name="settings_about_website">Website</string>
+    <string name="settings_about_license">License</string>
+    <string name="settings_about_summary_donate">Du magst diese App? Dann spende doch ein Bier.</string>
+    <string name="settings_about_donate">Spenden</string>
+    <string name="settings_summary_notify">Sollen Benachrichtigungen angezeigt werden, wenn einer "meiner Züge" zu spät ist?</string>
+    <string name="settings_notify">Benachritigungen</string>
+    <string name="settings_summary_account">Tippen um einen Account auszuwählen.</string>
+    <string name="settings_account">Account</string>
 </resources>

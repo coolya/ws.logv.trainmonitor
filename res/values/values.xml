@@ -18,7 +18,7 @@
 <resources>
     <string name="settings_about_version">V 0.2.5</string>
     <string name="url_trainmonitor_website">http://trainmonitor.logv.ws/</string>
-    <string name="uri_trainmonitor_license">file:///android_asset/raw/license.html</string>
-    <string name="uri_trainmonitor_donate">http://trainmonitor.logv.ws/donate</string>
+    <string name="uri_trainmonitor_donate">http://trainmonitor.logv.ws/donate.html</string>
     <string name="settings_default_notify">true</string>
+    <string name="settings_default_vibrate">false</string>
 </resources>

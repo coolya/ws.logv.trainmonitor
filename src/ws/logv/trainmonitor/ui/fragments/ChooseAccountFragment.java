@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package ws.logv.trainmonitor.ui;
+package ws.logv.trainmonitor.ui.fragments;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -61,6 +61,7 @@ public class ChooseAccountFragment extends GenericDialogFragment {
        {
            mNames[i] = accounts[i].name;
        }
+        mSelectedName = mNames[0];
         builder.setSingleChoiceItems(mNames, 0, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
@@ -72,7 +73,7 @@ public class ChooseAccountFragment extends GenericDialogFragment {
 
     @Override
     protected void onOK() {
-        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        SharedPreferences settings = getActivity().getSharedPreferences(Constants.Settings.PERF, 0);
         SharedPreferences.Editor edit =  settings.edit();
         edit.putString(Constants.Settings.CURRENT_ACCOUNT, mSelectedName);
         edit.commit();

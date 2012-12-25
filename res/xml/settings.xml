@@ -26,7 +26,14 @@
                 android:key="notify_on"
                 android:summary="@string/settings_summary_notify"
                 android:title="@string/settings_notify" />
-        </PreferenceScreen>
+        <Preference android:key="current_account"
+                            android:title="@string/settings_account">
+            <intent
+                    android:targetClass="ws.logv.trainmonitor.ui.ChooseAccountActivity"
+                    android:targetPackage="ws.logv.trainmonitor" />
+                            </Preference>
+</PreferenceScreen>
+
     <PreferenceScreen
             android:summary="@string/settings_summary_about"
             android:title="@string/settings_about" >

@@ -17,11 +17,14 @@
 package ws.logv.trainmonitor.ui.fragments;
 
 import android.app.AlertDialog;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import ws.logv.trainmonitor.R;
 import ws.logv.trainmonitor.app.Constants;
+import ws.logv.trainmonitor.ui.MainActivity;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,6 +41,26 @@ public class SettingsFragment extends PreferenceFragment {
     {
         super();
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Preference preference = getPreferenceScreen().findPreference(Constants.Settings.CURRENT_ACCOUNT);
+        SharedPreferences pref = this.getActivity().getSharedPreferences(Constants.Settings.PERF, 0);
+        String string = pref
+                .getString(Constants.Settings.CURRENT_ACCOUNT, "");
+
+        if(string == null || "".equals(string))
+        {
+            preference.setSummary(getString(R.string.settings_summary_account));
+        }
+        else
+        {
+            preference.setSummary(string);
+        }
+
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +82,19 @@ public class SettingsFragment extends PreferenceFragment {
                 return true;
             }
         });
+        Preference preference = getPreferenceScreen().findPreference(Constants.Settings.CURRENT_ACCOUNT);
+        SharedPreferences pref = this.getActivity().getSharedPreferences(Constants.Settings.PERF, 0);
+        String string = pref
+                .getString(Constants.Settings.CURRENT_ACCOUNT, "");
+
+        if(string == null || "".equals(string))
+        {
+            preference.setSummary(getString(R.string.settings_summary_account));
+        }
+        else
+        {
+            preference.setSummary(string);
+        }
 
     }
 }
