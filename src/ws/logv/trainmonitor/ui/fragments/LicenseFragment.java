@@ -14,15 +14,33 @@
  *    limitations under the License.
  */
 
-package ws.logv.trainmonitor;
+package ws.logv.trainmonitor.ui.fragments;
+
+import android.app.Fragment;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
+import ws.logv.trainmonitor.R;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Created with IntelliJ IDEA.
- * User: Kolja
- * Date: 9/29/12
- * Time: 6:50 PM
+ * User: kdummann
+ * Date: 11.12.12
+ * Time: 07:06
  * To change this template use File | Settings | File Templates.
  */
-public abstract class FavChangedListener {
-    public abstract void onFavChanged();
+public class LicenseFragment extends Fragment {
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View newView = inflater.inflate(R.layout.license, container, false);
+
+        TextView tvMain = (TextView) newView.findViewById(R.id.license_view);
+
+        return newView;
+    }
 }

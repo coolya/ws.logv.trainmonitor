@@ -24,8 +24,6 @@ import java.util.UUID;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 
-import ws.logv.trainmonitor.app.DeviceManager;
-import ws.logv.trainmonitor.app.Installation;
 import ws.logv.trainmonitor.model.Subscribtion;
 import android.content.Context;
 
@@ -91,6 +89,34 @@ public class SubscribtionRepository {
         task.execute(context);
         return task;
 	}
+
+    public static DatabaseTask<Boolean> clearSubscribtions(Context context, final Action<Boolean> callback)
+    {
+        DatabaseTask<Boolean> task = new DatabaseTask<Boolean>(new Func<Boolean, Context>(){
+
+            public Boolean exec(Context param) {
+                DatabaseHelper databaseHelper = OpenHelperManager.getHelper(param, DatabaseHelper.class);
+                try {
+                    Dao<Subscribtion, UUID> dao = databaseHelper.getSubscribtionDao();
+                    dao.delete(dao.deleteBuilder().prepare());
+                    return true;
+                } catch (SQLException e) {
+                    return false;
+                }
+                finally
+                {
+                    OpenHelperManager.releaseHelper();
+                    databaseHelper = null;
+                }
+            }},
+                new Action<Boolean>(){
+                    public void exec(Boolean param) {
+                        if(callback != null)
+                            callback.exec(param);
+                    }});
+        task.execute(context);
+        return task;
+    }
 
     public static Subscribtion getSubscribtionByTrain(Context ctx, final String trainId)
     {

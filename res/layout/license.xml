@@ -1,4 +1,5 @@
-<!DOCTYPE html>
+<?xml version="1.0" encoding="utf-8"?>
+
 <!--
   ~ Copyright 2012. Kolja Dummann <k.dummann@gmail.com>
   ~
@@ -15,11 +16,12 @@
   ~    limitations under the License.
   -->
 
-<html>
-<head>
-    <title></title>
-</head>
-<body>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent">
+    <TextView android:id="@+id/license_view"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"/>
 
-</body>
-</html>
+</LinearLayout>

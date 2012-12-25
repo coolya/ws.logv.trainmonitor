@@ -44,6 +44,7 @@
     <string name="next_refresh">next refresh:</string>
     <string name="notification_message">Train %1$s is late</string>
     <string name="notification_detail">%1$s minutes delayed</string>
+    <string name="choose_account_title">Choose Account</string>
 
     <!-- Settings strings -->
     <string name="settings_summary_general">General Settings</string>

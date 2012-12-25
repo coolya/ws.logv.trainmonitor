@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package ws.logv.trainmonitor.app;
+package ws.logv.trainmonitor.ui.adapter;
 
 import android.content.Context;
 import android.os.Build;

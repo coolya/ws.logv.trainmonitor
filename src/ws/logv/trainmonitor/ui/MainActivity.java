@@ -14,10 +14,12 @@
  *    limitations under the License.
  */
 
-package ws.logv.trainmonitor;
+package ws.logv.trainmonitor.ui;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Window;
@@ -32,7 +34,12 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import com.actionbarsherlock.widget.SearchView;
 import com.google.android.gcm.GCMRegistrar;
+import ws.logv.trainmonitor.ui.contract.OnRefreshRequestStateHandler;
+import ws.logv.trainmonitor.R;
 import ws.logv.trainmonitor.app.*;
+import ws.logv.trainmonitor.app.manager.DeviceManager;
+import ws.logv.trainmonitor.app.manager.SyncManager;
+import ws.logv.trainmonitor.app.manager.UserManager;
 
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -49,24 +56,30 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
     protected synchronized  void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.Theme_Sherlock);
         super.onCreate(savedInstanceState);
+        PreferenceManager.setDefaultValues(this, R.xml.settings, false);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         WindowMediator.setOnRefreshStateRequestHandler(new OnRefreshRequestStateHandler() {
-                                            @Override
-                                            public void onRefreshStart() {
-                                                setProgressBarIndeterminateVisibility(true);
-                                            }
+            @Override
+            public void onRefreshStart() {
+                setProgressBarIndeterminateVisibility(true);
+            }
 
-                                            @Override
-                                            public void onRefreshEnd() {
-                                                setProgressBarIndeterminateVisibility(false);
-                                            }
-                                        });
+            @Override
+            public void onRefreshEnd() {
+                setProgressBarIndeterminateVisibility(false);
+            }
+        });
 
         setContentView(R.layout.activity_main);
 
         final MainActivity that = this;
         final ReentrantLock lock = new ReentrantLock();
 
+        showDisclaimer(that);
+
+    }
+
+    private void showDisclaimer(final MainActivity that) {
         if(!Installation.wasDisclaimerShown(this))
         {
 
@@ -77,7 +90,7 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Installation.setDisclaimerShown(that);
-                        that.init();
+                        that.chooseAccount(that);
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -90,6 +103,23 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
         }
         else
         {
+            chooseAccount(this);
+        }
+    }
+
+    public void chooseAccount(final MainActivity that)
+    {
+        if(!Installation.wasChooseAccountShown(this))
+        {
+        new ChooseAccountFragment(new Runnable() {
+            @Override
+            public void run() {
+                Installation.setChooseAccountShown(that);
+                init();
+            }
+        }).show(getSupportFragmentManager(), "choose_account");
+        }
+        else {
             init();
         }
 
@@ -113,6 +143,7 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
             @Override
             public void run() {
                 try{
+                    UserManager.Init("k.dummann@gmail.com", that);
                 GCMRegistrar.checkDevice(that);
                 GCMRegistrar.checkManifest(that);
                 final String regId = GCMRegistrar.getRegistrationId(that);
@@ -121,7 +152,7 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
                 }else
                 {
                     new DeviceManager(that).registeredToGCM(regId);
-                    new SyncManager(that).syncSubscribtions();
+                    new SyncManager(that).pushSubscriptions();
                 }
             } catch (Exception e)
             {
@@ -233,7 +264,16 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
                         return true;
                     }
                 })
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+
+        menu.add("Settings").setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Intent settingsIntent = new Intent(that, SettingsActivity.class);
+                that.startActivity(settingsIntent);
+                return true;
+            }
+        }).setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
 
         return true;
     }

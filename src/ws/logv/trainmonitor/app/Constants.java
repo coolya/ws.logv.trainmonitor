@@ -30,4 +30,11 @@ public class Constants {
         public static final String SENDER_ID = "643069411443";
     }
 
+    public static class Settings
+    {
+        public static  final String CURRENT_ACCOUNT ="current_account";
+        public static final String LICENSE = "about_license";
+    }
+
+
 }

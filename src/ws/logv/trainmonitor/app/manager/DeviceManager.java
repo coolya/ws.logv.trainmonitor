@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package ws.logv.trainmonitor.app;
+package ws.logv.trainmonitor.app.manager;
 
 import android.content.Context;
 import android.util.Log;
@@ -76,7 +76,12 @@ public class DeviceManager {
 
                     @Override
                     public void onError(Throwable tr) {
-                        lock.unlock();
+                        try {
+                            lock.unlock();
+                        }catch (Exception ignored){
+
+                        }
+
                     }
 
                     @Override

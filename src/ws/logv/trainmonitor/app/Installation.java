@@ -40,6 +40,7 @@ public class Installation {
 
 	private static final String FILENAME = "INSTALLATION";
     private static final String DISCLAIMER_FILE = "DISCLAIMER";
+    private static final String ACCOUNT_FILE = "ACCOUNT";
     private static final String MOTD_FILE = "MOTD";
 
 	private static String ID;
@@ -82,6 +83,23 @@ public class Installation {
     public static void setDisclaimerShown(Context ctx)
     {
         File file = new File(ctx.getFilesDir(), DISCLAIMER_FILE);
+        if(!file.exists())
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                Log.e(LOG_TAG, "Error creatin disclaimer file", e);
+            }
+    }
+    public static Boolean wasChooseAccountShown(Context ctx)
+    {
+        File file = new File(ctx.getFilesDir(), ACCOUNT_FILE);
+
+        return file.exists();
+    }
+
+    public static void setChooseAccountShown(Context ctx)
+    {
+        File file = new File(ctx.getFilesDir(), ACCOUNT_FILE);
         if(!file.exists())
             try {
                 file.createNewFile();

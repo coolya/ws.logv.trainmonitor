@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package ws.logv.trainmonitor.app;
+package ws.logv.trainmonitor.app.manager;
 
 import android.content.Context;
 import android.util.Log;
@@ -22,16 +22,15 @@ import android.widget.Toast;
 import ws.logv.trainmonitor.R;
 import ws.logv.trainmonitor.api.ApiClient;
 import ws.logv.trainmonitor.api.IApiCallback;
+import ws.logv.trainmonitor.app.manager.DeviceManager;
 import ws.logv.trainmonitor.data.*;
 import ws.logv.trainmonitor.model.Device;
 import ws.logv.trainmonitor.model.FavouriteTrain;
 import ws.logv.trainmonitor.model.Subscribtion;
 import ws.logv.trainmonitor.model.Train;
 
-import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -100,7 +99,7 @@ public class SyncManager {
         return !StationRepository.haveStations(mCtx);
     }
 
-    public void syncSubscribtions()
+    public void pushSubscriptions()
     {
         DeviceManager devMng = new DeviceManager(mCtx);
         Device dev = devMng.getsDevice();
@@ -147,5 +146,45 @@ public class SyncManager {
         } catch (ExecutionException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
+    }
+
+    public void pullSubscriptions()
+    {
+        DeviceManager devMng = new DeviceManager(mCtx);
+        Device dev = devMng.getsDevice();
+
+        if(dev == null || dev.getGcmRegId() == null ||dev.getGcmRegId().isEmpty())
+            return;
+
+        ApiClient client = new ApiClient(mCtx);
+        final Context ctx = mCtx;
+        client.getSubscriptions(new IApiCallback<Collection<Subscribtion>>() {
+            @Override
+            public void onComplete(Collection<Subscribtion> data) {
+                try {
+                    TrainRepository.unFavAllTrains(ctx, null).get();
+                    SubscribtionRepository.clearSubscribtions(ctx, null).get();
+                    SubscribtionRepository.saveSubscribtions(ctx, data, null);
+                    for (Subscribtion item : data)
+                    {
+                        TrainRepository.favTrain(ctx, item.getTrain(), null).get();
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                } catch (ExecutionException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+            }
+
+            @Override
+            public void onError(Throwable tr) {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+
+            @Override
+            public void onNoConnection() {
+                //To change body of implemented methods use File | Settings | File Templates.
+            }
+        });
     }
 }

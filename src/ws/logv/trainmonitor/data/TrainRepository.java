@@ -25,8 +25,7 @@ import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
 import android.content.Context;
 import com.j256.ormlite.stmt.DeleteBuilder;
-import com.j256.ormlite.support.DatabaseConnection;
-import ws.logv.trainmonitor.FavChangedListener;
+import ws.logv.trainmonitor.ui.contract.FavChangedListener;
 import ws.logv.trainmonitor.model.FavouriteTrain;
 import ws.logv.trainmonitor.model.Train;
 
@@ -92,7 +91,7 @@ public class TrainRepository
 				DatabaseHelper databaseHelper = OpenHelperManager.getHelper(param, DatabaseHelper.class);
 				try {
 					Dao<Train, Integer> dao = databaseHelper.getTrainDataDao();			
-					return dao.query(dao.queryBuilder().orderBy("trainId", true).where().like("trainId", name + "%").prepare());
+					return dao.query(dao.queryBuilder().orderBy("trainId", true).where().like("trainId", "%" + name + "%").prepare());
 				} catch (SQLException e) {
 					return null;
 				}
@@ -285,6 +284,40 @@ public class TrainRepository
 
                             builder.setWhere(dao.queryBuilder().where().eq("trainId", trainId));
                             dao.delete(builder.prepare());
+                            return true;
+                        } catch (Exception e) {
+                            return false;
+                        }
+                        finally
+                        {
+                            OpenHelperManager.releaseHelper();
+                            databaseHelper = null;
+                        }
+                    }},
+                        new Action<Boolean>(){
+
+                            public void exec(Boolean param) {
+                                if(listener != null)
+                                    listener.onFavChanged();
+                                if(callback != null)
+                                    callback.exec(param);
+
+                            }});
+
+        task.execute(ctx);
+        return task;
+    }
+
+    public static DatabaseTask<Boolean> unFavAllTrains(Context ctx, final Action<Boolean> callback)
+    {
+        DatabaseTask<Boolean> task =
+                new DatabaseTask<Boolean>(new Func<Boolean, Context>(){
+
+                    public Boolean exec(Context param) {
+                        DatabaseHelper databaseHelper = OpenHelperManager.getHelper(param, DatabaseHelper.class);
+                        try {
+                            Dao<FavouriteTrain, Integer> dao = databaseHelper.getFavouriteTrainDao();
+                            dao.delete(dao.deleteBuilder().prepare());
                             return true;
                         } catch (Exception e) {
                             return false;

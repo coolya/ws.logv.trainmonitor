@@ -14,30 +14,15 @@
  *    limitations under the License.
  */
 
-package ws.logv.trainmonitor;
+package ws.logv.trainmonitor.ui.contract;
 
 /**
  * Created with IntelliJ IDEA.
  * User: Kolja
  * Date: 9/29/12
- * Time: 4:12 PM
+ * Time: 6:50 PM
  * To change this template use File | Settings | File Templates.
  */
-public class WindowMediator {
-    private static OnRefreshRequestStateHandler sHandler;
-
-    public static void setOnRefreshStateRequestHandler(OnRefreshRequestStateHandler handler)
-    {
-        sHandler = handler;
-    }
-    public  static void RequestRefreshState()
-    {
-          if(sHandler != null)
-              sHandler.onRefreshStart();
-    }
-    public  static void EndRefreshState()
-    {
-        if(sHandler != null)
-            sHandler.onRefreshEnd();
-    }
+public abstract class FavChangedListener {
+    public abstract void onFavChanged();
 }

@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package ws.logv.trainmonitor;
+package ws.logv.trainmonitor.ui.contract;
 
 /**
  * Created with IntelliJ IDEA.

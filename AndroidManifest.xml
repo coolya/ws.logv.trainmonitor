@@ -33,7 +33,7 @@
         android:hardwareAccelerated="true"
         android:theme="@style/MyTheme">
         <activity
-            android:name="ws.logv.trainmonitor.MainActivity"
+            android:name=".ui.MainActivity"
             android:label="@string/title_activity_main" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -42,16 +42,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="ws.logv.trainmonitor.AllTrainsActivity"
+            android:name=".ui.AllTrainsActivity"
             android:exported="false"
             android:label="@string/title_activity_my_trains" >
         </activity>
         <activity
-            android:name="ws.logv.trainmonitor.Train"
+            android:name=".ui.Train"
             android:exported="false"
             android:label="@string/title_activity_train" >
 
         </activity>
+        <activity android:name=".ui.ChooseAccount"/>
+        <activity android:name=".ui.SettingsActivity"/>
 
         <receiver
                 android:name="com.google.android.gcm.GCMBroadcastReceiver"
@@ -61,7 +63,7 @@
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
                 <!-- Receives the registration id. -->
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-                <category android:name="com.google.android.gcm.demo.app" />
+                <category android:name="ws.logv.trainmonitor" />
             </intent-filter>
         </receiver>
 
