@@ -22,18 +22,16 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import com.google.android.gcm.GCMBaseIntentService;
 import com.google.android.gcm.GCMRegistrar;
-import ws.logv.trainmonitor.R;
 import ws.logv.trainmonitor.ui.Train;
 import ws.logv.trainmonitor.api.ApiClient;
 import ws.logv.trainmonitor.api.IApiCallback;
 import ws.logv.trainmonitor.app.Constants;
 import ws.logv.trainmonitor.app.manager.DeviceManager;
-import ws.logv.trainmonitor.app.manager.SyncManager;
+import ws.logv.trainmonitor.app.manager.BackendManager;
 import ws.logv.trainmonitor.model.StationInfo;
 
 import java.util.Collection;
@@ -62,7 +60,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
                 if("subscription".equals(type))
                 {
-                    new SyncManager(context).pullSubscriptions();
+                    new BackendManager(context).pullSubscriptions();
                 }
             }
 
@@ -113,7 +111,7 @@ public class GCMIntentService extends GCMBaseIntentService {
         Log.i(TAG, "Registered to GCM");
         DeviceManager mng = new DeviceManager(context);
         mng.registeredToGCM(regId);
-        new SyncManager(context).pushSubscriptions();
+        new BackendManager(context).pushSubscriptions();
     }
 
     @Override
@@ -122,7 +120,7 @@ public class GCMIntentService extends GCMBaseIntentService {
         if (GCMRegistrar.isRegisteredOnServer(context)) {
             DeviceManager mng = new DeviceManager(context);
             mng.unregisteredFromGCM(regId);
-            SyncManager snycMan = new SyncManager(context);
+            BackendManager snycMan = new BackendManager(context);
             snycMan.pushSubscriptions();
         } else {
             // This callback results from the call to unregister made on

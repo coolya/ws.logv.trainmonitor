@@ -27,7 +27,7 @@ import com.j256.ormlite.field.DatabaseField;
 public class Subscribtion {
 	@DatabaseField(id = true)
 	private UUID id;
-	@DatabaseField
+	@DatabaseField(uniqueIndex = true)
     @SerializedName("train_id")
 	private String train;
     @SerializedName("notification_start")

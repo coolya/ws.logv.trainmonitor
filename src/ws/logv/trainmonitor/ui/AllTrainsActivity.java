@@ -16,31 +16,28 @@
 
 package ws.logv.trainmonitor.ui;
 
-import java.util.Collection;
 import java.util.LinkedList;
-import java.util.List;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.util.Log;
 import android.view.*;
-import android.view.Menu;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 
+import de.greenrobot.event.EventBus;
 import ws.logv.trainmonitor.R;
-import ws.logv.trainmonitor.app.IRefreshable;
-import ws.logv.trainmonitor.app.ISearchable;
-import ws.logv.trainmonitor.app.manager.SyncManager;
+import ws.logv.trainmonitor.Workflow;
+import ws.logv.trainmonitor.app.manager.BackendManager;
+import ws.logv.trainmonitor.event.TrainSyncEvent;
+import ws.logv.trainmonitor.command.load.LoadTrainCommand;
+import ws.logv.trainmonitor.command.load.LoadTrainResult;
+import ws.logv.trainmonitor.event.*;
 import ws.logv.trainmonitor.ui.adapter.TrainAdapter;
-import ws.logv.trainmonitor.data.Action;
-import ws.logv.trainmonitor.data.TrainRepository;
 import ws.logv.trainmonitor.model.Train;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
-import android.widget.ListView;
 
 public class AllTrainsActivity extends FragmentActivity {
 
@@ -50,42 +47,39 @@ public class AllTrainsActivity extends FragmentActivity {
         setContentView(R.layout.activity_all_trains);
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_my_trains, menu);
-        return true;
-    }
     
-    public static class AllTrainsFragment extends SherlockFragment implements IRefreshable, ISearchable {
-        int mNum;
+    public static class AllTrainsFragment extends SherlockFragment  {
+        private static  final String LOG_TAG = AllTrainsFragment.class.getSimpleName();
 
-
-        static AllTrainsFragment newInstance(int num) {
+        static AllTrainsFragment newInstance() {
         	AllTrainsFragment f = new AllTrainsFragment();
-
-            // Supply num input as an argument.
-            Bundle args = new Bundle();
-            args.putInt("num", num);
-            f.setArguments(args);
-
             return f;
         }
 
-        /**
-         * When creating, retrieve this instance's number from its arguments.
-         */
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            mNum = getArguments() != null ? getArguments().getInt("num") : 1;
+        private EventBus mBus = Workflow.getEventBus(this.getActivity());
+        private TrainAdapter mAdapter;
+        private PullToRefreshListView mRefreshView;
+        private ProgressDialog mDialog;
+        private boolean mLoadMore = true;
 
+        @Override
+        public void onPause() {
+            super.onPause();
+            mBus.unregister(this);
         }
 
-        private View mView;
-        private TrainAdapter mAdapter;
-        private Handler mHandler;
-        private PullToRefreshListView mRefreshView;
+        @Override
+        public void onResume() {
+            super.onResume();
+            mBus.register(this);
+        }
+
+        @Override
+        public void onDestroy() {
+            mAdapter.onDestroy();
+            super.onDestroy();
+        }
+
         /**
          * The Fragment's UI is just a simple text view showing its
          * instance number.
@@ -93,132 +87,110 @@ public class AllTrainsActivity extends FragmentActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
+            View v = inflater.inflate(R.layout.activity_all_trains, container, false);
 
+            LinkedList<Train> mListItems;
 
-            final View v = inflater.inflate(R.layout.activity_all_trains, container, false);
-            mView = v;
+            mListItems = new LinkedList<Train>();
+            mRefreshView = (PullToRefreshListView) v.findViewById(R.id.pull_to_refresh_listview);
 
-        	final PullToRefreshListView mPullRefreshListView;
-        	final TrainAdapter adapter;
-        	LinkedList<Train> mListItems;
-        	final Handler handler = new Handler();
-            mHandler = handler;
-        	
-        	mListItems = new LinkedList<Train>();
-            mPullRefreshListView = (PullToRefreshListView) v.findViewById(R.id.pull_to_refresh_listview);
-            mRefreshView = mPullRefreshListView;
-            adapter = new TrainAdapter(v.getContext(), android.R.layout.simple_list_item_1, mListItems);
-            mAdapter = adapter;
-            mPullRefreshListView.getRefreshableView().setAdapter(adapter);
-            mPullRefreshListView.setMode(PullToRefreshBase.Mode.DISABLED);
-            mPullRefreshListView.setOnLastItemVisibleListener(new PullToRefreshBase.OnLastItemVisibleListener() {
+            mAdapter = new TrainAdapter(v.getContext(), android.R.layout.simple_list_item_1, mListItems);
+            mRefreshView.getRefreshableView().setAdapter(mAdapter);
+            mRefreshView.setMode(PullToRefreshBase.Mode.DISABLED);
+            mRefreshView.setOnLastItemVisibleListener(new PullToRefreshBase.OnLastItemVisibleListener() {
                 @Override
                 public void onLastItemVisible() {
-                    getNextFromDb(v, adapter, handler);
+                    if(mLoadMore)
+                    {
+                        fetchData();
+                    }
                 }
             });
-            
-            mPullRefreshListView.setOnRefreshListener(new OnRefreshListener<ListView>(){
-				public void onRefresh(final PullToRefreshBase<ListView> refreshView) {
-                    refreshView.onRefreshComplete();
-					refreshDataFromServer(v, adapter, handler, refreshView);
-				}		            	
-            });
 
-            SyncManager syncAdapter = new SyncManager(v.getContext());
+            BackendManager syncAdapter = new BackendManager(getActivity());
 
             if(syncAdapter.trainsNeedSync())
             {
-                refreshDataFromServer(v, adapter, handler, mPullRefreshListView);
+                refreshDataFromServer(getActivity());
             } else {
-                getNextFromDb(v, adapter, handler);
+                fetchData();
             }
-
+            mBus.post(new SetUpActionBarEvent(true, true));
             return v;
         }
 
-        private static void getNextFromDb(View v, final TrainAdapter mAdapter, final Handler handler) {
+        private void fetchData() {
             WindowMediator.RequestRefreshState();
-            TrainRepository.loadTrainsOrdered(v.getContext(), mAdapter.getCount(), new Action<List<Train>>() {
-                @Override
-                public void exec(final List<Train> trains) {
-                    handler.post(new Runnable() {
-
-                        public void run() {
-                            refreshTrains(mAdapter, trains);
-                            WindowMediator.EndRefreshState();
-                        }
-                    });
-                }
-            });
+            mBus.post(new LoadTrainCommand(50l, mAdapter.getCount()));
         }
 
-        public static void refreshDataFromServer(final View v,
-				final TrainAdapter mAdapter,
-				final Handler handler, final PullToRefreshBase<ListView> refreshView)
-		{
-            final Context ctx = v.getContext();
-            final ProgressDialog dialog = new ProgressDialog(ctx);
-            dialog.setCancelable(false);
-            dialog.setIndeterminate(true);
-            dialog.setMessage(ctx.getString(R.string.refresh_trains_1));
-            dialog.show();
-
-            SyncManager mng = new SyncManager(ctx);
-
-            mng.syncTrains(new Action<String>() {
-                @Override
-                public void exec(final String param) {
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            dialog.setMessage(param);
-                        }
-                    });
-                }
-            }, new Action<Integer>() {
-                               @Override
-                               public void exec(Integer param) {
-                                   dialog.dismiss();
-                                   mAdapter.clear();
-                                   mAdapter.refreshFavs(ctx);
-                                   getNextFromDb(v, mAdapter, handler);
-                               }
-                           });
-		}
-        private static void refreshTrains(TrainAdapter adapter, Collection<Train> data)
+        @SuppressWarnings("UnusedDeclaration")
+        public void onEventMainThread(LoadTrainResult result)
         {
-            adapter.addAll(data);
+            if(result.isFaulted())
+            {
+                Log.e(LOG_TAG, "Error getting trains from DB", result.getException());
+            }
+            else
+            {
+                mAdapter.addAll(result.getResult());
+            }
+            WindowMediator.EndRefreshState();
         }
 
-        @Override
-        public void refresh() {
-            refreshDataFromServer(mView, mAdapter, mHandler, mRefreshView);
+        @SuppressWarnings("UnusedDeclaration")
+        public  void onEventMainThread(TrainSyncProgressEvent event)
+        {
+            if(mDialog != null)
+            {
+                mDialog.setMessage(event.getMessage());
+            }
+        }
+        @SuppressWarnings("UnusedDeclaration")
+        public  void onEventMainThread(TrainSyncCompleteEvent event)
+        {
+            if(mDialog != null)
+            {
+                mDialog.dismiss();
+                mAdapter.clear();
+                fetchData();
+            }
         }
 
-        @Override
-        public void query(String query) {
+        @SuppressWarnings("UnusedDeclaration")
+        public void onEventMainThread(SearchEvent event)
+        {
             WindowMediator.RequestRefreshState();
             mAdapter.clear();
-            TrainRepository.searchTrain (mView.getContext(), query, new Action<List<Train>>() {
-                @Override
-                public void exec(final List<Train> trains) {
-                    mHandler.post(new Runnable() {
-
-                        public void run() {
-                            refreshTrains(mAdapter, trains);
-                            WindowMediator.EndRefreshState();
-                        }
-                    });
-                }
-            });
+            if(!event.getSearchCanceled())
+            {
+                mLoadMore = false;
+                mBus.post(new LoadTrainCommand(event.getQuery()));
+            }
+            else
+            {
+                mLoadMore = true;
+                mBus.post(new LoadTrainCommand(50l, 0));
+            }
         }
 
-        @Override
-        public void searchClosed() {
-            WindowMediator.RequestRefreshState();
-            mAdapter.clear();
-            getNextFromDb(mView, mAdapter, mHandler);
+        @SuppressWarnings("UnusedDeclaration")
+        public void onEvent(RefreshEvent event)
+        {
+            refreshDataFromServer(getActivity());
         }
+
+        public void refreshDataFromServer(Context ctx)
+		{
+            mDialog = new ProgressDialog(ctx);
+            mDialog.setCancelable(false);
+            mDialog.setIndeterminate(true);
+            mDialog.setMessage(ctx.getString(R.string.refresh_trains_1));
+            mDialog.show();
+
+            mBus.post(new TrainSyncEvent());
+
+		}
+
     }
 }

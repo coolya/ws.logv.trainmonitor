@@ -16,10 +16,7 @@
 
 package ws.logv.trainmonitor.api;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import android.net.Uri;
 import android.util.Base64;
@@ -47,11 +44,12 @@ public class ApiClient {
 	{
        if(BuildConfig.DEBUG)
        {
+          // URI  = "https://trainmonitor.logv.ws/api/v1/";
            URI  = "http://[2001:470:1f15:5e3:11c4:492:eb77:f7ab]:8080/api/v1/";
        }
         else
        {
-           URI  = "http://trainmonitor.logv.ws/api/v1/";
+           URI  = "https://trainmonitor.logv.ws/api/v1/";
        }
         this.ctx = ctx;
 	}
@@ -100,11 +98,46 @@ public class ApiClient {
 				
 			}
         };
-        AndroidHttpClient httpClient = new AndroidHttpClient(URI);
+        AndroidHttpClient httpClient = new AndroidHttpClient(URI, new LogvSslRequestHandler(ctx));
         ParameterMap params = httpClient.newParams();
         params.add("client", "ANDROID");
 		httpClient.get("germany/trains", params, callback);
+
+
 	}
+
+    public Collection<Train> getTrains()
+    {
+        AndroidHttpClient httpClient = new AndroidHttpClient(URI, new LogvSslRequestHandler(ctx));
+        ParameterMap params = httpClient.newParams();
+        params.add("client", "ANDROID");
+        HttpResponse res = httpClient.get("germany/trains", params);
+
+        String data = res.getBodyAsString();
+        try	{
+            JsonHelper helper = new JsonHelper();
+            Train[] ret = helper.fromJson(data, new TypeToken<Train[]>() {}.getType());
+            return Arrays.asList(ret);
+        }
+        catch (Exception ex)
+        {
+            Log.e(this.getClass().getName(), "Failed to load trains from API", ex);
+            return  null;
+        }
+    }
+
+    public  Train getTrainDetail(String trainId)
+    {
+        AndroidHttpClient httpClient = new AndroidHttpClient(URI, new LogvSslRequestHandler(ctx));
+        ParameterMap params = httpClient.newParams();
+        params.add("client", "ANDROID");
+        HttpResponse res =  httpClient.get("germany/trains/" + Uri.encode(trainId), params);
+
+        String data = res.getBodyAsString();
+        JsonHelper helper = new JsonHelper();
+        Train ret = helper.fromJson(data, new TypeToken<Train>() {}.getType());
+        return ret;
+    }
 	
 	public void getTrainDetail(String trainId, final IApiCallback<Train> apiCallback)
 	{
@@ -128,7 +161,7 @@ public class ApiClient {
 				}				
 			}
         };
-        AndroidHttpClient httpClient = new AndroidHttpClient(URI);
+        AndroidHttpClient httpClient = new AndroidHttpClient(URI, new LogvSslRequestHandler(ctx));
         ParameterMap params = httpClient.newParams();
         params.add("client", "ANDROID");
         try {
@@ -160,11 +193,23 @@ public class ApiClient {
 				}				
 			}
         };
-        AndroidHttpClient httpClient = new AndroidHttpClient(URI);
+        AndroidHttpClient httpClient = new AndroidHttpClient(URI, new LogvSslRequestHandler(ctx));
         ParameterMap params = httpClient.newParams();
         params.add("client", "ANDROID");
 		httpClient.get("germany/stations",params , callback);
-	}	
+	}
+
+    public List<Station> getStations()
+    {
+        AndroidHttpClient httpClient = new AndroidHttpClient(URI, new LogvSslRequestHandler(ctx));
+        ParameterMap params = httpClient.newParams();
+        params.add("client", "ANDROID");
+        HttpResponse res =  httpClient.get("germany/stations",params);
+        String data = res.getBodyAsString();
+        JsonHelper helper = new JsonHelper();
+        Station[] ret = helper.fromJson(data, new TypeToken<Station[]>() {}.getType());
+        return Arrays.asList(ret);
+    }
 	
 	public void postSubscribtion(final Collection<Subscribtion> data, final IApiCallback<Collection<Subscribtion>> apiCallback)
 	{
@@ -194,7 +239,7 @@ public class ApiClient {
                     }
                 };
                 Map<String, String> headers = UserManager.Instance().getAuthHeader(ctx);
-                AndroidHttpClient httpClient = new AndroidHttpClient(URI);
+                AndroidHttpClient httpClient = new AndroidHttpClient(URI, new LogvSslRequestHandler(ctx));
 
                 for(Map.Entry<String, String> item : headers.entrySet())
                 {
@@ -232,7 +277,7 @@ public class ApiClient {
                 };
 
                 Map<String, String> headers = UserManager.Instance().getAuthHeader(ctx);
-                AndroidHttpClient httpClient = new AndroidHttpClient(URI);
+                AndroidHttpClient httpClient = new AndroidHttpClient(URI, new LogvSslRequestHandler(ctx));
 
                 for(Map.Entry<String, String> item : headers.entrySet())
                 {
@@ -274,7 +319,7 @@ public class ApiClient {
                     }
                 };
                 Map<String, String> headers = UserManager.Instance().getAuthHeader(ctx);
-                AndroidHttpClient httpClient = new AndroidHttpClient(URI);
+                AndroidHttpClient httpClient = new AndroidHttpClient(URI, new LogvSslRequestHandler(ctx));
 
                 for(Map.Entry<String, String> item : headers.entrySet())
                 {
@@ -304,7 +349,7 @@ public class ApiClient {
                 String data = helper.toJson(device);
                 String devicePart = Base64.encodeToString(asByteArray(device.getId()), Base64.URL_SAFE);
                 Map<String, String> headers = UserManager.Instance().getAuthHeader(ctx);
-                AndroidHttpClient httpClient = new AndroidHttpClient(URI);
+                AndroidHttpClient httpClient = new AndroidHttpClient(URI, new LogvSslRequestHandler(ctx));
 
                 for(Map.Entry<String, String> item : headers.entrySet())
                 {

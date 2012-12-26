@@ -19,12 +19,16 @@ package ws.logv.trainmonitor.data;
 import android.content.Context;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
+import de.greenrobot.event.EventBus;
+import ws.logv.trainmonitor.Workflow;
+import ws.logv.trainmonitor.command.load.LoadStationCommand;
+import ws.logv.trainmonitor.command.load.LoadStationResult;
+import ws.logv.trainmonitor.event.StationSyncCompleteEvent;
+import ws.logv.trainmonitor.event.StationSyncEvent;
 import ws.logv.trainmonitor.model.Station;
-import ws.logv.trainmonitor.model.Train;
 
 import java.sql.SQLException;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -35,39 +39,97 @@ import java.util.List;
  */
 public class StationRepository {
 
-    public static DatabaseTask<List<Station>> loadStations(Context context,final Action<List<Station>> callback)
+    private Context mContext;
+    private Queue<LoadStationCommand> pendingResponses = new LinkedList<LoadStationCommand>();
+    private boolean syncForeced;
+    private Object lock = new Object();
+
+    public StationRepository(Context context)
     {
-        DatabaseTask<List<Station>> task =
-         new DatabaseTask<List<Station>>(new Func<List<Station>, Context>(){
-
-            public List<Station> exec(Context param) {
-                DatabaseHelper databaseHelper = OpenHelperManager.getHelper(param, DatabaseHelper.class);
-                try {
-                    Dao<Station, Integer> dao = databaseHelper.getStationDao();
-                    return dao.query(dao.queryBuilder().prepare());
-                } catch (SQLException e) {
-                    return null;
-                }
-                finally
-                {
-                    OpenHelperManager.releaseHelper();
-                    databaseHelper = null;
-                }
-            }},
-                new Action<List<Station>>(){
-
-                    public void exec(List<Station> param) {
-                        if(callback != null)
-                            callback.exec(param);
-                    }});
-        task.execute(context);
-        return task;
+        mContext = context;
     }
 
-    public  static DatabaseTask<Station> loadStation(final int id, Context ctx, final Action<Station> callback)
+    @SuppressWarnings("UnusedDeclaration")
+    public void onEventAsync(LoadStationCommand event)
     {
-        DatabaseTask<Station> task =
-        new DatabaseTask<Station>(new Func<Station, Context>(){
+        try {
+            Station station = loadStation(mContext, event.getId());
+            if(station == null)
+            {
+                synchronized (lock)
+                {
+                    if(!syncForeced)
+                    {
+                        station = loadStation(mContext, event.getId());
+                        if(station == null)
+                        {
+                            syncForeced = true;
+                            Workflow.getEventBus(mContext).register(this, "onSyncComplete", StationSyncCompleteEvent.class);
+                            Workflow.getEventBus(mContext).post(new StationSyncEvent());
+                        }
+                        else
+                        {
+                            Workflow.getEventBus(mContext).post(new LoadStationResult(station, event.getTag()));
+                        }
+                    }
+                    else
+                    {
+                        pendingResponses.add(event);
+                    }
+                }
+            }
+            else
+            {
+                Workflow.getEventBus(mContext).post(new LoadStationResult(station, event.getTag()));
+            }
+        } catch (SQLException e) {
+            Workflow.getEventBus(mContext).post(new LoadStationResult(e, event.getTag()));
+        }
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    public void onSyncComplete(StationSyncCompleteEvent event)
+    {
+        Workflow.getEventBus(mContext).unregister(this, StationSyncCompleteEvent.class);
+        List<LoadStationCommand> commands = new ArrayList<LoadStationCommand>();
+        synchronized (lock)
+        {
+            syncForeced = false;
+            while (pendingResponses.isEmpty())
+            {
+                commands.add(pendingResponses.poll());
+            }
+        }
+
+        EventBus bus = Workflow.getEventBus(mContext);
+        for (LoadStationCommand command : commands)
+        {
+            try {
+                Station station = loadStation(mContext, command.getId());
+                bus.post(new LoadStationResult(station, command.getTag()));
+            } catch (SQLException e) {
+               bus.post(new LoadStationResult(e, command.getTag()));
+            }
+        }
+
+    }
+
+    private static Station loadStation(Context context, int id) throws SQLException {
+        DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        try {
+            Dao<Station, Integer> dao = databaseHelper.getStationDao();
+            return dao.queryForId(id);
+        }
+        finally
+        {
+            OpenHelperManager.releaseHelper();
+        }
+    }
+
+    public  static Task<Station> loadStation(final int id, Context ctx, final Action<Station> callback)
+    {
+        Task<Station> task =
+        new Task<Station>(new Func<Station, Context>(){
 
             public Station exec(Context param) {
                 DatabaseHelper databaseHelper = OpenHelperManager.getHelper(param, DatabaseHelper.class);
@@ -104,7 +166,7 @@ public class StationRepository {
     }
     public static void saveStations(Context ctx, final Collection<Station> data, final Action<Boolean> callback)
     {
-        new DatabaseTask<Boolean>(new Func<Boolean, Context>(){
+        new Task<Boolean>(new Func<Boolean, Context>(){
 
             public Boolean exec(Context param) {
                 DatabaseHelper databaseHelper = OpenHelperManager.getHelper(param, DatabaseHelper.class);
@@ -131,6 +193,21 @@ public class StationRepository {
                             callback.exec(param);
 
                     }}).execute(ctx);
+    }
+
+    public static void saveStations(Context context, Collection<Station> stations) throws SQLException {
+        DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        try {
+            Dao<Station, Integer> dao = databaseHelper.getStationDao();
+            for(Station station : stations)
+            {
+                dao.createOrUpdate(station);
+            }
+        }
+        finally
+        {
+            OpenHelperManager.releaseHelper();
+        }
     }
 
 

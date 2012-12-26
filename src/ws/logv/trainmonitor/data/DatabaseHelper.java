@@ -42,7 +42,6 @@ public class DatabaseHelper  extends OrmLiteSqliteOpenHelper{
 		private Dao<Train, Integer> trainDao = null;
 		private Dao<Station, Integer> stationDao = null;
 		private Dao<Subscribtion, UUID> subscribtionDao = null;
-        private Dao<FavouriteTrain, Integer> favouriteTrainDao = null;
 
 		public DatabaseHelper(Context context) {
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -89,6 +88,22 @@ public class DatabaseHelper  extends OrmLiteSqliteOpenHelper{
                     // after we drop the old databases, we create the new ones
                     onCreate(db, connectionSource);
                 }
+               /* else if(oldVersion == 4)
+                {
+                    db.beginTransaction();
+                    try {
+                        db.execSQL("ALTER TABLE subscribtion RENAME TO subscribtion_old");
+                        TableUtils.createTable(connectionSource, Subscribtion.class);
+                        db.execSQL("INSERT into subscribtion ( SELECT * FROM subscribtion_old GROUP BY train)");
+                        db.execSQL("DROP TABLE subscribtion_old");
+                        db.setTransactionSuccessful();
+                    } catch (Throwable tr)
+                    {
+                        Log.e(DatabaseHelper.class.getName(), "Can't update database to version 5", tr);
+                    }
+                    db.endTransaction();
+
+                }  */
                 else
                 {
                     throw new IllegalStateException("No update strategy from " + String.valueOf(oldVersion) + " to " +
@@ -130,14 +145,6 @@ public class DatabaseHelper  extends OrmLiteSqliteOpenHelper{
 			return subscribtionDao;
 		}
 
-        public Dao<FavouriteTrain, Integer> getFavouriteTrainDao() throws SQLException {
-            if(favouriteTrainDao == null)
-            {
-                favouriteTrainDao = getDao(FavouriteTrain.class);
-            }
-
-            return favouriteTrainDao;
-        }
 
 		/**
 		 * Close the database connections and clear any cached DAOs.

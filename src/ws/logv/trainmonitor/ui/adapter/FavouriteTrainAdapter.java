@@ -23,19 +23,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import de.greenrobot.event.EventBus;
 import ws.logv.trainmonitor.R;
-import ws.logv.trainmonitor.api.ApiClient;
-import ws.logv.trainmonitor.api.IApiCallback;
-import ws.logv.trainmonitor.data.DatabaseTask;
-import ws.logv.trainmonitor.data.StationRepository;
+import ws.logv.trainmonitor.Workflow;
+import ws.logv.trainmonitor.command.load.LoadStationCommand;
+import ws.logv.trainmonitor.command.load.LoadStationResult;
+import ws.logv.trainmonitor.command.fetch.FetchTrainDetailsCommand;
+import ws.logv.trainmonitor.command.fetch.FetchTrainDetailsResult;
 import ws.logv.trainmonitor.model.FavouriteTrain;
-import ws.logv.trainmonitor.model.Station;
 import ws.logv.trainmonitor.model.StationInfo;
-import ws.logv.trainmonitor.model.Train;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -46,101 +45,119 @@ import java.util.concurrent.ExecutionException;
  */
 public class FavouriteTrainAdapter extends BaseArrayAdapter<FavouriteTrain> {
     private Context mCtx;
+    private EventBus mBus ;
 
     public FavouriteTrainAdapter(Context context, int textViewResourceId, List<FavouriteTrain> objects) {
         super(context, textViewResourceId, objects);
         mCtx = context;
+        mBus = Workflow.getEventBus(mCtx);
     }
+
+    @SuppressWarnings("UnusedDeclaration")
+    public void onEventMainThread(FetchTrainDetailsResult event)
+    {
+       if(!event.isFaulted())
+       {
+           if(event.getTag() instanceof View)
+           {
+               View rowView = (View)event.getTag();
+
+               TextView tvNextStation = (TextView) rowView.findViewById(R.id.next_station);
+               TextView tvDelay = (TextView) rowView.findViewById(R.id.delay);
+               TextView tvArrival = (TextView) rowView.findViewById(R.id.arrival);
+               ProgressBar pgb = (ProgressBar) rowView.findViewById(R.id.waiter);
+
+               Time time = new Time();
+               time.setToNow();
+               time.normalize(false);
+               int current = time.hour * 60 + time.minute;
+               int i  = 0;
+               Collection<StationInfo> stations =  event.getTrain().getStations();
+               for(StationInfo info : stations)
+               {
+                   int minutes = info.getArrival();
+                   if(minutes == 0)
+                       minutes = info.getDeparture();
+
+                   if((minutes * 60 * 1000) < current)
+                   {
+                       i++;
+                   }
+               }
+
+               StationInfo[] stationinfos = stations.toArray(new StationInfo [] {});
+
+               if(i >= stationinfos.length)
+                   i = stationinfos.length -1;
+
+               StationInfo nextStation = stationinfos[i];
+
+               mBus.post(new LoadStationCommand(nextStation.getStationId(), tvNextStation));
+
+               tvDelay.setText(String.valueOf(nextStation.getDelay()));
+
+               int seconds = nextStation.getArrival();
+               if(seconds == 0)
+                   seconds = nextStation.getDeparture();
+
+               time.set(seconds * 60 * 1000);
+               time.normalize(false);
+               time.hour = time.hour -1;
+               String arrival = time.format("%H:%M");
+               tvArrival.setText(arrival);
+
+               pgb.setVisibility(View.INVISIBLE);
+               tvDelay.setVisibility(View.VISIBLE);
+               tvArrival.setVisibility(View.VISIBLE);
+           }
+       }
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    public void onEventMainThread(LoadStationResult event)
+    {
+        if(!event.isFaulted())
+        {
+            if(event.getTag() instanceof TextView)
+            {
+                TextView view = (TextView) event.getTag();
+                view.setText(event.getResult().getName());
+                view.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) mCtx
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        final View rowView = inflater.inflate(R.layout.my_trains_item, parent, false);
-        final FavouriteTrain item = this.getItem(position);
+        View rowView = inflater.inflate(R.layout.my_trains_item, parent, false);
+        FavouriteTrain item = this.getItem(position);
 
-        final TextView tvNextStation = (TextView) rowView.findViewById(R.id.next_station);
-        final TextView tvDelay = (TextView) rowView.findViewById(R.id.delay);
-        final TextView tvArrival = (TextView) rowView.findViewById(R.id.arrival);
-        final ProgressBar pgb = (ProgressBar) rowView.findViewById(R.id.waiter);
+        TextView tvNextStation = (TextView) rowView.findViewById(R.id.next_station);
+        TextView tvDelay = (TextView) rowView.findViewById(R.id.delay);
+        TextView tvArrival = (TextView) rowView.findViewById(R.id.arrival);
+        ProgressBar pgb = (ProgressBar) rowView.findViewById(R.id.waiter);
 
         pgb.setVisibility(View.VISIBLE);
         tvNextStation.setVisibility(View.INVISIBLE);
         tvDelay.setVisibility(View.INVISIBLE);
         tvArrival.setVisibility(View.INVISIBLE);
 
-        ApiClient apiClient = new ApiClient(mCtx);
-
-        apiClient.getTrainDetail(item.getTrainId(), new IApiCallback<Train>() {
-            @Override
-            public void onComplete(Train data) {
-                Time time = new Time();
-                time.setToNow();
-                time.normalize(false);
-                int current = time.hour * 60 + time.minute;
-                int i  = 0;
-                Collection<StationInfo> stations =  data.getStations();
-                for(StationInfo info : stations)
-                {
-                    int minutes = info.getArrival();
-                    if(minutes == 0)
-                        minutes = info.getDeparture();
-
-                    if((minutes * 60 * 1000) < current)
-                    {
-                        i++;
-                    }
-                }
-
-                StationInfo[] stationinfos = stations.toArray(new StationInfo [] {});
-
-                if(i >= stationinfos.length)
-                    i = stationinfos.length -1;
-
-                StationInfo nextStation = stationinfos[i];
-
-                DatabaseTask<Station> task = StationRepository.loadStation(nextStation.getStationId(), mCtx, null);
-                tvDelay.setText(String.valueOf(nextStation.getDelay()));
-
-                int seconds = nextStation.getArrival();
-                if(seconds == 0)
-                    seconds = nextStation.getDeparture();
-
-                time.set(seconds * 60 * 1000);
-                time.normalize(false);
-                time.hour = time.hour -1;
-                String arrival = time.format("%H:%M");
-                tvArrival.setText(arrival);
-
-                pgb.setVisibility(View.INVISIBLE);
-
-                tvNextStation.setVisibility(View.VISIBLE);
-                tvDelay.setVisibility(View.VISIBLE);
-                tvArrival.setVisibility(View.VISIBLE);
-
-                try {
-                    Station next = task.get();
-                    tvNextStation.setText(next.getName());
-                } catch (InterruptedException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                } catch (ExecutionException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-            }
-
-            @Override
-            public void onError(Throwable tr) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            @Override
-            public void onNoConnection() {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-        });
-
         TextView tvTrainId = (TextView) rowView.findViewById(R.id.name);
         tvTrainId.setText(item.getTrainId());
-        return rowView;
 
+        mBus.post(new FetchTrainDetailsCommand(item.getTrainId(), rowView));
+        return rowView;
     }
+
+    public void register()
+    {
+        mBus.register(this);
+    }
+    public void unRegister()
+    {
+       mBus.unregister(this);
+    }
+
 }

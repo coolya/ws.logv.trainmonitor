@@ -20,12 +20,14 @@ import android.content.Intent;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+import de.greenrobot.event.EventBus;
 import ws.logv.trainmonitor.R;
+import ws.logv.trainmonitor.Workflow;
 import ws.logv.trainmonitor.app.Constants;
-import ws.logv.trainmonitor.app.manager.SyncManager;
-import ws.logv.trainmonitor.ui.adapter.BaseArrayAdapter;
-import ws.logv.trainmonitor.data.DatabaseTask;
-import ws.logv.trainmonitor.data.TrainRepository;
+import ws.logv.trainmonitor.command.load.LoadFavouriteTrainsCommand;
+import ws.logv.trainmonitor.command.load.LoadFavouriteTrainsResult;
+import ws.logv.trainmonitor.event.FavTrainEvent;
+import ws.logv.trainmonitor.event.FavouriteTrainsChangedEvent;
 import ws.logv.trainmonitor.model.FavouriteTrain;
 import ws.logv.trainmonitor.model.Train;
 import android.content.Context;
@@ -33,59 +35,81 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 public class TrainAdapter extends BaseArrayAdapter<Train> {
     private HashMap<String, Boolean> favs = new HashMap<String, Boolean>();
+
+    private EventBus mBus = Workflow.getEventBus(this.getContext());
 
 	private Context ctx;
 	public TrainAdapter(Context context, int textViewResourceId, List<Train> objects) {
 		super(context, textViewResourceId, objects);
 		this.ctx = context;
-
-        refreshFavs(context);
+        mBus.register(this, FavouriteTrainsChangedEvent.class, LoadFavouriteTrainsResult.class);
+        mBus.post(new LoadFavouriteTrainsCommand());
     }
 
-    public void refreshFavs(Context context) {
-        DatabaseTask<Collection<FavouriteTrain>> task = TrainRepository.loadFavouriteTrains(context, null);
-        try {
-            Collection<FavouriteTrain> trains = task.get();
-            favs.clear();
+    @SuppressWarnings("UnusedDeclaration")
+    public void onEvent(FavouriteTrainsChangedEvent event)
+    {
+        mBus.register(this, LoadFavouriteTrainsResult.class);
+        mBus.post(new LoadFavouriteTrainsCommand());
+    }
 
-            for(FavouriteTrain train : trains)
+    @SuppressWarnings("UnusedDeclaration")
+    public void onEvent(LoadFavouriteTrainsResult event)
+    {
+        mBus.unregister(this, LoadFavouriteTrainsResult.class);
+        if(!event.isFaulted())
+        {
+            synchronized (favs)
             {
-                favs.put(train.getTrainId(), true);
+                favs.clear();
+
+                for(FavouriteTrain train : event.getData())
+                {
+                    favs.put(train.getTrainId(), true);
+                }
+                this.notifyDataSetChanged();
             }
-        } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (ExecutionException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
     }
 
+    public void onDestroy()
+    {
+        mBus.unregister(this);
+    }
+
+
     @Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) ctx
+
+        View rowView;
+        if(convertView != null)
+        {
+            rowView = convertView;
+        }
+        else {
+            LayoutInflater inflater = (LayoutInflater) ctx
             .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View rowView = inflater.inflate(R.layout.all_trains_item, parent, false);
+            rowView = inflater.inflate(R.layout.all_trains_item, parent, false);
+        }
         final Train item = this.getItem(position);
 
         TextView tvId = (TextView) rowView.findViewById(R.id.train_id);
         tvId.setText(item.getTrainId());
         CheckBox cbFav = (CheckBox) rowView.findViewById(R.id.fav);
-
-        cbFav.setChecked(favs.containsKey(item.getTrainId()));
+        cbFav.setOnCheckedChangeListener(null);
+        synchronized (favs)
+        {
+            cbFav.setChecked(favs.containsKey(item.getTrainId()));
+        }
         cbFav.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(b)
-                  TrainRepository.favTrain(ctx, item, null);
-                else
-                    TrainRepository.unFavTrain(ctx, item, null);
-                new SyncManager(ctx).pushSubscriptions();
+                mBus.post(new FavTrainEvent(item.getTrainId(), b));
             }
         });
         rowView.setOnClickListener(new View.OnClickListener() {
@@ -98,9 +122,6 @@ public class TrainAdapter extends BaseArrayAdapter<Train> {
         });
         return rowView;
 	}
-	
-	
-	
-	
+
 
 }

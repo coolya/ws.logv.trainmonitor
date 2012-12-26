@@ -48,6 +48,8 @@ import java.util.TreeMap;
 
     public Map<String, String> getAuthHeader(Context ctx)
     {
+        if(mEmail != null && !"".equals(mEmail))
+        {
         try {
             String token = fetchToken(ctx);
             TreeMap<String, String> ret = new TreeMap<String, String>();
@@ -56,6 +58,7 @@ import java.util.TreeMap;
         } catch (IOException e) {
 
 
+        }
         }
         return new TreeMap<String, String>();
     }
@@ -87,13 +90,10 @@ import java.util.TreeMap;
         return sInstance;
     }
 
-    public synchronized  static void Init(String email, Context ctx)
+    public synchronized  static void Init(String email)
     {
         if(sInstance == null)
         {
-            AccountManager mng = AccountManager.get(ctx);
-            Account[] accounts = mng.getAccountsByType(GoogleAuthUtil.GOOGLE_ACCOUNT_TYPE);
-
             sInstance  = new UserManager(email);
         }
     }

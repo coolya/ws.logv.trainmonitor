@@ -20,7 +20,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Window;
@@ -35,28 +34,32 @@ import android.content.Context;
 import android.support.v4.app.Fragment;
 import com.actionbarsherlock.widget.SearchView;
 import com.google.android.gcm.GCMRegistrar;
+import de.greenrobot.event.EventBus;
+import ws.logv.trainmonitor.Workflow;
+import ws.logv.trainmonitor.app.manager.BackendManager;
+import ws.logv.trainmonitor.event.RefreshEvent;
+import ws.logv.trainmonitor.event.SearchEvent;
+import ws.logv.trainmonitor.event.SetUpActionBarEvent;
 import ws.logv.trainmonitor.ui.contract.OnRefreshRequestStateHandler;
 import ws.logv.trainmonitor.R;
 import ws.logv.trainmonitor.app.*;
 import ws.logv.trainmonitor.app.manager.DeviceManager;
-import ws.logv.trainmonitor.app.manager.SyncManager;
 import ws.logv.trainmonitor.app.manager.UserManager;
 import ws.logv.trainmonitor.ui.fragments.ChooseAccountFragment;
-
-import java.util.concurrent.locks.ReentrantLock;
 
 public class MainActivity extends SherlockFragmentActivity implements com.actionbarsherlock.app.ActionBar.OnNavigationListener {
 
     private MenuItem mMenueSearch;
     private MenuItem mMenueRefresh;
-    private IRefreshable mCurrentView;
-    private ISearchable mSearchable;
     private static final String LOG_TAG = "MainActivity";
+
+    private EventBus mBus = Workflow.getEventBus(this);
 
 
     @Override
     protected synchronized  void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.Theme_Sherlock);
+
 
         super.onCreate(savedInstanceState);
         PreferenceManager.setDefaultValues(this, R.xml.settings, false);
@@ -78,6 +81,29 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
         final MainActivity that = this;
 
         showDisclaimer(that);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mBus.register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mBus.unregister(this);
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    public void onEventMainThread(SetUpActionBarEvent event)
+    {
+        if(mMenueSearch != null)
+            mMenueSearch.setVisible(event.isSearchEnabled());
+
+        if(mMenueRefresh != null)
+            mMenueRefresh.setVisible(event.isRefreshEnabled());
 
     }
 
@@ -145,7 +171,9 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
             @Override
             public void run() {
                 try{
-                    UserManager.Init("k.dummann@gmail.com", that);
+                    String string = getSharedPreferences(Constants.Settings.PERF, 0).getString(Constants.Settings.CURRENT_ACCOUNT, "");
+                    UserManager.Init(string);
+
                 GCMRegistrar.checkDevice(that);
                 GCMRegistrar.checkManifest(that);
                 final String regId = GCMRegistrar.getRegistrationId(that);
@@ -154,7 +182,7 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
                 }else
                 {
                     new DeviceManager(that).registeredToGCM(regId);
-                    new SyncManager(that).pushSubscriptions();
+                    new BackendManager(that).pushSubscriptions();
                 }
             } catch (Exception e)
             {
@@ -174,34 +202,14 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
 
         if(i == 0)
         {
-             frag = AllTrainsActivity.AllTrainsFragment.newInstance(i);
-
-             if(mMenueRefresh != null)
-                 mMenueRefresh.setVisible(true);
-
-             if(mMenueSearch != null)
-                 mMenueSearch.setVisible(true);
+             frag = AllTrainsActivity.AllTrainsFragment.newInstance();
 
         } else if (i == 1) {
-            frag = MyTrainsActivity.MyTrainsFragment.newInstance(i);
-
-
-            if(mMenueRefresh != null)
-                mMenueRefresh.setVisible(true);
-
-            if(mMenueSearch != null)
-                mMenueSearch.setVisible(false);
+            frag = MyTrainsActivity.MyTrainsFragment.newInstance();
         }
 
         if(frag != null)
         {
-            mCurrentView = (IRefreshable)frag;
-
-            if(frag instanceof ISearchable)
-                mSearchable = (ISearchable)frag;
-            else
-                mSearchable = null;
-
 
             FragmentTransaction ft =  getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.details, frag);
@@ -212,11 +220,6 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
         return false;
     }
 
-    private void performSearch(String query)
-    {
-        if(mSearchable != null)
-            mSearchable.query(query);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -227,14 +230,14 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                that.performSearch(query);
+                mBus.post(new SearchEvent(query));
                 return true;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
                 if("".equals(newText))
-                    mSearchable.searchClosed();
+                     mBus.post(new SearchEvent(true));
                 return true;  //To change body of implemented methods use File | Settings | File Templates.
             }
         });
@@ -252,8 +255,7 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
                 .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        if(mCurrentView != null)
-                            mCurrentView.refresh();
+                        mBus.post(new RefreshEvent());
                         return true;
                     }
                 })
@@ -270,6 +272,7 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
 
         return true;
     }
+
 
 
 }

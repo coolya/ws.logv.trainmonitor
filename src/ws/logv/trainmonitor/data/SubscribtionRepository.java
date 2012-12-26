@@ -29,9 +29,9 @@ import android.content.Context;
 
 public class SubscribtionRepository {
 
-	public static  DatabaseTask<List<Subscribtion>> loadSubscribtions(Context context,final Action<List<Subscribtion>> callback)
+	public static Task<List<Subscribtion>> loadSubscribtions(Context context,final Action<List<Subscribtion>> callback)
 	{
-        DatabaseTask<List<Subscribtion>> task = new DatabaseTask<List<Subscribtion>>(new Func<List<Subscribtion>, Context>(){
+        Task<List<Subscribtion>> task = new Task<List<Subscribtion>>(new Func<List<Subscribtion>, Context>(){
 	
 				public List<Subscribtion> exec(Context param) {
 					DatabaseHelper databaseHelper = OpenHelperManager.getHelper(param, DatabaseHelper.class);
@@ -56,9 +56,9 @@ public class SubscribtionRepository {
         task.execute(context);
         return task;
 	}
-	public static DatabaseTask<Boolean> saveSubscribtions(Context context, final Collection<Subscribtion> data, final Action<Boolean> callback)
+	public static Task<Boolean> saveSubscribtions(Context context, final Collection<Subscribtion> data, final Action<Boolean> callback)
 	{
-        DatabaseTask<Boolean> task = new DatabaseTask<Boolean>(new Func<Boolean, Context>(){
+        Task<Boolean> task = new Task<Boolean>(new Func<Boolean, Context>(){
 			
 			public Boolean exec(Context param) {
 				DatabaseHelper databaseHelper = OpenHelperManager.getHelper(param, DatabaseHelper.class);
@@ -90,9 +90,9 @@ public class SubscribtionRepository {
         return task;
 	}
 
-    public static DatabaseTask<Boolean> clearSubscribtions(Context context, final Action<Boolean> callback)
+    public static Task<Boolean> clearSubscribtions(Context context, final Action<Boolean> callback)
     {
-        DatabaseTask<Boolean> task = new DatabaseTask<Boolean>(new Func<Boolean, Context>(){
+        Task<Boolean> task = new Task<Boolean>(new Func<Boolean, Context>(){
 
             public Boolean exec(Context param) {
                 DatabaseHelper databaseHelper = OpenHelperManager.getHelper(param, DatabaseHelper.class);

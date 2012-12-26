@@ -25,19 +25,19 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import com.actionbarsherlock.app.SherlockFragment;
-import ws.logv.trainmonitor.ui.contract.FavChangedListener;
+import de.greenrobot.event.EventBus;
+import ws.logv.trainmonitor.Workflow;
+import ws.logv.trainmonitor.command.load.LoadFavouriteTrainsCommand;
+import ws.logv.trainmonitor.command.load.LoadFavouriteTrainsResult;
+import ws.logv.trainmonitor.event.FavouriteTrainsChangedEvent;
+import ws.logv.trainmonitor.event.RefreshEvent;
+import ws.logv.trainmonitor.event.SetUpActionBarEvent;
 import ws.logv.trainmonitor.R;
 import ws.logv.trainmonitor.app.Constants;
 import ws.logv.trainmonitor.ui.adapter.FavouriteTrainAdapter;
-import ws.logv.trainmonitor.app.IRefreshable;
-import ws.logv.trainmonitor.data.Action;
-import ws.logv.trainmonitor.data.DatabaseTask;
-import ws.logv.trainmonitor.data.TrainRepository;
 import ws.logv.trainmonitor.model.FavouriteTrain;
 
-import java.util.Collection;
 import java.util.LinkedList;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -49,80 +49,89 @@ import java.util.concurrent.ExecutionException;
 public class MyTrainsActivity extends FragmentActivity {
 
 
-    public static class MyTrainsFragment extends SherlockFragment  implements IRefreshable
+    public static class MyTrainsFragment extends SherlockFragment
     {
-        static MyTrainsFragment newInstance(int num) {
+        public MyTrainsFragment() {
+        }
+
+        static MyTrainsFragment newInstance() {
             MyTrainsFragment f = new MyTrainsFragment();
-
-            // Supply num input as an argument.
-            Bundle args = new Bundle();
-            args.putInt("num", num);
-            f.setArguments(args);
-
             return f;
         }
-        private View mView;
+
         private FavouriteTrainAdapter mAdapter;
+        private EventBus mBus = Workflow.getEventBus(this.getActivity());
+
+        @Override
+        public void onPause() {
+            super.onPause();
+            mBus.unregister(this);
+            mAdapter.unRegister();
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            mBus.register(this, RefreshEvent.class);
+            mBus.register(this, FavouriteTrainsChangedEvent.class);
+            mAdapter.register();
+        }
+
+        @SuppressWarnings("UnusedDeclaration")
+        public void onEventMainThread(LoadFavouriteTrainsResult event)
+        {
+            mBus.unregister(this, LoadFavouriteTrainsResult.class);
+            if(!event.isFaulted())
+            {
+                mAdapter.setNotifyOnChange(false);
+                mAdapter.clear();
+                mAdapter.addAll(event.getData());
+                mAdapter.notifyDataSetChanged();
+                mAdapter.setNotifyOnChange(true);
+            }
+        }
+
+        @SuppressWarnings("UnusedDeclaration")
+        public void onEvent(RefreshEvent event)
+        {
+            refreshMe();
+        }
+
+        @SuppressWarnings("UnusedDeclaration")
+        public void onEvent(FavouriteTrainsChangedEvent event)
+        {
+            refreshMe();
+        }
+
+        private void refreshMe() {
+            mBus.register(this, LoadFavouriteTrainsResult.class);
+            mBus.post(new LoadFavouriteTrainsCommand());
+        }
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
             final View v = inflater.inflate(R.layout.activity_my_trains, container, false);
-            DatabaseTask<Collection<FavouriteTrain>> task =  TrainRepository.loadFavouriteTrains(v.getContext(), null);
-            mView = v;
             ListView lvTrains = (ListView) v.findViewById(R.id.listView_trains);
 
-            try {
-                Collection<FavouriteTrain> trains = task.get();
+
                 LinkedList<FavouriteTrain> list = new LinkedList<FavouriteTrain>();
-                list.addAll(trains);
-                final FavouriteTrainAdapter adapter = new FavouriteTrainAdapter(v.getContext(), 0, list);
-                mAdapter = adapter;
-                lvTrains.setAdapter(adapter);
+                mAdapter = new FavouriteTrainAdapter(v.getContext(), 0, list);
+                lvTrains.setAdapter(mAdapter);
 
                 lvTrains.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        FavouriteTrain item = adapter.getItem(i);
+                        FavouriteTrain item = mAdapter.getItem(i);
                         Intent intent = new Intent(view.getContext(), Train.class);
                         intent.putExtra(Constants.IntentsExtra.Train, item.getTrainId());
                         view.getContext().startActivity(intent);
                     }
                 });
-
-                TrainRepository.setFavChangedListener(new FavChangedListener() {
-                    @Override
-                    public void onFavChanged() {
-                        DatabaseTask<Collection<FavouriteTrain>> task =  TrainRepository.loadFavouriteTrains(v.getContext(), new Action<Collection<FavouriteTrain>>() {
-                            @Override
-                            public void exec(Collection<FavouriteTrain> param) {
-                                adapter.clear();
-                                adapter.addAll(param);
-                            }
-                        });
-                    }
-                });
-            } catch (InterruptedException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (ExecutionException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
+            mBus.post(new SetUpActionBarEvent(false, true));
+            refreshMe();
             return v;
-        }
-
-        @Override
-        public void refresh() {
-            mAdapter.clear();
-            DatabaseTask<Collection<FavouriteTrain>> task =  TrainRepository.loadFavouriteTrains(mView.getContext(), null);
-            try {
-                Collection<FavouriteTrain> trains = task.get();
-                mAdapter.addAll(trains);
-            } catch (InterruptedException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            } catch (ExecutionException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-            }
         }
     }
 

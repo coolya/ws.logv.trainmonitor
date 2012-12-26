@@ -19,18 +19,24 @@ package ws.logv.trainmonitor.app.manager;
 import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
+import de.greenrobot.event.EventBus;
 import ws.logv.trainmonitor.R;
+import ws.logv.trainmonitor.Workflow;
 import ws.logv.trainmonitor.api.ApiClient;
 import ws.logv.trainmonitor.api.IApiCallback;
-import ws.logv.trainmonitor.app.manager.DeviceManager;
+import ws.logv.trainmonitor.event.*;
+import ws.logv.trainmonitor.command.fetch.FetchTrainDetailsCommand;
+import ws.logv.trainmonitor.command.fetch.FetchTrainDetailsResult;
 import ws.logv.trainmonitor.data.*;
 import ws.logv.trainmonitor.model.Device;
-import ws.logv.trainmonitor.model.FavouriteTrain;
+import ws.logv.trainmonitor.model.Station;
 import ws.logv.trainmonitor.model.Subscribtion;
 import ws.logv.trainmonitor.model.Train;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -40,14 +46,66 @@ import java.util.concurrent.ExecutionException;
  * Time: 06:54
  * To change this template use File | Settings | File Templates.
  */
-public class SyncManager {
+public class BackendManager {
     private final Context mCtx;
-    private static final String LOG_TAG = "SyncManager";
+    private static final String LOG_TAG = "BackendManager";
 
-    public SyncManager(Context ctx)
+    public BackendManager(Context ctx)
     {
-         mCtx = ctx;
+        mCtx = ctx;
     }
+
+    @SuppressWarnings("UnusedDeclaration")
+    public void onEventAsync(TrainSyncEvent event)
+    {
+        ApiClient apiClient = new ApiClient(mCtx);
+        EventBus bus = Workflow.getEventBus(mCtx);
+        Collection<Train> trains = apiClient.getTrains();
+        try {
+            bus.post(new TrainSyncProgressEvent(mCtx.getString(R.string.refresh_trains_2)));
+            TrainRepository.deleteTrains(mCtx);
+        } catch (SQLException e) {
+            Log.e(LOG_TAG, "Error deleting trains", e);
+        }
+
+        int count = trains.size();
+        int i = 1;
+        for (Train train : trains)
+        {
+            try {
+                TrainRepository.saveTrain(mCtx, train);
+                bus.post(new TrainSyncProgressEvent(mCtx.getString(R.string.refresh_trains_3, i, count)));
+                i++;
+            } catch (SQLException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+        }
+        bus.post(new TrainSyncCompleteEvent());
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    public void onEventAsync(StationSyncEvent event)
+    {
+        EventBus bus = Workflow.getEventBus(mCtx);
+        ApiClient apiClient = new ApiClient(mCtx);
+        List<Station> stations = apiClient.getStations();
+        try {
+            StationRepository.saveStations(mCtx, stations);
+        } catch (SQLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+        bus.post(new StationSyncCompleteEvent());
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    public void onEventAsync(FetchTrainDetailsCommand event)
+    {
+        EventBus bus = Workflow.getEventBus(mCtx);
+        ApiClient apiClient = new ApiClient(mCtx);
+        Train train = apiClient.getTrainDetail(event.getTrain());
+        bus.post(new FetchTrainDetailsResult(train, event.getTag()));
+    }
+
     public void syncTrains(final Action<String> progress, final Action<Integer> complete) {
         ApiClient api = new ApiClient(mCtx);
         api.getTrains(new IApiCallback<Collection<Train>>() {
@@ -106,26 +164,13 @@ public class SyncManager {
 
         if(dev == null || dev.getGcmRegId() == null ||dev.getGcmRegId().isEmpty())
             return;
-
-        DatabaseTask<Collection<FavouriteTrain>> task =  TrainRepository.loadFavouriteTrains(mCtx, null);
-
         try {
-            ArrayList<Subscribtion> subscribtions = new ArrayList<Subscribtion>();
+
             ApiClient client = new ApiClient(mCtx);
-            for(FavouriteTrain train : task.get())
-            {
-
-               Subscribtion subscribtion =   SubscribtionRepository.getSubscribtionByTrain(mCtx, train.getTrainId());
-                if(subscribtion == null)
-                {
-                    subscribtion = Subscribtion.createNew(dev);
-                    subscribtion.setTrain(train.getTrainId());
-                }
-
-                subscribtions.add(subscribtion);
-            }
+            Task<List<Subscribtion>> task = SubscribtionRepository.loadSubscribtions(mCtx, null);
+            ArrayList<Subscribtion> subscription = new ArrayList<Subscribtion>(task.get());
             final Context ctx = mCtx;
-            client.postSubscribtion(subscribtions, new IApiCallback<Collection<Subscribtion>>() {
+            client.postSubscribtion(subscription, new IApiCallback<Collection<Subscribtion>>() {
                 @Override
                 public void onComplete(Collection<Subscribtion> data) {
                     SubscribtionRepository.saveSubscribtions(ctx, data, null);
@@ -162,13 +207,9 @@ public class SyncManager {
             @Override
             public void onComplete(Collection<Subscribtion> data) {
                 try {
-                    TrainRepository.unFavAllTrains(ctx, null).get();
                     SubscribtionRepository.clearSubscribtions(ctx, null).get();
                     SubscribtionRepository.saveSubscribtions(ctx, data, null);
-                    for (Subscribtion item : data)
-                    {
-                        TrainRepository.favTrain(ctx, item.getTrain(), null).get();
-                    }
+                    TrainRepository.notifyFav();
                 } catch (InterruptedException e) {
                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 } catch (ExecutionException e) {
