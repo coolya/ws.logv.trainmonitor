@@ -17,13 +17,11 @@
 package ws.logv.trainmonitor.app.manager;
 
 import android.content.Context;
+import android.util.Log;
 import com.google.android.gcm.GCMRegistrar;
 import ws.logv.trainmonitor.Workflow;
 import ws.logv.trainmonitor.api.ApiClient;
-import ws.logv.trainmonitor.event.DeviceReadyEvent;
-import ws.logv.trainmonitor.event.DeviceUpdatedEvent;
-import ws.logv.trainmonitor.event.PrepareDeviceEvent;
-import ws.logv.trainmonitor.event.RegisteredToGcmEvent;
+import ws.logv.trainmonitor.event.*;
 import ws.logv.trainmonitor.model.Device;
 
 import java.io.File;
@@ -68,7 +66,8 @@ public class DeviceManager {
                     writeFile(file, sDevice.toString().getBytes());
                     Workflow.getEventBus(mCtx).post(new DeviceUpdatedEvent());
                 } catch (Exception e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    Log.e(LOG_TAG, "Error storing registration device!", e);
+                    Workflow.getEventBus(mCtx).post(new FatalErrorEvent(e));
                 }
             }
         }
@@ -85,9 +84,11 @@ public class DeviceManager {
                 file.createNewFile();
                 writeFile(file, device.toString().getBytes());
             } catch (IOException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                Log.e(LOG_TAG, "Error preparing device!", e);
+                Workflow.getEventBus(mCtx).post(new FatalErrorEvent(e));
             } catch (Exception e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                Log.e(LOG_TAG, "Error preparing device!", e);
+                Workflow.getEventBus(mCtx).post(new FatalErrorEvent(e));
             }
         }
 
@@ -98,7 +99,8 @@ public class DeviceManager {
                 sDevice = Device.fromString(data);
                 Workflow.getEventBus(mCtx).post(new DeviceReadyEvent());
             } catch (Exception e) {
-                e.printStackTrace();
+                Log.e(LOG_TAG, "Error preparing device!", e);
+                Workflow.getEventBus(mCtx).post(new FatalErrorEvent(e));
             }
         }
     }
