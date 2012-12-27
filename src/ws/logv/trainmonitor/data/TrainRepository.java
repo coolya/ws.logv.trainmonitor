@@ -71,12 +71,20 @@ public class TrainRepository
     {
         if(event.isFav())
         {
-            favTrain(mContext, event.getTrain());
-            Workflow.getEventBus(mContext).post(new PushSubscriptionsEvent());
+            try {
+                favTrain(mContext, event.getTrain());
+                Workflow.getEventBus(mContext).post(new PushSubscriptionsEvent());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         else
         {
-            unFavTrain(mContext, event.getTrain());
+            try {
+                unFavTrain(mContext, event.getTrain());
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
     }
@@ -100,7 +108,6 @@ public class TrainRepository
                 finally
                 {
                     OpenHelperManager.releaseHelper();
-                    databaseHelper = null;
                 }
     }
     private static void loadTrainsOrdered(Context context, long offset, long count)
@@ -117,7 +124,6 @@ public class TrainRepository
                 finally
                 {
                     OpenHelperManager.releaseHelper();
-                    databaseHelper = null;
                 }
     }
 
@@ -133,7 +139,6 @@ public class TrainRepository
         finally
         {
             OpenHelperManager.releaseHelper();
-            databaseHelper = null;
         }
     }
 
@@ -156,8 +161,6 @@ public class TrainRepository
         try {
             Dao<Train, Integer> dao = databaseHelper.getTrainDataDao();
             dao.delete(dao.deleteBuilder().prepare());
-        } catch (SQLException e) {
-            throw e;
         }
         finally
         {
@@ -194,8 +197,7 @@ public class TrainRepository
                 }
     }
 
-    private static void favTrain(Context context, String train)
-    {
+    private static void favTrain(Context context, String train) throws SQLException {
         if(!isTrainFav(context, train))
         {
             DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
@@ -205,7 +207,6 @@ public class TrainRepository
                 data.setTrain(train);
                 dao.create(data);
                 Workflow.getEventBus(context).post(new FavouriteTrainsChangedEvent());
-            } catch (Exception e) {
             }
             finally
             {
@@ -214,8 +215,7 @@ public class TrainRepository
         }
     }
 
-    private static void unFavTrain(Context context, String train)
-    {
+    private static void unFavTrain(Context context, String train) throws SQLException {
         if(isTrainFav(context, train))
         {
             DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
@@ -226,7 +226,6 @@ public class TrainRepository
                 builder.setWhere(dao.queryBuilder().where().eq("train", train));
                 dao.delete(builder.prepare());
                 Workflow.getEventBus(context).post(new FavouriteTrainsChangedEvent());
-            } catch (Exception e) {
             }
             finally
             {
@@ -267,11 +266,10 @@ public class TrainRepository
         finally
         {
             OpenHelperManager.releaseHelper();
-            databaseHelper = null;
         }
     }
 
-    public static void clearSubscribtions(Context context) throws SQLException {
+    public static void clearSubscriptions(Context context) throws SQLException {
         DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
         try {
             Dao<Subscribtion, UUID> dao = databaseHelper.getSubscribtionDao();
@@ -283,7 +281,7 @@ public class TrainRepository
         }
     }
 
-    public static void saveSubscribtions(Context context, final Collection<Subscribtion> data) throws SQLException {
+    public static void saveSubscriptions(Context context, final Collection<Subscribtion> data) throws SQLException {
         DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
         try {
             Dao<Subscribtion, UUID> dao = databaseHelper.getSubscribtionDao();
