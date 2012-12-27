@@ -25,13 +25,13 @@
     </option>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f5929a66-7313-4250-a1b2-6de6930bc653" name="TM-64 Create Licence Fragment" comment="add delete for subscriptions&#10;">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/fragments/ChooseAccountFragment.java" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/fragments/ChooseAccountFragment.java" />
+    <list default="true" id="f5929a66-7313-4250-a1b2-6de6930bc653" name="TM-64 Create Licence Fragment" comment="fix crash when no google account is present&#10;">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/ChooseAccountActivity.java" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/ChooseAccountActivity.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Zugmonitor.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="f5929a66-7313-4250-a1b2-6de6930bc653" time="1356568837543" ignored="false" />
+    <file path="/Dummy.txt" changelist="f5929a66-7313-4250-a1b2-6de6930bc653" time="1356600110163" ignored="false" />
     <file path="/TrainType.java" changelist="2d19ff68-2086-497f-9547-a5400a44ec8a" time="1354891477296" ignored="false" />
     <file path="/strings.xml" changelist="f5929a66-7313-4250-a1b2-6de6930bc653" time="1356438812930" ignored="false" />
     <file path="/navigation.xml" changelist="2d19ff68-2086-497f-9547-a5400a44ec8a" time="1354891711623" ignored="false" />
@@ -64,7 +64,7 @@
     <file path="/LicenseFragment.java" changelist="f5929a66-7313-4250-a1b2-6de6930bc653" time="1356430211112" ignored="false" />
     <file path="/license.xml" changelist="2d19ff68-2086-497f-9547-a5400a44ec8a" time="1355206179088" ignored="false" />
     <file path="/TrainDetailAdapter.java" changelist="f5929a66-7313-4250-a1b2-6de6930bc653" time="1356546937161" ignored="false" />
-    <file path="/ChooseAccountActivity.java" changelist="f5929a66-7313-4250-a1b2-6de6930bc653" time="1356433682250" ignored="false" />
+    <file path="/ChooseAccountActivity.java" changelist="f5929a66-7313-4250-a1b2-6de6930bc653" time="1356600194801" ignored="false" />
     <file path="/TrainManager.java" changelist="f5929a66-7313-4250-a1b2-6de6930bc653" time="1356447123244" ignored="false" />
     <file path="/DatabaseHelper.java" changelist="f5929a66-7313-4250-a1b2-6de6930bc653" time="1356451958317" ignored="false" />
     <file path="/Subscribtion.java" changelist="f5929a66-7313-4250-a1b2-6de6930bc653" time="1356450776822" ignored="false" />
@@ -667,10 +667,37 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ChooseAccountFragment.java" pinned="false" current="true" current-in-tab="true">
+      <file leaf-file-name="ChooseAccountFragment.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/fragments/ChooseAccountFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="63" column="40" selection-start="2195" selection-end="2195" vertical-scroll-proportion="0.23661485">
+            <state line="63" column="40" selection-start="2195" selection-end="2195" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SettingsFragment.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/fragments/SettingsFragment.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="38" column="13" selection-start="1266" selection-end="1266" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SettingsActivity.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/SettingsActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="40" column="13" selection-start="1359" selection-end="1359" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ChooseAccountActivity.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/ChooseAccountActivity.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="30" column="63" selection-start="1091" selection-end="1091" vertical-scroll-proportion="0.32297063">
               <folding />
             </state>
           </provider>
@@ -703,39 +730,6 @@
             <state line="124" column="16" selection-start="4540" selection-end="4540" vertical-scroll-proportion="0.0">
               <folding>
                 <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="UserManager.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/app/manager/UserManager.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="69" column="0" selection-start="2288" selection-end="2288" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="e#2341#2357#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AllTrainsActivity.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/AllTrainsActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="128" column="0" selection-start="4438" selection-end="4438" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="TrainRepository.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/data/TrainRepository.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="84" column="94" selection-start="2807" selection-end="2807" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="e#1815#1853#0" expanded="true" />
-                <element signature="e#2280#2318#0" expanded="true" />
-                <element signature="e#3074#3112#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -781,7 +775,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/src/ws/logv/trainmonitor/api/JsonHelper.java" />
         <option value="$PROJECT_DIR$/src/ws/logv/trainmonitor/data/SubscribtionRepository.java" />
         <option value="$PROJECT_DIR$/src/ws/logv/trainmonitor/GCMIntentService.java" />
         <option value="$PROJECT_DIR$/src/ws/logv/trainmonitor/app/manager/DeviceManager.java" />
@@ -797,6 +790,7 @@
         <option value="$PROJECT_DIR$/src/ws/logv/trainmonitor/command/delete/DeleteSubscriptionResult.java" />
         <option value="$PROJECT_DIR$/src/ws/logv/trainmonitor/app/manager/BackendManager.java" />
         <option value="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/fragments/ChooseAccountFragment.java" />
+        <option value="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/ChooseAccountActivity.java" />
       </list>
     </option>
   </component>
@@ -945,6 +939,32 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="fragments" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Zugmonitor" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ws.logv.trainminitor.MainActivity" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trainmonitor" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ui" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="adapter" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -990,32 +1010,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="command" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Zugmonitor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ws.logv.trainminitor.MainActivity" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="src" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="trainmonitor" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="command" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="delete" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -1337,7 +1331,11 @@
       <created>1356568849075</created>
       <updated>1356568849075</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="fix crash when no google account is present&#10;">
+      <created>1356600118505</created>
+      <updated>1356600118505</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <option name="markAsInProgress" value="true" />
     <servers>
       <YouTrack shared="false" url="http://logv.myjetbrains.com/youtrack">
@@ -1441,7 +1439,7 @@
     <option name="MAXIMUM_HISTORY_ROWS" value="1000" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="add delete for subscriptions&#10;" />
+    <option name="LAST_COMMIT_MESSAGE" value="fix crash when no google account is present&#10;" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -1471,6 +1469,7 @@
     <MESSAGE value="more events&#10;" />
     <MESSAGE value="Refactor repository&#10;" />
     <MESSAGE value="add delete for subscriptions&#10;" />
+    <MESSAGE value="fix crash when no google account is present&#10;" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -1480,29 +1479,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/adapter/TrainDetailAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="43" column="13" selection-start="1416" selection-end="1416" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="e#1567#1585#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/adapter/TrainAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="61" column="33" selection-start="2340" selection-end="2340" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/adapter/FavouriteTrainAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="45" column="13" selection-start="1594" selection-end="1594" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://C:/Program Files (x86)/Android/android-sdk/platforms/android-17/android.jar!/android/accounts/AccountManager.class">
       <provider selected="true" editor-type-id="text-editor">
         <state line="37" column="4" selection-start="2451" selection-end="2451" vertical-scroll-proportion="0.33215547">
@@ -1609,7 +1585,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/fragments/ChooseAccountFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="63" column="40" selection-start="2195" selection-end="2195" vertical-scroll-proportion="0.23661485">
+        <state line="63" column="40" selection-start="2195" selection-end="2195" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/fragments/SettingsFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="38" column="13" selection-start="1266" selection-end="1266" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/SettingsActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="40" column="13" selection-start="1359" selection-end="1359" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/ChooseAccountActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="30" column="63" selection-start="1091" selection-end="1091" vertical-scroll-proportion="0.32297063">
           <folding />
         </state>
       </provider>

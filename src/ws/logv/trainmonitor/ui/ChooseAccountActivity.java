@@ -19,6 +19,8 @@ package ws.logv.trainmonitor.ui;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import ws.logv.trainmonitor.Workflow;
+import ws.logv.trainmonitor.event.AccountChoosnEvent;
 import ws.logv.trainmonitor.ui.fragments.ChooseAccountFragment;
 
 /**
@@ -35,6 +37,7 @@ public class ChooseAccountActivity extends FragmentActivity {
         new ChooseAccountFragment(new Runnable() {
             @Override
             public void run() {
+                Workflow.getEventBus(that).post(new AccountChoosnEvent());
                 that.finish();
             }
         }).show(getSupportFragmentManager(),"choose_account");
