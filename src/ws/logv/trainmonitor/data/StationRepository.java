@@ -95,7 +95,7 @@ public class StationRepository {
         synchronized (lock)
         {
             syncForeced = false;
-            while (pendingResponses.isEmpty())
+            while (!pendingResponses.isEmpty())
             {
                 commands.add(pendingResponses.poll());
             }

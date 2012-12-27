@@ -31,13 +31,7 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 
-/**
- * Created with IntelliJ IDEA.
- * User: kdummann
- * Date: 04.12.12
- * Time: 20:59
- * To change this template use File | Settings | File Templates.
-            */
+
     public class UserManager {
     private static UserManager sInstance;
     private Context mContext;
