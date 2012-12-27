@@ -140,10 +140,10 @@ public class BackendManager {
     {
         ApiClient client = new ApiClient(mCtx);
         try {
-            List<Subscribtion> subscribtions = SubscriptionRepository.loadSubscriptions(mCtx);
+            List<Subscribtion> subscribtions = TrainRepository.loadSubscriptions(mCtx);
             subscribtions = client.postSubscriptions(subscribtions);
-            SubscriptionRepository.clearSubscribtions(mCtx);
-            SubscriptionRepository.saveSubscribtions(mCtx, subscribtions);
+            TrainRepository.clearSubscribtions(mCtx);
+            TrainRepository.saveSubscribtions(mCtx, subscribtions);
             Workflow.getEventBus(mCtx).post(new FavouriteTrainsChangedEvent());
         } catch (SQLException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.

@@ -34,6 +34,7 @@ import ws.logv.trainmonitor.model.Train;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -71,12 +72,13 @@ public class TrainRepository
         if(event.isFav())
         {
             favTrain(mContext, event.getTrain());
+            Workflow.getEventBus(mContext).post(new PushSubscriptionsEvent());
         }
         else
         {
             unFavTrain(mContext, event.getTrain());
         }
-        Workflow.getEventBus(mContext).post(new PushSubscriptionsEvent());
+
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -254,5 +256,47 @@ public class TrainRepository
         {
             OpenHelperManager.releaseHelper();
         }
+    }
+
+    public static List<Subscribtion> loadSubscriptions(Context context) throws SQLException {
+        DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        try {
+            Dao<Subscribtion, UUID> dao = databaseHelper.getSubscribtionDao();
+            return dao.query(dao.queryBuilder().limit(20l).prepare());
+        }
+        finally
+        {
+            OpenHelperManager.releaseHelper();
+            databaseHelper = null;
+        }
+    }
+
+    public static void clearSubscribtions(Context context) throws SQLException {
+        DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        try {
+            Dao<Subscribtion, UUID> dao = databaseHelper.getSubscribtionDao();
+            dao.delete(dao.deleteBuilder().prepare());
+        }
+        finally
+        {
+            OpenHelperManager.releaseHelper();
+        }
+    }
+
+    public static void saveSubscribtions(Context context, final Collection<Subscribtion> data) throws SQLException {
+        DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        try {
+            Dao<Subscribtion, UUID> dao = databaseHelper.getSubscribtionDao();
+
+            for(Subscribtion subscribtion : data)
+            {
+                dao.createOrUpdate(subscribtion);
+            }
+        }
+        finally
+        {
+            OpenHelperManager.releaseHelper();
+        }
+
     }
 }
