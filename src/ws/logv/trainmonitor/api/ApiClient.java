@@ -23,7 +23,6 @@ import android.net.Uri;
 import android.util.Base64;
 import android.util.Log;
 import com.google.gson.reflect.TypeToken;
-import com.turbomanage.httpclient.AsyncCallback;
 import com.turbomanage.httpclient.HttpResponse;
 import com.turbomanage.httpclient.ParameterMap;
 import com.turbomanage.httpclient.android.AndroidHttpClient;
@@ -34,23 +33,28 @@ import ws.logv.trainmonitor.model.Station;
 import ws.logv.trainmonitor.model.Subscribtion;
 import ws.logv.trainmonitor.model.Train;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.*;
 
 public class ApiClient {
 
-    private final String URI ;
+    private final String SECURE_URI;
+    private final String NONE_SECURE_URI;
 	private final Context ctx;
 
 	public ApiClient(Context ctx)
 	{
        if(BuildConfig.DEBUG)
        {
-          // URI  = "https://trainmonitor.logv.ws/api/v1/";
-           URI  = "http://[2001:470:1f15:5e3:11c4:492:eb77:f7ab]:8080/api/v1/";
+          // SECURE_URI  = "https://trainmonitor.logv.ws/api/v1/";
+           SECURE_URI = "http://[2001:470:1f15:5e3:11c4:492:eb77:f7ab]:8080/api/v1/";
+           NONE_SECURE_URI = "http://[2001:470:1f15:5e3:11c4:492:eb77:f7ab]:8080/api/v1/";
        }
         else
        {
-           URI  = "https://trainmonitor.logv.ws/api/v1/";
+           SECURE_URI = "https://trainmonitor.logv.ws/api/v1/";
+           NONE_SECURE_URI = "http://trainmonitor.logv.ws/api/v1/";
        }
         this.ctx = ctx;
 	}
@@ -65,7 +69,7 @@ public class ApiClient {
 
     public Collection<Train> getTrains()
     {
-        AndroidHttpClient httpClient = new AndroidHttpClient(URI, new LogvSslRequestHandler(ctx));
+        AndroidHttpClient httpClient = new AndroidHttpClient(NONE_SECURE_URI, new LogvSslRequestHandler(ctx));
         ParameterMap params = httpClient.newParams();
         params.add("client", "ANDROID");
         HttpResponse res = httpClient.get("germany/trains", params);
@@ -85,7 +89,7 @@ public class ApiClient {
 
     public  Train getTrainDetail(String trainId)
     {
-        AndroidHttpClient httpClient = new AndroidHttpClient(URI, new LogvSslRequestHandler(ctx));
+        AndroidHttpClient httpClient = new AndroidHttpClient(NONE_SECURE_URI, new LogvSslRequestHandler(ctx));
         ParameterMap params = httpClient.newParams();
         params.add("client", "ANDROID");
         HttpResponse res =  httpClient.get("germany/trains/" + Uri.encode(trainId), params);
@@ -98,7 +102,7 @@ public class ApiClient {
 
     public List<Station> getStations()
     {
-        AndroidHttpClient httpClient = new AndroidHttpClient(URI, new LogvSslRequestHandler(ctx));
+        AndroidHttpClient httpClient = new AndroidHttpClient(NONE_SECURE_URI, new LogvSslRequestHandler(ctx));
         ParameterMap params = httpClient.newParams();
         params.add("client", "ANDROID");
         HttpResponse res =  httpClient.get("germany/stations",params);
@@ -113,8 +117,8 @@ public class ApiClient {
         JsonHelper jsonHelper = new JsonHelper();
         String json = jsonHelper.toJson(data);
 
-        Map<String, String> headers = UserManager.Instance().getAuthHeader(ctx);
-        AndroidHttpClient httpClient = new AndroidHttpClient(URI, new LogvSslRequestHandler(ctx));
+        Map<String, String> headers = new UserManager(ctx).getAuthHeader(ctx);
+        AndroidHttpClient httpClient = new AndroidHttpClient(SECURE_URI, new LogvSslRequestHandler(ctx));
 
         for(Map.Entry<String, String> item : headers.entrySet())
         {
@@ -130,23 +134,23 @@ public class ApiClient {
 
     public void deleteSubscription(Subscribtion subscribtion)
     {
-        String idPart = Base64.encodeToString(asByteArray(subscribtion.getId()), Base64.URL_SAFE);
+        String idPart = encode(subscribtion.getId());
 
-        Map<String, String> headers = UserManager.Instance().getAuthHeader(ctx);
-        AndroidHttpClient httpClient = new AndroidHttpClient(URI, new LogvSslRequestHandler(ctx));
+        Map<String, String> headers = new UserManager(ctx).getAuthHeader(ctx);
+        AndroidHttpClient httpClient = new AndroidHttpClient(SECURE_URI, new LogvSslRequestHandler(ctx));
 
         for(Map.Entry<String, String> item : headers.entrySet())
         {
             httpClient.addHeader(item.getKey(), item.getValue());
         }
 
-        httpClient.delete("subscribtions/" + idPart.substring(0, 22), httpClient.newParams());
+        httpClient.delete("subscribtions/" + idPart, httpClient.newParams());
     }
 
     public Device registerDevice()
     {
-        Map<String, String> headers = UserManager.Instance().getAuthHeader(ctx);
-        AndroidHttpClient httpClient = new AndroidHttpClient(URI, new LogvSslRequestHandler(ctx));
+        Map<String, String> headers = new UserManager(ctx).getAuthHeader(ctx);
+        AndroidHttpClient httpClient = new AndroidHttpClient(SECURE_URI, new LogvSslRequestHandler(ctx));
 
         for(Map.Entry<String, String> item : headers.entrySet())
         {
@@ -162,55 +166,26 @@ public class ApiClient {
         return ret;
     }
 
-    public void putDevice(final Device device)
+    public void putDevice(Device device)
     {
-        new Thread()
-        {
-            @Override
-            public void run() {
-                AsyncCallback callback = new AsyncCallback() {
-                    @Override
-                    public void onComplete(HttpResponse httpResponse) {
-                        //To change body of implemented methods use File | Settings | File Templates.
-                    }
-                };
-
                 JsonHelper helper = new JsonHelper();
                 String data = helper.toJson(device);
-                String devicePart = Base64.encodeToString(asByteArray(device.getId()), Base64.URL_SAFE);
-                Map<String, String> headers = UserManager.Instance().getAuthHeader(ctx);
-                AndroidHttpClient httpClient = new AndroidHttpClient(URI, new LogvSslRequestHandler(ctx));
+                String devicePart = encode(device.getId());
+                Map<String, String> headers = new UserManager(ctx).getAuthHeader(ctx);
+                AndroidHttpClient httpClient = new AndroidHttpClient(SECURE_URI, new LogvSslRequestHandler(ctx));
 
                 for(Map.Entry<String, String> item : headers.entrySet())
                 {
                     httpClient.addHeader(item.getKey(), item.getValue());
                 }
-
                 try {
-                    httpClient.put("devices/" + devicePart.substring(0, 22), "application/json", data.getBytes(), callback);
+                    httpClient.put("devices/" + devicePart, "application/json", data.getBytes());
                 } catch (Exception e) {
                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
                 }
-            }
-        }.start();
-
     }
 
-    private static byte[] asByteArray(UUID uuid) {
-
-        long msb = uuid.getMostSignificantBits();
-        long lsb = uuid.getLeastSignificantBits();
-        byte[] buffer = new byte[16];
-
-        for (int i = 0; i < 8; i++) {
-            buffer[i] = (byte) (msb >>> 8 * (7 - i));
-        }
-
-        for (int i = 8; i < 16; i++) {
-            buffer[i] = (byte) (lsb >>> 8 * (7 - i));
-        }
-        return buffer;
-
+    public static String encode(UUID uuid) {
+        return uuid.toString().replace("-", "");
     }
-
 }

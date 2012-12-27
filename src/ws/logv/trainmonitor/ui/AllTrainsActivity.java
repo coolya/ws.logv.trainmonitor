@@ -22,6 +22,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.util.Log;
 import android.view.*;
+import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
@@ -130,12 +131,40 @@ public class AllTrainsActivity extends FragmentActivity {
             if(result.isFaulted())
             {
                 Log.e(LOG_TAG, "Error getting trains from DB", result.getException());
+                Toast.makeText(getActivity(), R.string.error_reading_trains, Toast.LENGTH_LONG).show();
             }
             else
             {
                 mAdapter.addAll(result.getResult());
             }
             WindowMediator.EndRefreshState();
+        }
+
+        @SuppressWarnings("UnusedDeclaration")
+        public void onEventMainThread(NoConnectionEvent event)
+        {
+            if(mDialog != null)
+            {
+                mDialog.dismiss();
+            }
+
+            Toast.makeText(getActivity().getApplicationContext(), R.string.error_no_connection, Toast.LENGTH_LONG).show();
+        }
+
+        @SuppressWarnings("UnusedDeclaration")
+        public void onFatalError(FatalErrorEvent event)
+        {
+            mBus.unregister(this, FatalErrorEvent.class);
+            if(mDialog != null)
+            {
+                mDialog.dismiss();
+            }
+            if(event.getResId() != 0)
+            {
+                Toast toast = Toast.makeText(getActivity().getApplicationContext(),event.getResId(), Toast.LENGTH_SHORT);
+                toast.show();
+            }
+
         }
 
         @SuppressWarnings("UnusedDeclaration")
@@ -188,6 +217,7 @@ public class AllTrainsActivity extends FragmentActivity {
             mDialog.setMessage(ctx.getString(R.string.refresh_trains_1));
             mDialog.show();
 
+            mBus.register(this, "onFatalError", FatalErrorEvent.class);
             mBus.post(new TrainSyncEvent());
 
 		}

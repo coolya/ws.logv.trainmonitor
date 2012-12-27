@@ -24,6 +24,7 @@ import ws.logv.trainmonitor.app.manager.DeviceManager;
 import ws.logv.trainmonitor.app.manager.UserManager;
 import ws.logv.trainmonitor.data.StationRepository;
 import ws.logv.trainmonitor.data.TrainRepository;
+import ws.logv.trainmonitor.debug.FatalEventListener;
 import ws.logv.trainmonitor.event.WorkflowWiredUpEvent;
 
 /**
@@ -57,11 +58,13 @@ public class Workflow {
                     mBus.register(new TrainRepository(context));
                     mBus.register(new BackendManager(context));
                     mBus.register(new StationRepository(context));
-                    mBus.register(new UserManager(context));
                     mBus.register(new DeviceManager(context));
-                    mBus.register(new UserManager(context));
+                    if(BuildConfig.DEBUG)
+                    {
+                        mBus.register(new FatalEventListener());
+                    }
                     wiredup = true;
-                    mBus.post(new WorkflowWiredUpEvent());
+                    mBus.postSticky(new WorkflowWiredUpEvent());
                 }
             }
         }

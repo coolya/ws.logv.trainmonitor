@@ -63,6 +63,8 @@ public class DeviceManager {
             if(file.exists())
             {
                 try {
+                    ApiClient client = new ApiClient(mCtx);
+                    client.putDevice(sDevice);
                     writeFile(file, sDevice.toString().getBytes());
                     Workflow.getEventBus(mCtx).post(new DeviceUpdatedEvent());
                 } catch (Exception e) {
@@ -74,7 +76,7 @@ public class DeviceManager {
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public void onEvent(PrepareDeviceEvent event)
+    public void onEventBackgroundThread(PrepareDeviceEvent event)
     {
         File file = new File(mCtx.getFilesDir(), FILENAME);
         if (!file.exists()) {

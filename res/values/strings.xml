@@ -17,17 +17,14 @@
 <resources>
 
     <string name="app_name">Trainmonitor Beta</string>
-    <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_main">Trainmonitor Beta</string>
     <string name="title_activity_my_trains">My Trains</string>
     <string name="title_activity_train">Train</string>
     <string name="train_details_error">Error while fetching train details</string>
     <string name="error_no_connection">Your internet connection is currently unavailable</string>
-    <string name="title_activity_all_trains">All Trains</string>
     <string name="train_id">Train number:</string>
-    <string name="train_stations">Stations:</string>
-    <string name="error_getting_trains">Error getting trains from Server please check your connection</string>
+     <string name="error_getting_trains">Error getting trains from Server please check your connection</string>
     <string name="progess_getting_train_details">Getting train details...</string>
     <string name="stations">Stations:</string>
     <string name="refresh_trains_1">Contacting server</string>
@@ -52,10 +49,12 @@
     <string name="settings_about_license">License</string>
     <string name="settings_about_summary_donate">If you like the App you might like to buy me beer</string>
     <string name="settings_about_donate">Donate</string>
-    <string name="settings_summary_notify">Whenever a train is late, Trainmonitor display a notification.</string>
+    <string name="settings_summary_notify">Whenever a train is late, Trainmonitor will display a notification.</string>
     <string name="settings_notify">Notifications</string>
     <string name="settings_summary_account">Tab to choose an account</string>
     <string name="settings_account">Account</string>
     <string name="error_getting_stations">Error getting stations from server</string>
+    <string name="error_reading_trains">Error reading trains</string>
+    <string name="search">Search</string>
 
 </resources>

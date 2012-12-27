@@ -47,8 +47,6 @@ public class GCMIntentService extends GCMBaseIntentService {
     public GCMIntentService()
     {
         super(Constants.GCM.SENDER_ID);
-        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-        wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Refresh trains");
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -91,6 +89,11 @@ public class GCMIntentService extends GCMBaseIntentService {
         else
         {
             String train = intent.getStringExtra("train");
+            if(wl == null)
+            {
+                PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+                wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Refresh trains");
+            }
 
             wl.acquire(2000);
             EventBus bus = Workflow.getEventBus(context);

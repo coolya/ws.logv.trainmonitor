@@ -7,7 +7,6 @@
       <module fileurl="file://$PROJECT_DIR$/../../GitHub/EventBus/EventBus/EventBus.iml" filepath="$PROJECT_DIR$/../../GitHub/EventBus/EventBus/EventBus.iml" />
       <module fileurl="file://$USER_HOME$/GitHub/Android-PullToRefresh/library/Library.iml" filepath="$USER_HOME$/GitHub/Android-PullToRefresh/library/Library.iml" />
       <module fileurl="file://$PROJECT_DIR$/Zugmonitor.iml" filepath="$PROJECT_DIR$/Zugmonitor.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../basic-http-client/basic-http-client.iml" filepath="$PROJECT_DIR$/../basic-http-client/basic-http-client.iml" />
     </modules>
   </component>
 </project>

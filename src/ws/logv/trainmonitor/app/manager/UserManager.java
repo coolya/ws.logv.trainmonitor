@@ -41,19 +41,9 @@ import java.util.TreeMap;
     public UserManager(Context context)
     {
         mContext = context;
+        mEmail = mContext.getSharedPreferences(Constants.Settings.PERF, 0).getString(Constants.Settings.CURRENT_ACCOUNT, "");
     }
 
-    @SuppressWarnings("UnusedDeclaration")
-    public void onEvent(AccountChoosnEvent event)
-    {
-        String string = mContext.getSharedPreferences(Constants.Settings.PERF, 0).getString(Constants.Settings.CURRENT_ACCOUNT, "");
-        Init(string);
-    }
-
-    private UserManager(String email)
-    {
-           mEmail = email;
-    }
 
     public Map<String, String> getAuthHeader(Context ctx)
     {
@@ -91,20 +81,11 @@ import java.util.TreeMap;
         } catch (GoogleAuthException fatalException) {
             Log.e("UserManager", "Failed to get Token", fatalException);
         }
-        return null;
-    }
-
-    public synchronized static UserManager Instance()
-    {
-        return sInstance;
-    }
-
-    private synchronized  static void Init(String email)
-    {
-        if(sInstance == null)
+        catch (Exception e)
         {
-            sInstance  = new UserManager(email);
+            e.printStackTrace();
         }
+        return null;
     }
 
 }

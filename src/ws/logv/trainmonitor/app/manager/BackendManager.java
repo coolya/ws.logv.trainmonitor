@@ -162,7 +162,7 @@ public class BackendManager {
     @SuppressWarnings("UnusedDeclaration")
     public void onEvent(DeviceReadyEvent event)
     {
-        Workflow.getEventBus(mCtx).post(new RegisteredToGcmEvent());
+        Workflow.getEventBus(mCtx).post(new RegisterToGcmEvent());
     }
 
     @SuppressWarnings("UnusedDeclaration")

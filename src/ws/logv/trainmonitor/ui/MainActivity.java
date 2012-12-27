@@ -157,7 +157,7 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public  void onEventMainThread(SetupMenuEvent event)
+    public  void onEventMainThread(AccountChoosnEvent event)
     {
         Context context = getSupportActionBar().getThemedContext();
         ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(context, R.array.navigation, R.layout.sherlock_spinner_item);

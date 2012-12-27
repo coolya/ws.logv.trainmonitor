@@ -38,7 +38,7 @@
         android:layout_below="@+id/textView1"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="3dp"
-        android:text="IC 2061"
+        android:text=""
         android:textAppearance="?android:attr/textAppearanceLarge"
             android:textSize="36dp"/>
 
@@ -91,6 +91,6 @@
             android:layout_marginBottom="10dp"
             android:layout_marginRight="10dp"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Date"/>
+            android:text=""/>
 
 </RelativeLayout>
