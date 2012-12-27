@@ -61,7 +61,9 @@ public class ChooseAccountFragment extends GenericDialogFragment {
        {
            mNames[i] = accounts[i].name;
        }
-        mSelectedName = mNames[0];
+        if(mNames.length > 0)
+            mSelectedName = mNames[0];
+
         builder.setSingleChoiceItems(mNames, 0, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
