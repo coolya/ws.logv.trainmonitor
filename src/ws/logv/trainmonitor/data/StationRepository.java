@@ -23,6 +23,7 @@ import de.greenrobot.event.EventBus;
 import ws.logv.trainmonitor.Workflow;
 import ws.logv.trainmonitor.command.load.LoadStationCommand;
 import ws.logv.trainmonitor.command.load.LoadStationResult;
+import ws.logv.trainmonitor.event.FatalErrorEvent;
 import ws.logv.trainmonitor.event.StationSyncCompleteEvent;
 import ws.logv.trainmonitor.event.StationSyncEvent;
 import ws.logv.trainmonitor.model.Station;
@@ -84,6 +85,7 @@ public class StationRepository {
             }
         } catch (SQLException e) {
             Workflow.getEventBus(mContext).post(new LoadStationResult(e, event.getTag()));
+            Workflow.getEventBus(mContext).post(new FatalErrorEvent(e));
         }
     }
 
@@ -109,6 +111,7 @@ public class StationRepository {
                 bus.post(new LoadStationResult(station, command.getTag()));
             } catch (SQLException e) {
                bus.post(new LoadStationResult(e, command.getTag()));
+               bus.post(new FatalErrorEvent(e));
             }
         }
 

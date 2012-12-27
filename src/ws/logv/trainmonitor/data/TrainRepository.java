@@ -17,6 +17,7 @@
 package ws.logv.trainmonitor.data;
 
 import android.content.Context;
+import android.mtp.MtpConstants;
 import android.util.Log;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
@@ -76,7 +77,7 @@ public class TrainRepository
                 favTrain(mContext, event.getTrain());
                 Workflow.getEventBus(mContext).post(new PushSubscriptionsEvent());
             } catch (SQLException e) {
-                e.printStackTrace();
+                Workflow.getEventBus(mContext).post(new FatalErrorEvent(e));
             }
         }
         else
@@ -86,7 +87,7 @@ public class TrainRepository
                 Workflow.getEventBus(mContext).post(new DeleteSubscriptionCommand(subscribtion));
                 unFavTrain(mContext, event.getTrain());
             } catch (SQLException e) {
-                e.printStackTrace();
+                Workflow.getEventBus(mContext).post(new FatalErrorEvent(e));
             }
         }
 
@@ -107,6 +108,7 @@ public class TrainRepository
                     Workflow.getEventBus(context).post(new LoadTrainResult(dao.query(dao.queryBuilder().limit(20l).prepare())));
                 } catch (SQLException e) {
                     Workflow.getEventBus(context).post(new LoadTrainResult(e));
+                    Workflow.getEventBus(context).post(new FatalErrorEvent(e));
                 }
                 finally
                 {
@@ -123,6 +125,7 @@ public class TrainRepository
                             .prepare())));
                 } catch (SQLException e) {
                     Workflow.getEventBus(context).post(new LoadTrainResult(e));
+                    Workflow.getEventBus(context).post(new FatalErrorEvent(e));
                 }
                 finally
                 {
@@ -193,6 +196,7 @@ public class TrainRepository
                             .where().like("trainId", "%" + name + "%").prepare())));
                 } catch (SQLException e) {
                     Workflow.getEventBus(ctx).post(new LoadTrainResult(e));
+                    Workflow.getEventBus(ctx).post(new FatalErrorEvent(e));
                 }
                 finally
                 {
@@ -253,6 +257,7 @@ public class TrainRepository
             Workflow.getEventBus(context).post(new LoadFavouriteTrainsResult(ret));
         } catch (Exception e) {
             Workflow.getEventBus(context).post(new LoadFavouriteTrainsResult(e));
+            Workflow.getEventBus(context).post(new FatalErrorEvent(e));
         }
         finally
         {
