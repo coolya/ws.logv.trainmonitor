@@ -31,18 +31,15 @@ import ws.logv.trainmonitor.event.*;
 import ws.logv.trainmonitor.model.FavouriteTrain;
 import ws.logv.trainmonitor.model.Subscribtion;
 import ws.logv.trainmonitor.model.Train;
-import ws.logv.trainmonitor.ui.contract.FavChangedListener;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
 public class TrainRepository 
 {
    private static final String TAG = "TrainRepository" ;
-   private static FavChangedListener listener = null;
     private Context mContext;
 
     public TrainRepository(Context context)
@@ -51,7 +48,7 @@ public class TrainRepository
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public void onEventAsync(LoadTrainCommand event)
+    public void onEventBackgroundThread(LoadTrainCommand event)
     {
         if(event.getQuery() != null)
         {
@@ -79,15 +76,16 @@ public class TrainRepository
         {
             unFavTrain(mContext, event.getTrain());
         }
+        Workflow.getEventBus(mContext).post(new PushSubscriptionsEvent());
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public void onEventAsync(LoadFavouriteTrainsCommand event)
+    public void onEventBackgroundThread(LoadFavouriteTrainsCommand event)
     {
         loadFavouriteTrains(mContext);
     }
 
-    public static void loadTrains(final Context context)
+    private static void loadTrains(final Context context)
     {
 
                 DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
@@ -103,7 +101,7 @@ public class TrainRepository
                     databaseHelper = null;
                 }
     }
-    public static void loadTrainsOrdered(Context context, long offset, long count)
+    private static void loadTrainsOrdered(Context context, long offset, long count)
     {
                 DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
                 try {
@@ -121,71 +119,6 @@ public class TrainRepository
                 }
     }
 
-    public static void saveTrains(Context ctx, final Collection<Train> data, final Action<Boolean> callback, final Action<Integer> progress)
-    {
-        new Task<Boolean>(new Func2<Boolean, Context, Action<Integer>>(){
-            @Override
-            public Boolean exec(Context param, Action<Integer> param2) {
-                DatabaseHelper databaseHelper = OpenHelperManager.getHelper(param, DatabaseHelper.class);
-                try {
-                    Dao<Train, Integer> dao = databaseHelper.getTrainDataDao();
-
-                    int i = 0;
-                    for(Train train : data)
-                    {
-                        i++;
-                        dao.createOrUpdate(train);
-                        param2.exec(i);
-                    }
-                    return true;
-                } catch (Exception e) {
-                    return false;
-                }
-                finally
-                {
-                    OpenHelperManager.releaseHelper();
-                    databaseHelper = null;
-                }
-            }
-        },
-                new Action<Boolean>(){
-
-                    public void exec(Boolean param) {
-                        if(callback != null)
-                            callback.exec(param);
-
-                    }}, progress).execute(ctx);
-    }
-	
-	public static void deleteTrains(Context ctx, final Action<Boolean> callback)
-	{
-		
-		new Task<Boolean>(new Func<Boolean, Context>(){
-
-			public Boolean exec(Context param) {
-				DatabaseHelper databaseHelper = OpenHelperManager.getHelper(param, DatabaseHelper.class);
-				try {
-					Dao<Train, Integer> dao = databaseHelper.getTrainDataDao();			
-					dao.delete(dao.deleteBuilder().prepare());
-					return true;
-				} catch (SQLException e) {
-					return false;
-				}
-				finally
-				{
-					OpenHelperManager.releaseHelper();
-					databaseHelper = null;
-				}
-			}},
-			new Action<Boolean>(){
-
-				public void exec(Boolean param) {
-					if(callback != null)
-						callback.exec(param);
-					
-				}}).execute(ctx);
-	}
-
     public static Boolean isTrainFav(Context ctx, String trainId)
     {
         DatabaseHelper databaseHelper = OpenHelperManager.getHelper(ctx, DatabaseHelper.class);
@@ -200,12 +133,6 @@ public class TrainRepository
             OpenHelperManager.releaseHelper();
             databaseHelper = null;
         }
-    }
-
-    public static void notifyFav()
-    {
-        if(listener != null)
-            listener.onFavChanged();
     }
 
     public static Boolean hasTrains(Context ctx) {
@@ -248,7 +175,7 @@ public class TrainRepository
         }
     }
 
-    public static void searchTrain(Context ctx, String name)
+    private static void searchTrain(Context ctx, String name)
     {
                 DatabaseHelper databaseHelper = OpenHelperManager.getHelper(ctx, DatabaseHelper.class);
                 try {
@@ -265,7 +192,7 @@ public class TrainRepository
                 }
     }
 
-    public static void favTrain(Context context, String train)
+    private static void favTrain(Context context, String train)
     {
         if(!isTrainFav(context, train))
         {
@@ -285,7 +212,7 @@ public class TrainRepository
         }
     }
 
-    public  static void unFavTrain(Context context, String train)
+    private static void unFavTrain(Context context, String train)
     {
         if(isTrainFav(context, train))
         {
@@ -306,7 +233,7 @@ public class TrainRepository
         }
     }
 
-    public static void loadFavouriteTrains(Context context)
+    private static void loadFavouriteTrains(Context context)
     {
         DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
         try {

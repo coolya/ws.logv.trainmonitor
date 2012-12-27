@@ -108,47 +108,7 @@ public class Installation {
             }
     }
 
-    public static void showMotd(Context ctx)
-    {
-        return;
-        /*
-        int versionCode = getVersion(ctx);
 
-        File file = new File(ctx.getFilesDir(), MOTD_FILE);
-
-        if(file.exists())
-        {
-            try {
-                String data = readFile(file);
-                int lastVersion = Integer.parseInt(data);
-
-                if(lastVersion >= versionCode)
-                    return;
-
-            } catch (Exception e) {
-                Log.e(LOG_TAG, "Error reading MOTD file", e);
-            }
-        }
-
-        View view = LayoutInflater.from(ctx).inflate(R.layout.motd_dialog, null);
-        AlertDialog dialog = new AlertDialog.Builder(ctx).setView(view).setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-        }).create();
-        WebView webView = (WebView) view.findViewById(R.id.webview);
-
-        webView.loadUrl("http://trainmonitor.logv.ws/android/motd/" + String.valueOf(versionCode));
-        dialog.show();
-
-        try {
-            writeFile(file, String.valueOf(versionCode).getBytes());
-        } catch (Exception e) {
-            Log.e(LOG_TAG, "Error writing MOTD file", e);
-        }                      */
-
-    }
 
     private static int getVersion(Context ctx) {
         try {

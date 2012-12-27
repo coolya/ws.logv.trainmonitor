@@ -39,7 +39,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class TrainAdapter extends BaseArrayAdapter<Train> {
-    private HashMap<String, Boolean> favs = new HashMap<String, Boolean>();
+    private final HashMap<String, Boolean> favs = new HashMap<String, Boolean>();
 
     private EventBus mBus = Workflow.getEventBus(this.getContext());
 
@@ -59,7 +59,7 @@ public class TrainAdapter extends BaseArrayAdapter<Train> {
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public void onEvent(LoadFavouriteTrainsResult event)
+    public void onEventMainThread(LoadFavouriteTrainsResult event)
     {
         mBus.unregister(this, LoadFavouriteTrainsResult.class);
         if(!event.isFaulted())

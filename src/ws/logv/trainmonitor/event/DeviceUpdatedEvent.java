@@ -14,15 +14,14 @@
  *    limitations under the License.
  */
 
-package ws.logv.trainmonitor.ui.contract;
+package ws.logv.trainmonitor.event;
 
 /**
  * Created with IntelliJ IDEA.
- * User: Kolja
- * Date: 9/29/12
- * Time: 6:50 PM
+ * User: kdummann
+ * Date: 26.12.12
+ * Time: 21:30
  * To change this template use File | Settings | File Templates.
  */
-public abstract class FavChangedListener {
-    public abstract void onFavChanged();
+public class DeviceUpdatedEvent {
 }

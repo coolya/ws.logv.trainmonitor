@@ -18,31 +18,20 @@ package ws.logv.trainmonitor.ui.adapter;
 
 import android.content.Context;
 import android.text.format.Time;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 import de.greenrobot.event.EventBus;
 import ws.logv.trainmonitor.R;
 import ws.logv.trainmonitor.Workflow;
-import ws.logv.trainmonitor.api.ApiClient;
-import ws.logv.trainmonitor.api.IApiCallback;
 import ws.logv.trainmonitor.command.load.LoadStationCommand;
 import ws.logv.trainmonitor.command.load.LoadStationResult;
-import ws.logv.trainmonitor.data.Action;
-import ws.logv.trainmonitor.data.Task;
-import ws.logv.trainmonitor.data.StationRepository;
 import ws.logv.trainmonitor.model.Station;
 import ws.logv.trainmonitor.model.StationInfo;
 
-import android.os.Handler;
-
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 
 /**
@@ -55,7 +44,6 @@ import java.util.concurrent.ExecutionException;
 public class TrainDetailAdapter extends BaseArrayAdapter<StationInfo> {
 
     private Context mCtx;
-    private final Handler mHandler = new Handler();
     private HashMap<Integer, Station> mStationCache = new HashMap<Integer, Station>();
     LayoutInflater mInflater = null;
     private EventBus mBus;

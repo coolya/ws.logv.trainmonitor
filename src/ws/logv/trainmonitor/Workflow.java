@@ -16,9 +16,12 @@
 
 package ws.logv.trainmonitor;
 
+import android.accounts.AccountManager;
 import android.content.Context;
 import de.greenrobot.event.EventBus;
 import ws.logv.trainmonitor.app.manager.BackendManager;
+import ws.logv.trainmonitor.app.manager.DeviceManager;
+import ws.logv.trainmonitor.app.manager.UserManager;
 import ws.logv.trainmonitor.data.StationRepository;
 import ws.logv.trainmonitor.data.TrainRepository;
 
@@ -53,6 +56,9 @@ public class Workflow {
                     mBus.register(new TrainRepository(context));
                     mBus.register(new BackendManager(context));
                     mBus.register(new StationRepository(context));
+                    mBus.register(new UserManager(context));
+                    mBus.register(new DeviceManager(context));
+                    mBus.register(new UserManager(context));
                     wiredup = true;
                 }
             }

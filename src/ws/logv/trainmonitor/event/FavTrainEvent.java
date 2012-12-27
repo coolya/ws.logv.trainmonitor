@@ -26,7 +26,7 @@ package ws.logv.trainmonitor.event;
 public class FavTrainEvent {
     private String train;
     private boolean fav = true;
-    public FavTrainEvent(String train)
+    private FavTrainEvent(String train)
     {
         this.train = train;
     }

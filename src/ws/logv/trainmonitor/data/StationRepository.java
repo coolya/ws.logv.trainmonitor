@@ -42,7 +42,7 @@ public class StationRepository {
     private Context mContext;
     private Queue<LoadStationCommand> pendingResponses = new LinkedList<LoadStationCommand>();
     private boolean syncForeced;
-    private Object lock = new Object();
+    private final Object lock = new Object();
 
     public StationRepository(Context context)
     {
@@ -50,7 +50,7 @@ public class StationRepository {
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public void onEventAsync(LoadStationCommand event)
+    public void onEventBackgroundThread(LoadStationCommand event)
     {
         try {
             Station station = loadStation(mContext, event.getId());
@@ -124,75 +124,6 @@ public class StationRepository {
         {
             OpenHelperManager.releaseHelper();
         }
-    }
-
-    public  static Task<Station> loadStation(final int id, Context ctx, final Action<Station> callback)
-    {
-        Task<Station> task =
-        new Task<Station>(new Func<Station, Context>(){
-
-            public Station exec(Context param) {
-                DatabaseHelper databaseHelper = OpenHelperManager.getHelper(param, DatabaseHelper.class);
-                try {
-                    Dao<Station, Integer> dao = databaseHelper.getStationDao();
-                    return dao.queryForId(id);
-                } catch (SQLException e) {
-                    return null;
-                }
-                finally
-                {
-                    OpenHelperManager.releaseHelper();
-                    databaseHelper = null;
-                }
-            }},
-                new Action<Station>(){
-                    public void exec(Station param) {
-                        if(callback != null)
-                            callback.exec(param);
-                    }});
-        task.execute(ctx);
-        return task;
-    }
-
-    public  static Boolean haveStations(Context ctx)
-    {
-        DatabaseHelper databaseHelper = OpenHelperManager.getHelper(ctx, DatabaseHelper.class);
-        try {
-            Dao<Station, Integer> dao = databaseHelper.getStationDao();
-            return dao.countOf() > 0;
-        } catch (SQLException e) {
-            return false;
-        }
-    }
-    public static void saveStations(Context ctx, final Collection<Station> data, final Action<Boolean> callback)
-    {
-        new Task<Boolean>(new Func<Boolean, Context>(){
-
-            public Boolean exec(Context param) {
-                DatabaseHelper databaseHelper = OpenHelperManager.getHelper(param, DatabaseHelper.class);
-                try {
-                    Dao<Station, Integer> dao = databaseHelper.getStationDao();
-                    for(Station station : data)
-                    {
-                        dao.createOrUpdate(station);
-                    }
-                    return true;
-                } catch (Exception e) {
-                    return false;
-                }
-                finally
-                {
-                    OpenHelperManager.releaseHelper();
-                    databaseHelper = null;
-                }
-            }},
-                new Action<Boolean>(){
-
-                    public void exec(Boolean param) {
-                        if(callback != null)
-                            callback.exec(param);
-
-                    }}).execute(ctx);
     }
 
     public static void saveStations(Context context, Collection<Station> stations) throws SQLException {

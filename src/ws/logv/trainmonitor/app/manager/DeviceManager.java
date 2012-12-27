@@ -17,18 +17,19 @@
 package ws.logv.trainmonitor.app.manager;
 
 import android.content.Context;
-import android.util.Log;
+import com.google.android.gcm.GCMRegistrar;
+import ws.logv.trainmonitor.Workflow;
 import ws.logv.trainmonitor.api.ApiClient;
-import ws.logv.trainmonitor.api.IApiCallback;
+import ws.logv.trainmonitor.event.DeviceReadyEvent;
+import ws.logv.trainmonitor.event.DeviceUpdatedEvent;
+import ws.logv.trainmonitor.event.PrepareDeviceEvent;
+import ws.logv.trainmonitor.event.RegisteredToGcmEvent;
 import ws.logv.trainmonitor.model.Device;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.net.FileNameMap;
-import java.util.ConcurrentModificationException;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import java.io.IOException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -43,85 +44,68 @@ public class DeviceManager {
     private final Context mCtx;
     private static final String FILENAME = "DEVICE";
     private static Device sDevice;
-    private static final Object _lock = new Object();
 
     public DeviceManager(Context ctx) {
         mCtx = ctx;
+    }
 
-        synchronized (_lock)
+    @SuppressWarnings("UnusedDeclaration")
+    public void onEvent(RegisteredToGcmEvent event)
+    {
+        if(sDevice == null)
+              return;
+
+        String regId = GCMRegistrar.getRegistrationId(mCtx);
+
+        if(!(regId == null) && !regId.equals(sDevice.getGcmRegId()))
         {
-            if(sDevice == null)
-                prepare();
+            sDevice.setGcmRegId(regId);
+            File file = new File(mCtx.getFilesDir(), FILENAME);
+
+            if(file.exists())
+            {
+                try {
+                    writeFile(file, sDevice.toString().getBytes());
+                    Workflow.getEventBus(mCtx).post(new DeviceUpdatedEvent());
+                } catch (Exception e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+            }
         }
     }
 
-    private void prepare() {
-        final File file = new File(mCtx.getFilesDir(), FILENAME);
-        synchronized (file) {
-            if (!file.exists()) {
-                final java.util.concurrent.locks.ReentrantLock lock = new ReentrantLock();
-                lock.lock();
-                ApiClient client = new ApiClient(mCtx);
-                client.registerDevice(new IApiCallback<Device>() {
-                    @Override
-                    public void onComplete(Device data) {
-                        try {
-                            file.createNewFile();
-                            writeFile(file, data.toString().getBytes());
-                            lock.unlock();
-                        } catch (Exception e) {
-                            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable tr) {
-                        try {
-                            lock.unlock();
-                        }catch (Exception ignored){
-
-                        }
-
-                    }
-
-                    @Override
-                    public void onNoConnection() {
-                        lock.unlock();
-                    }
-                });
-                lock.lock();
+    @SuppressWarnings("UnusedDeclaration")
+    public void onEvent(PrepareDeviceEvent event)
+    {
+        File file = new File(mCtx.getFilesDir(), FILENAME);
+        if (!file.exists()) {
+            ApiClient client = new ApiClient(mCtx);
+            Device device =  client.registerDevice();
+            try {
+                file.createNewFile();
+                writeFile(file, device.toString().getBytes());
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (Exception e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             }
         }
 
-        if (file.exists()) {
+        if(file.exists())
+        {
             try {
                 String data = readFile(file);
                 sDevice = Device.fromString(data);
+                Workflow.getEventBus(mCtx).post(new DeviceReadyEvent());
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
     }
 
     public Device getsDevice()
     {
         return sDevice;
-    }
-
-    public void registeredToGCM(String regId) {
-
-        if(sDevice == null)
-        {
-            Log.w(LOG_TAG, "DeviceManager did not prepare!");
-            return;
-        }
-
-        sDevice.setGcmRegId(regId);
-
-        ApiClient client = new ApiClient(mCtx);
-
-        client.putDevice(sDevice);
     }
 
     public void unregisteredFromGCM(String regId) {

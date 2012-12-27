@@ -22,36 +22,59 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.PowerManager;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import com.google.android.gcm.GCMBaseIntentService;
 import com.google.android.gcm.GCMRegistrar;
-import ws.logv.trainmonitor.ui.Train;
-import ws.logv.trainmonitor.api.ApiClient;
-import ws.logv.trainmonitor.api.IApiCallback;
+import de.greenrobot.event.EventBus;
 import ws.logv.trainmonitor.app.Constants;
 import ws.logv.trainmonitor.app.manager.DeviceManager;
-import ws.logv.trainmonitor.app.manager.BackendManager;
+import ws.logv.trainmonitor.command.fetch.FetchTrainDetailsCommand;
+import ws.logv.trainmonitor.command.fetch.FetchTrainDetailsResult;
+import ws.logv.trainmonitor.event.PushSubscriptionsEvent;
+import ws.logv.trainmonitor.event.RegisteredToGcmEvent;
 import ws.logv.trainmonitor.model.StationInfo;
+import ws.logv.trainmonitor.ui.Train;
 
 import java.util.Collection;
 
 public class GCMIntentService extends GCMBaseIntentService {
 
     private final String TAG = "GCMIntentService";
-    private static final int TRAIN = 1;
+    private PowerManager.WakeLock wl;
 
     public GCMIntentService()
     {
         super(Constants.GCM.SENDER_ID);
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Refresh trains");
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    public void onEvent(FetchTrainDetailsResult result)
+    {
+        Workflow.getEventBus(this).unregister(this, FetchTrainDetailsResult.class);
+        Collection<StationInfo> stations = result.getTrain().getStations();
+        int delay = 0;
+        for (StationInfo station : stations)
+        {
+            if(station.getDelay() > delay)
+                delay = station.getDelay();
+
+        }
+
+        if(delay > 0)
+        {
+            generateTrainLateNotification(this, result.getTrain().getTrainId(), delay);
+        }
+        wl.release();
     }
     @Override
     protected void onMessage(final Context context, Intent intent) {
-        ApiClient client = new ApiClient(context);
 
         if(intent.hasExtra("command"))
         {
-
             String command = intent.getStringExtra("command");
 
             if("sync".equals(command))
@@ -60,44 +83,19 @@ public class GCMIntentService extends GCMBaseIntentService {
 
                 if("subscription".equals(type))
                 {
-                    new BackendManager(context).pullSubscriptions();
+                    Workflow.getEventBus(context).post(new PushSubscriptionsEvent());
                 }
             }
 
         }
         else
         {
-        final String train = intent.getStringExtra("train");
+            String train = intent.getStringExtra("train");
 
-
-        client.getTrainDetail(train, new IApiCallback<ws.logv.trainmonitor.model.Train>() {
-            @Override
-            public void onComplete(ws.logv.trainmonitor.model.Train data) {
-                Collection<StationInfo> stations = data.getStations();
-                int delay = 0;
-                for (StationInfo station : stations)
-                {
-                    if(station.getDelay() > delay)
-                        delay = station.getDelay();
-
-                }
-
-                if(delay > 0)
-                {
-                    generateTrainLateNotification(context, train, delay);
-                }
-            }
-
-            @Override
-            public void onError(Throwable tr) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            @Override
-            public void onNoConnection() {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-        });
+            wl.acquire(2000);
+            EventBus bus = Workflow.getEventBus(context);
+            bus.register(this, FetchTrainDetailsResult.class);
+            bus.post(new FetchTrainDetailsCommand(train));
         }
     }
 
@@ -109,9 +107,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     @Override
     protected void onRegistered(Context context, String regId) {
         Log.i(TAG, "Registered to GCM");
-        DeviceManager mng = new DeviceManager(context);
-        mng.registeredToGCM(regId);
-        new BackendManager(context).pushSubscriptions();
+        Workflow.getEventBus(context).post(new RegisteredToGcmEvent());
     }
 
     @Override
@@ -120,8 +116,7 @@ public class GCMIntentService extends GCMBaseIntentService {
         if (GCMRegistrar.isRegisteredOnServer(context)) {
             DeviceManager mng = new DeviceManager(context);
             mng.unregisteredFromGCM(regId);
-            BackendManager snycMan = new BackendManager(context);
-            snycMan.pushSubscriptions();
+            Workflow.getEventBus(context).post(new PushSubscriptionsEvent());
         } else {
             // This callback results from the call to unregister made on
             // ServerUtilities when the registration to the server failed.

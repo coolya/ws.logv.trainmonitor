@@ -16,24 +16,25 @@
 
 package ws.logv.trainmonitor.api;
 
-import java.util.*;
-
-import android.net.Uri;
-import android.util.Base64;
-import ws.logv.trainmonitor.BuildConfig;
-import ws.logv.trainmonitor.app.manager.UserManager;
-import ws.logv.trainmonitor.data.Action;
-import ws.logv.trainmonitor.model.*;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
+import android.util.Base64;
 import android.util.Log;
-
 import com.google.gson.reflect.TypeToken;
 import com.turbomanage.httpclient.AsyncCallback;
 import com.turbomanage.httpclient.HttpResponse;
 import com.turbomanage.httpclient.ParameterMap;
 import com.turbomanage.httpclient.android.AndroidHttpClient;
+import ws.logv.trainmonitor.BuildConfig;
+import ws.logv.trainmonitor.app.manager.UserManager;
+import ws.logv.trainmonitor.model.Device;
+import ws.logv.trainmonitor.model.Station;
+import ws.logv.trainmonitor.model.Subscribtion;
+import ws.logv.trainmonitor.model.Train;
+
+import java.util.*;
 
 public class ApiClient {
 
@@ -60,50 +61,6 @@ public class ApiClient {
 	            ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
 	    NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 	    return (networkInfo != null && networkInfo.isConnected());
-	}
-	
-	public void getTrains(final IApiCallback<Collection<Train>> apiCallback)
-	{
-		if(!isConnected())
-		{
-			apiCallback.onNoConnection();
-			return;
-		}
-		
-		AsyncCallback callback = new AsyncCallback() {
-         
-            @Override
-            public void onError(Exception e) {
-                apiCallback.onError(e);
-            }
-			@Override
-			public void onComplete(HttpResponse httpResponse) {				
-				String data = httpResponse.getBodyAsString();			
-				try	{
-					JsonHelper helper = new JsonHelper();
-					 helper.fromJsonAsync(data,
-                            new TypeToken<Train[]>() {
-                            }.getType(), new Action<Train[]>() {
-                        @Override
-                        public void exec(Train[] param) {
-                            apiCallback.onComplete(Arrays.asList(param));
-                        }
-                    });
-
-				}
-				catch (Exception ex)
-				{
-				 Log.e(this.getClass().getName(), "Failed to load trains from API", ex);
-				}
-				
-			}
-        };
-        AndroidHttpClient httpClient = new AndroidHttpClient(URI, new LogvSslRequestHandler(ctx));
-        ParameterMap params = httpClient.newParams();
-        params.add("client", "ANDROID");
-		httpClient.get("germany/trains", params, callback);
-
-
 	}
 
     public Collection<Train> getTrains()
@@ -138,66 +95,6 @@ public class ApiClient {
         Train ret = helper.fromJson(data, new TypeToken<Train>() {}.getType());
         return ret;
     }
-	
-	public void getTrainDetail(String trainId, final IApiCallback<Train> apiCallback)
-	{
-		AsyncCallback callback = new AsyncCallback() {
-	         
-            @Override
-            public void onError(Exception e) {
-                apiCallback.onError(e);
-            }
-			@Override
-			public void onComplete(HttpResponse httpResponse) {				
-				String data = httpResponse.getBodyAsString();				
-				try	{
-					JsonHelper helper = new JsonHelper();					
-					Train ret = helper.fromJson(data, new TypeToken<Train>() {}.getType());
-					apiCallback.onComplete(ret);				
-				}
-				catch (Exception ex)
-				{
-					apiCallback.onError(ex);
-				}				
-			}
-        };
-        AndroidHttpClient httpClient = new AndroidHttpClient(URI, new LogvSslRequestHandler(ctx));
-        ParameterMap params = httpClient.newParams();
-        params.add("client", "ANDROID");
-        try {
-            httpClient.get("germany/trains/" + Uri.encode(trainId), params, callback);
-        } catch (Exception e) {
-        apiCallback.onError(e);
-        }
-    }
-	
-	public void getStations(final IApiCallback<Collection<Station>> apiCallback)
-	{
-		AsyncCallback callback = new AsyncCallback() {
-	         
-            @Override
-            public void onError(Exception e) {
-                apiCallback.onError(e);
-            }
-			@Override
-			public void onComplete(HttpResponse httpResponse) {				
-				String data = httpResponse.getBodyAsString();				
-				try	{
-					JsonHelper helper = new JsonHelper();					
-					Station[] ret = helper.fromJson(data, new TypeToken<Station[]>() {}.getType());
-					apiCallback.onComplete(Arrays.asList(ret));
-				}
-				catch (Exception ex)
-				{
-					apiCallback.onError(ex);
-				}				
-			}
-        };
-        AndroidHttpClient httpClient = new AndroidHttpClient(URI, new LogvSslRequestHandler(ctx));
-        ParameterMap params = httpClient.newParams();
-        params.add("client", "ANDROID");
-		httpClient.get("germany/stations",params , callback);
-	}
 
     public List<Station> getStations()
     {
@@ -210,126 +107,44 @@ public class ApiClient {
         Station[] ret = helper.fromJson(data, new TypeToken<Station[]>() {}.getType());
         return Arrays.asList(ret);
     }
-	
-	public void postSubscribtion(final Collection<Subscribtion> data, final IApiCallback<Collection<Subscribtion>> apiCallback)
-	{
-        new Thread() {
-            @Override
-            public void run() {
-                final JsonHelper jsonHelper = new JsonHelper();
-                String json = jsonHelper.toJson(data);
 
-                AsyncCallback callback = new AsyncCallback() {
-
-                    @Override
-                    public void onError(Exception e) {
-                        apiCallback.onError(e);
-                    }
-                    @Override
-                    public void onComplete(HttpResponse httpResponse) {
-                        String data = httpResponse.getBodyAsString();
-                        try	{
-                            Collection<Subscribtion> ret = jsonHelper.fromJson(data, new TypeToken<Collection<Subscribtion>>() {}.getType());
-                            apiCallback.onComplete(ret);
-                        }
-                        catch (Exception ex)
-                        {
-                            apiCallback.onError(ex);
-                        }
-                    }
-                };
-                Map<String, String> headers = UserManager.Instance().getAuthHeader(ctx);
-                AndroidHttpClient httpClient = new AndroidHttpClient(URI, new LogvSslRequestHandler(ctx));
-
-                for(Map.Entry<String, String> item : headers.entrySet())
-                {
-                    httpClient.addHeader(item.getKey(), item.getValue());
-                }
-                httpClient.post("subscribtions", "application/json", json.getBytes(), callback);
-            }
-        }.start();
-	}
-
-    public void getSubscriptions(final IApiCallback<Collection<Subscribtion>> apiCallback)
+    public List<Subscribtion> postSubscriptions(Collection<Subscribtion> data)
     {
-        new Thread() {
-            @Override
-            public void run() {
-                AsyncCallback callback = new AsyncCallback() {
+        JsonHelper jsonHelper = new JsonHelper();
+        String json = jsonHelper.toJson(data);
 
-                    @Override
-                    public void onError(Exception e) {
-                        apiCallback.onError(e);
-                    }
-                    @Override
-                    public void onComplete(HttpResponse httpResponse) {
-                        String data = httpResponse.getBodyAsString();
-                        try	{
-                            JsonHelper helper = new JsonHelper();
-                            Collection<Subscribtion> ret = helper.fromJson(data, new TypeToken<Collection<Subscribtion>>() {}.getType());
-                            apiCallback.onComplete(ret);
-                        }
-                        catch (Exception ex)
-                        {
-                            apiCallback.onError(ex);
-                        }
-                    }
-                };
+        Map<String, String> headers = UserManager.Instance().getAuthHeader(ctx);
+        AndroidHttpClient httpClient = new AndroidHttpClient(URI, new LogvSslRequestHandler(ctx));
 
-                Map<String, String> headers = UserManager.Instance().getAuthHeader(ctx);
-                AndroidHttpClient httpClient = new AndroidHttpClient(URI, new LogvSslRequestHandler(ctx));
+        for(Map.Entry<String, String> item : headers.entrySet())
+        {
+            httpClient.addHeader(item.getKey(), item.getValue());
+        }
+        HttpResponse res = httpClient.post("subscribtions", "application/json", json.getBytes());
 
-                for(Map.Entry<String, String> item : headers.entrySet())
-                {
-                    httpClient.addHeader(item.getKey(), item.getValue());
-                }
+        String body = res.getBodyAsString();
 
-                ParameterMap params = httpClient.newParams();
-                params.add("client", "ANDROID");
-
-                httpClient.get("subscribtions", params, callback);
-            }
-        }.start();
+        List<Subscribtion> ret = jsonHelper.fromJson(body, new TypeToken<List<Subscribtion>>() {}.getType());
+        return ret;
     }
 
-
-    public void registerDevice(final IApiCallback<Device> apiCallback)
+    public Device registerDevice()
     {
-        new Thread() {
-            @Override
-            public void run() {
-                AsyncCallback callback = new AsyncCallback() {
+        Map<String, String> headers = UserManager.Instance().getAuthHeader(ctx);
+        AndroidHttpClient httpClient = new AndroidHttpClient(URI, new LogvSslRequestHandler(ctx));
 
-                    @Override
-                    public void onError(Exception e) {
-                        apiCallback.onError(e);
-                    }
-                    @Override
-                    public void onComplete(HttpResponse httpResponse) {
-                        String data = httpResponse.getBodyAsString();
-                        try	{
-                            JsonHelper helper = new JsonHelper();
-                            Device ret = helper.fromJson(data, new TypeToken<Device>() {}.getType());
-                            apiCallback.onComplete(ret);
-                        }
-                        catch (Exception ex)
-                        {
-                            apiCallback.onError(ex);
-                        }
-                    }
-                };
-                Map<String, String> headers = UserManager.Instance().getAuthHeader(ctx);
-                AndroidHttpClient httpClient = new AndroidHttpClient(URI, new LogvSslRequestHandler(ctx));
+        for(Map.Entry<String, String> item : headers.entrySet())
+        {
+            httpClient.addHeader(item.getKey(), item.getValue());
+        }
+        ParameterMap params = httpClient.newParams();
 
-                for(Map.Entry<String, String> item : headers.entrySet())
-                {
-                    httpClient.addHeader(item.getKey(), item.getValue());
-                }
-                ParameterMap params = httpClient.newParams();
+        HttpResponse res =  httpClient.post("devices?type=ANDROID", params);
 
-                httpClient.post("devices?type=ANDROID", params, callback);
-            }
-        }.start();
+        String data = res.getBodyAsString();
+        JsonHelper helper = new JsonHelper();
+        Device ret = helper.fromJson(data, new TypeToken<Device>() {}.getType());
+        return ret;
     }
 
     public void putDevice(final Device device)
@@ -366,7 +181,7 @@ public class ApiClient {
 
     }
 
-    public static byte[] asByteArray(UUID uuid) {
+    private static byte[] asByteArray(UUID uuid) {
 
         long msb = uuid.getMostSignificantBits();
         long lsb = uuid.getLeastSignificantBits();

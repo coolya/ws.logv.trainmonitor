@@ -31,7 +31,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class BaseArrayAdapter<T> extends ArrayAdapter<T> {
-    public BaseArrayAdapter(Context context, int textViewResourceId, List<T> objects) {
+    BaseArrayAdapter(Context context, int textViewResourceId, List<T> objects) {
         super(context, textViewResourceId, objects);
     }
 

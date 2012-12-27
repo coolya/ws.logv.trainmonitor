@@ -14,15 +14,14 @@
  *    limitations under the License.
  */
 
-package ws.logv.trainmonitor.app;
+package ws.logv.trainmonitor.event;
 
 /**
  * Created with IntelliJ IDEA.
- * User: Kolja
- * Date: 09.10.12
- * Time: 17:40
+ * User: kdummann
+ * Date: 26.12.12
+ * Time: 20:51
  * To change this template use File | Settings | File Templates.
  */
-public interface IRefreshable {
-    void refresh();
+public class RegisteredToGcmEvent {
 }

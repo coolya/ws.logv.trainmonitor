@@ -25,7 +25,7 @@ public class Device {
         return id;
     }
 
-    public void setId(UUID id) {
+    void setId(UUID id) {
         this.id = id;
     }
 

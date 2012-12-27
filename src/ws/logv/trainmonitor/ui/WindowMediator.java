@@ -25,7 +25,7 @@ import ws.logv.trainmonitor.ui.contract.OnRefreshRequestStateHandler;
  * Time: 4:12 PM
  * To change this template use File | Settings | File Templates.
  */
-public class WindowMediator {
+class WindowMediator {
     private static OnRefreshRequestStateHandler sHandler;
 
     public static void setOnRefreshStateRequestHandler(OnRefreshRequestStateHandler handler)

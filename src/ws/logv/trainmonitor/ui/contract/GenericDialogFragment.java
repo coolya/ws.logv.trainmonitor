@@ -31,12 +31,8 @@ import ws.logv.trainmonitor.R;
 public abstract class GenericDialogFragment extends DialogFragment {
     private int okId;
     private int cancelId = 0;
-    public  GenericDialogFragment(int okId)
-    {
-        super();
-        this.okId = okId;
-    }
-    public  GenericDialogFragment(int okId, int cancelId)
+
+    protected GenericDialogFragment(int okId, int cancelId)
     {
         super();
         this.okId = okId;

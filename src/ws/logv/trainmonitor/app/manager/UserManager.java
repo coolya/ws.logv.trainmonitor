@@ -24,6 +24,8 @@ import com.google.android.gms.auth.GoogleAuthException;
 import com.google.android.gms.auth.GoogleAuthUtil;
 import com.google.android.gms.auth.GooglePlayServicesAvailabilityException;
 import com.google.android.gms.auth.UserRecoverableAuthException;
+import ws.logv.trainmonitor.app.Constants;
+import ws.logv.trainmonitor.event.AccountChoosnEvent;
 
 import java.io.IOException;
 import java.util.Map;
@@ -38,8 +40,21 @@ import java.util.TreeMap;
             */
     public class UserManager {
     private static UserManager sInstance;
+    private Context mContext;
     private String mEmail;
-    public static final String SCOPE = "oauth2:https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email";
+    private static final String SCOPE = "oauth2:https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email";
+
+    public UserManager(Context context)
+    {
+        mContext = context;
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    public void onEvent(AccountChoosnEvent event)
+    {
+        String string = mContext.getSharedPreferences(Constants.Settings.PERF, 0).getString(Constants.Settings.CURRENT_ACCOUNT, "");
+        Init(string);
+    }
 
     private UserManager(String email)
     {
@@ -90,7 +105,7 @@ import java.util.TreeMap;
         return sInstance;
     }
 
-    public synchronized  static void Init(String email)
+    private synchronized  static void Init(String email)
     {
         if(sInstance == null)
         {

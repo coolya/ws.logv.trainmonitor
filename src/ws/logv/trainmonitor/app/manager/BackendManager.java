@@ -18,26 +18,23 @@ package ws.logv.trainmonitor.app.manager;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.Toast;
+import com.google.android.gcm.GCMRegistrar;
 import de.greenrobot.event.EventBus;
 import ws.logv.trainmonitor.R;
 import ws.logv.trainmonitor.Workflow;
 import ws.logv.trainmonitor.api.ApiClient;
-import ws.logv.trainmonitor.api.IApiCallback;
+import ws.logv.trainmonitor.app.Constants;
 import ws.logv.trainmonitor.event.*;
 import ws.logv.trainmonitor.command.fetch.FetchTrainDetailsCommand;
 import ws.logv.trainmonitor.command.fetch.FetchTrainDetailsResult;
 import ws.logv.trainmonitor.data.*;
-import ws.logv.trainmonitor.model.Device;
 import ws.logv.trainmonitor.model.Station;
 import ws.logv.trainmonitor.model.Subscribtion;
 import ws.logv.trainmonitor.model.Train;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 /**
  * Created with IntelliJ IDEA.
@@ -106,45 +103,51 @@ public class BackendManager {
         bus.post(new FetchTrainDetailsResult(train, event.getTag()));
     }
 
-    public void syncTrains(final Action<String> progress, final Action<Integer> complete) {
-        ApiClient api = new ApiClient(mCtx);
-        api.getTrains(new IApiCallback<Collection<Train>>() {
+    @SuppressWarnings("UnusedDeclaration")
+    public void onEvent(DeviceReadyEvent event)
+    {
+        Workflow.getEventBus(mCtx).post(new RegisteredToGcmEvent());
+    }
 
-            public void onError(Throwable tr) {
-                Log.e(this.getClass().getName(), "Error getting trains ", tr);
-                Toast toast = Toast.makeText(mCtx, R.string.error_getting_trains, Toast.LENGTH_LONG);
-                toast.show();
-                complete.exec(0);
+    @SuppressWarnings("UnusedDeclaration")
+    public void onEventBackgroundThread(RegisterToGcmEvent event)
+    {
+        try{
+            GCMRegistrar.checkDevice(mCtx);
+            GCMRegistrar.checkManifest(mCtx);
+            final String regId = GCMRegistrar.getRegistrationId(mCtx);
+            if (regId.equals("")) {
+                GCMRegistrar.register(mCtx, Constants.GCM.SENDER_ID);
             }
+            else
+            {
+                Workflow.getEventBus(mCtx).post(new RegisteredToGcmEvent());
+            }
+        } catch (Exception e)
+        {
+            Log.e(LOG_TAG, "GCM not available", e);
+        }
+    }
 
-            public void onNoConnection() {
-                Toast toast = Toast.makeText(mCtx, R.string.error_no_connection, Toast.LENGTH_LONG);
-                toast.show();
-                complete.exec(0);
-            }
+    @SuppressWarnings("UnusedDeclaration")
+    public void onEventBackgroundThread(DeviceUpdatedEvent event)
+    {
+          Workflow.getEventBus(mCtx).post(new PushSubscriptionsEvent());
+    }
 
-            public void onComplete(final Collection<Train> data) {
-                progress.exec(mCtx.getString(R.string.refresh_trains_2));
-                final Integer count = data.size();
-                TrainRepository.deleteTrains(mCtx, new Action<Boolean>() {
-                    @Override
-                    public void exec(Boolean param) {
-                        TrainRepository.saveTrains(mCtx, data, new Action<Boolean>() {
-                                    @Override
-                                    public void exec(Boolean param) {
-                                        complete.exec(count);
-                                    }
-                                }, new Action<Integer>() {
-                                    @Override
-                                    public void exec(final Integer param) {
-                                         progress.exec(mCtx.getString(R.string.refresh_trains_3, param, count));
-                                    }
-                                }
-                        );
-                    }
-                });
-            }
-        });
+    @SuppressWarnings("UnusedDeclaration")
+    public void onEventBackgroundThread(PushSubscriptionsEvent event)
+    {
+        ApiClient client = new ApiClient(mCtx);
+        try {
+            List<Subscribtion> subscribtions = SubscriptionRepository.loadSubscriptions(mCtx);
+            subscribtions = client.postSubscriptions(subscribtions);
+            SubscriptionRepository.clearSubscribtions(mCtx);
+            SubscriptionRepository.saveSubscribtions(mCtx, subscribtions);
+            Workflow.getEventBus(mCtx).post(new FavouriteTrainsChangedEvent());
+        } catch (SQLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
     }
 
     public Boolean trainsNeedSync()
@@ -152,80 +155,4 @@ public class BackendManager {
         return !TrainRepository.hasTrains(mCtx);
     }
 
-    public Boolean stationsNeedSync()
-    {
-        return !StationRepository.haveStations(mCtx);
-    }
-
-    public void pushSubscriptions()
-    {
-        DeviceManager devMng = new DeviceManager(mCtx);
-        Device dev = devMng.getsDevice();
-
-        if(dev == null || dev.getGcmRegId() == null ||dev.getGcmRegId().isEmpty())
-            return;
-        try {
-
-            ApiClient client = new ApiClient(mCtx);
-            Task<List<Subscribtion>> task = SubscribtionRepository.loadSubscribtions(mCtx, null);
-            ArrayList<Subscribtion> subscription = new ArrayList<Subscribtion>(task.get());
-            final Context ctx = mCtx;
-            client.postSubscribtion(subscription, new IApiCallback<Collection<Subscribtion>>() {
-                @Override
-                public void onComplete(Collection<Subscribtion> data) {
-                    SubscribtionRepository.saveSubscribtions(ctx, data, null);
-                }
-
-                @Override
-                public void onError(Throwable tr) {
-                    Log.e(LOG_TAG, "Failed to post Subscribtions", tr);
-                }
-
-                @Override
-                public void onNoConnection() {
-                    Log.i(LOG_TAG, "No Internet connection for sync, retrying on next start");
-                }
-            });
-        } catch (InterruptedException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        } catch (ExecutionException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
-    }
-
-    public void pullSubscriptions()
-    {
-        DeviceManager devMng = new DeviceManager(mCtx);
-        Device dev = devMng.getsDevice();
-
-        if(dev == null || dev.getGcmRegId() == null ||dev.getGcmRegId().isEmpty())
-            return;
-
-        ApiClient client = new ApiClient(mCtx);
-        final Context ctx = mCtx;
-        client.getSubscriptions(new IApiCallback<Collection<Subscribtion>>() {
-            @Override
-            public void onComplete(Collection<Subscribtion> data) {
-                try {
-                    SubscribtionRepository.clearSubscribtions(ctx, null).get();
-                    SubscribtionRepository.saveSubscribtions(ctx, data, null);
-                    TrainRepository.notifyFav();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                } catch (ExecutionException e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-                }
-            }
-
-            @Override
-            public void onError(Throwable tr) {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-
-            @Override
-            public void onNoConnection() {
-                //To change body of implemented methods use File | Settings | File Templates.
-            }
-        });
-    }
 }

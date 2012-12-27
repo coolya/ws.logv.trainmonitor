@@ -37,9 +37,7 @@ import com.google.android.gcm.GCMRegistrar;
 import de.greenrobot.event.EventBus;
 import ws.logv.trainmonitor.Workflow;
 import ws.logv.trainmonitor.app.manager.BackendManager;
-import ws.logv.trainmonitor.event.RefreshEvent;
-import ws.logv.trainmonitor.event.SearchEvent;
-import ws.logv.trainmonitor.event.SetUpActionBarEvent;
+import ws.logv.trainmonitor.event.*;
 import ws.logv.trainmonitor.ui.contract.OnRefreshRequestStateHandler;
 import ws.logv.trainmonitor.R;
 import ws.logv.trainmonitor.app.*;
@@ -78,17 +76,14 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
 
         setContentView(R.layout.activity_main);
 
-        final MainActivity that = this;
-
-        showDisclaimer(that);
-
+        mBus.postSticky(new ShowDisclaimerEvent());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mBus.register(this);
-    }
+        mBus.registerSticky(this);
+     }
 
     @Override
     protected void onPause() {
@@ -107,92 +102,69 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
 
     }
 
-    private void showDisclaimer(final MainActivity that) {
+    @SuppressWarnings("UnusedDeclaration")
+    public void onEventMainThread(ShowDisclaimerEvent event)
+    {
+        mBus.removeStickyEvent(ShowDisclaimerEvent.class);
         if(!Installation.wasDisclaimerShown(this))
         {
-
+            final MainActivity that = this;
             AlertDialog dialog = new AlertDialog.Builder(this).setTitle(R.string.disclaimer_header)
-                .setMessage(R.string.disclaimer)
-                .setPositiveButton(R.string.accept, new DialogInterface.OnClickListener() {
+                    .setMessage(R.string.disclaimer)
+                    .setPositiveButton(R.string.accept, new DialogInterface.OnClickListener() {
 
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Installation.setDisclaimerShown(that);
-                        that.chooseAccount(that);
-                    }
-                })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        that.finish();
-                    }
-                }).create();
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Installation.setDisclaimerShown(that);
+                            mBus.post(new DisclaimerShownEvent());
+                        }
+                    })
+                    .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                            that.finish();
+                        }
+                    }).create();
             dialog.show();
         }
         else
         {
-            chooseAccount(this);
+            mBus.post(new DisclaimerShownEvent());
         }
     }
 
-    private void chooseAccount(final MainActivity that)
+    @SuppressWarnings("UnusedDeclaration")
+    public  void onEvent(DisclaimerShownEvent event)
     {
         if(!Installation.wasChooseAccountShown(this))
         {
-        new ChooseAccountFragment(new Runnable() {
-            @Override
-            public void run() {
-                Installation.setChooseAccountShown(that);
-                init();
-            }
-        }).show(getSupportFragmentManager(), "choose_account");
+            final MainActivity that = this;
+            new ChooseAccountFragment(new Runnable() {
+                @Override
+                public void run() {
+                    Installation.setChooseAccountShown(that);
+                    mBus.post(new AccountChoosnEvent());
+                }
+            }).show(getSupportFragmentManager(), "choose_account");
         }
-        else {
-            init();
+        else
+        {
+            mBus.post(new AccountChoosnEvent());
         }
-
+        mBus.post(new SetupMenuEvent());
+        mBus.post(new PrepareDeviceEvent());
     }
 
-    private void init() {
-        Installation.showMotd(this);
-
-
+    @SuppressWarnings("UnusedDeclaration")
+    public  void onEventMainThread(SetupMenuEvent event)
+    {
         Context context = getSupportActionBar().getThemedContext();
         ArrayAdapter<CharSequence> list = ArrayAdapter.createFromResource(context, R.array.navigation, R.layout.sherlock_spinner_item);
         list.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
 
         getSupportActionBar().setNavigationMode(com.actionbarsherlock.app.ActionBar.NAVIGATION_MODE_LIST);
         getSupportActionBar().setListNavigationCallbacks(list, this);
-
-        final  MainActivity that = this;
-
-        Runnable runnable = new Runnable() {
-
-            @Override
-            public void run() {
-                try{
-                    String string = getSharedPreferences(Constants.Settings.PERF, 0).getString(Constants.Settings.CURRENT_ACCOUNT, "");
-                    UserManager.Init(string);
-
-                GCMRegistrar.checkDevice(that);
-                GCMRegistrar.checkManifest(that);
-                final String regId = GCMRegistrar.getRegistrationId(that);
-                if (regId.equals("")) {
-                    GCMRegistrar.register(that, Constants.GCM.SENDER_ID);
-                }else
-                {
-                    new DeviceManager(that).registeredToGCM(regId);
-                    new BackendManager(that).pushSubscriptions();
-                }
-            } catch (Exception e)
-            {
-                Log.e(LOG_TAG, "GCM not available", e);
-            }
-            }
-        };
-        //running registration on background thread
-        new Thread(runnable).start();
-
     }
 
 

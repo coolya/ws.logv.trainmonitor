@@ -14,32 +14,14 @@
  *    limitations under the License.
  */
 
-package ws.logv.trainmonitor.command;
+package ws.logv.trainmonitor.event;
 
 /**
  * Created with IntelliJ IDEA.
  * User: kdummann
  * Date: 26.12.12
- * Time: 01:27
+ * Time: 19:55
  * To change this template use File | Settings | File Templates.
  */
-public class BaseResult  {
-
-    protected BaseResult() {}
-    protected BaseResult(Exception ex)
-    {
-        mEx = ex;
-    }
-
-    private Exception mEx;
-
-    public boolean isFaulted()
-    {
-        return mEx != null;
-    }
-
-    public Exception getException()
-    {
-        return  mEx;
-    }
+public class DisclaimerShownEvent {
 }

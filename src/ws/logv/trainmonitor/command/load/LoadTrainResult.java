@@ -29,7 +29,7 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class LoadTrainResult extends BaseResult {
-    public  List<Train> mResult;
+    private List<Train> mResult;
 
     public LoadTrainResult(List<Train> result)
     {
