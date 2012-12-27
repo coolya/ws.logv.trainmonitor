@@ -56,5 +56,6 @@
     <string name="settings_notify">Notifications</string>
     <string name="settings_summary_account">Tab to choose an account</string>
     <string name="settings_account">Account</string>
+    <string name="error_getting_stations">Error getting stations from server</string>
 
 </resources>

@@ -55,7 +55,7 @@ public class ApiClient {
         this.ctx = ctx;
 	}
 	
-	private Boolean isConnected()
+	public Boolean isConnected()
 	{
 	    ConnectivityManager connMgr = (ConnectivityManager) 
 	            ctx.getSystemService(Context.CONNECTIVITY_SERVICE);

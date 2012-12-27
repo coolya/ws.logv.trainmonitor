@@ -57,43 +57,63 @@ public class BackendManager {
     @SuppressWarnings("UnusedDeclaration")
     public void onEventAsync(TrainSyncEvent event)
     {
-        ApiClient apiClient = new ApiClient(mCtx);
-        EventBus bus = Workflow.getEventBus(mCtx);
-        Collection<Train> trains = apiClient.getTrains();
         try {
-            bus.post(new TrainSyncProgressEvent(mCtx.getString(R.string.refresh_trains_2)));
-            TrainRepository.deleteTrains(mCtx);
-        } catch (SQLException e) {
-            Log.e(LOG_TAG, "Error deleting trains", e);
-        }
-
-        int count = trains.size();
-        int i = 1;
-        for (Train train : trains)
-        {
-            try {
-                TrainRepository.saveTrain(mCtx, train);
-                bus.post(new TrainSyncProgressEvent(mCtx.getString(R.string.refresh_trains_3, i, count)));
-                i++;
-            } catch (SQLException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            ApiClient apiClient = new ApiClient(mCtx);
+            if(!apiClient.isConnected())
+            {
+                Workflow.getEventBus(mCtx).post(new NoConnectionEvent());
+                return;
             }
+            EventBus bus = Workflow.getEventBus(mCtx);
+            Collection<Train> trains = apiClient.getTrains();
+            try {
+                bus.post(new TrainSyncProgressEvent(mCtx.getString(R.string.refresh_trains_2)));
+                TrainRepository.deleteTrains(mCtx);
+            } catch (SQLException e) {
+                Log.e(LOG_TAG, "Error deleting trains", e);
+            }
+
+            int count = trains.size();
+            int i = 1;
+            for (Train train : trains)
+            {
+                try {
+                    TrainRepository.saveTrain(mCtx, train);
+                    bus.post(new TrainSyncProgressEvent(mCtx.getString(R.string.refresh_trains_3, i, count)));
+                    i++;
+                } catch (SQLException e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+            }
+            bus.post(new TrainSyncCompleteEvent());
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Error syncing trains!", e);
+            Workflow.getEventBus(mCtx).post(new FatalErrorEvent(e, R.string.error_getting_trains));
         }
-        bus.post(new TrainSyncCompleteEvent());
     }
 
     @SuppressWarnings("UnusedDeclaration")
     public void onEventAsync(StationSyncEvent event)
     {
-        EventBus bus = Workflow.getEventBus(mCtx);
-        ApiClient apiClient = new ApiClient(mCtx);
-        List<Station> stations = apiClient.getStations();
         try {
-            StationRepository.saveStations(mCtx, stations);
-        } catch (SQLException e) {
-            e.printStackTrace();
+            EventBus bus = Workflow.getEventBus(mCtx);
+            ApiClient apiClient = new ApiClient(mCtx);
+            if(!apiClient.isConnected())
+            {
+                Workflow.getEventBus(mCtx).post(new NoConnectionEvent());
+                return;
+            }
+            List<Station> stations = apiClient.getStations();
+            try {
+                StationRepository.saveStations(mCtx, stations);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            bus.post(new StationSyncCompleteEvent());
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Error syncing stations!", e);
+            Workflow.getEventBus(mCtx).post(new FatalErrorEvent(e, R.string.error_getting_stations));
         }
-        bus.post(new StationSyncCompleteEvent());
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -101,10 +121,21 @@ public class BackendManager {
     {
         try {
             ApiClient client = new ApiClient(mCtx);
+            if(!client.isConnected())
+            {
+                Workflow.getEventBus(mCtx).post(new NoConnectionEvent());
+                return;
+            }
+            if(!client.isConnected())
+            {
+                Workflow.getEventBus(mCtx).post(new NoConnectionEvent());
+                return;
+            }
             client.deleteSubscription(event.getSubscribtion());
             Workflow.getEventBus(mCtx).post(new DeleteSubscriptionResult());
         }catch (Exception e)
         {
+            Log.e(LOG_TAG, "Error deleting subscription", e);
             Workflow.getEventBus(mCtx).post(new DeleteSubscriptionResult(e));
         }
     }
@@ -112,10 +143,20 @@ public class BackendManager {
     @SuppressWarnings("UnusedDeclaration")
     public void onEventAsync(FetchTrainDetailsCommand event)
     {
-        EventBus bus = Workflow.getEventBus(mCtx);
-        ApiClient apiClient = new ApiClient(mCtx);
-        Train train = apiClient.getTrainDetail(event.getTrain());
-        bus.post(new FetchTrainDetailsResult(train, event.getTag()));
+        try {
+            EventBus bus = Workflow.getEventBus(mCtx);
+            ApiClient apiClient = new ApiClient(mCtx);
+            if(!apiClient.isConnected())
+            {
+                Workflow.getEventBus(mCtx).post(new NoConnectionEvent());
+                return;
+            }
+            Train train = apiClient.getTrainDetail(event.getTrain());
+            bus.post(new FetchTrainDetailsResult(train, event.getTag()));
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Error fetching traindetails", e);
+            Workflow.getEventBus(mCtx).post(new FatalErrorEvent(e, R.string.train_details_error));
+        }
     }
 
     @SuppressWarnings("UnusedDeclaration")
@@ -141,6 +182,7 @@ public class BackendManager {
         } catch (Exception e)
         {
             Log.e(LOG_TAG, "GCM not available", e);
+            Workflow.getEventBus(mCtx).post(new FatalErrorEvent(e));
         }
     }
 
@@ -154,14 +196,20 @@ public class BackendManager {
     public void onEventBackgroundThread(PushSubscriptionsEvent event)
     {
         ApiClient client = new ApiClient(mCtx);
+        if(!client.isConnected())
+        {
+            Workflow.getEventBus(mCtx).post(new NoConnectionEvent());
+            return;
+        }
         try {
             List<Subscribtion> subscribtions = TrainRepository.loadSubscriptions(mCtx);
             subscribtions = client.postSubscriptions(subscribtions);
             TrainRepository.clearSubscriptions(mCtx);
             TrainRepository.saveSubscriptions(mCtx, subscribtions);
             Workflow.getEventBus(mCtx).post(new FavouriteTrainsChangedEvent());
-        } catch (SQLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Error pushing subscriptions", e);
+            Workflow.getEventBus(mCtx).post(new FatalErrorEvent(e));
         }
     }
 

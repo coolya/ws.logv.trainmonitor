@@ -24,6 +24,7 @@ import ws.logv.trainmonitor.app.manager.DeviceManager;
 import ws.logv.trainmonitor.app.manager.UserManager;
 import ws.logv.trainmonitor.data.StationRepository;
 import ws.logv.trainmonitor.data.TrainRepository;
+import ws.logv.trainmonitor.event.WorkflowWiredUpEvent;
 
 /**
  * Created with IntelliJ IDEA.
@@ -60,6 +61,7 @@ public class Workflow {
                     mBus.register(new DeviceManager(context));
                     mBus.register(new UserManager(context));
                     wiredup = true;
+                    mBus.post(new WorkflowWiredUpEvent());
                 }
             }
         }
