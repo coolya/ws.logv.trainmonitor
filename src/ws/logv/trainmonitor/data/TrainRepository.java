@@ -23,6 +23,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.DeleteBuilder;
 import ws.logv.trainmonitor.Workflow;
 import ws.logv.trainmonitor.app.manager.DeviceManager;
+import ws.logv.trainmonitor.command.delete.DeleteSubscriptionCommand;
 import ws.logv.trainmonitor.command.load.LoadFavouriteTrainsCommand;
 import ws.logv.trainmonitor.command.load.LoadFavouriteTrainsResult;
 import ws.logv.trainmonitor.command.load.LoadTrainCommand;
@@ -81,6 +82,8 @@ public class TrainRepository
         else
         {
             try {
+                Subscribtion subscribtion = loadSubscription(mContext, event.getTrain());
+                Workflow.getEventBus(mContext).post(new DeleteSubscriptionCommand(subscribtion));
                 unFavTrain(mContext, event.getTrain());
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -261,7 +264,18 @@ public class TrainRepository
         DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
         try {
             Dao<Subscribtion, UUID> dao = databaseHelper.getSubscribtionDao();
-            return dao.query(dao.queryBuilder().limit(20l).prepare());
+            return dao.query(dao.queryBuilder().prepare());
+        }
+        finally
+        {
+            OpenHelperManager.releaseHelper();
+        }
+    }
+    public static Subscribtion loadSubscription(Context context, String train) throws SQLException {
+        DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        try {
+            Dao<Subscribtion, UUID> dao = databaseHelper.getSubscribtionDao();
+            return dao.queryForFirst(dao.queryBuilder().where().eq("train", train).prepare());
         }
         finally
         {

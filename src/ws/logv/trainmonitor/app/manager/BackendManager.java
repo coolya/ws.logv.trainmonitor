@@ -24,6 +24,8 @@ import ws.logv.trainmonitor.R;
 import ws.logv.trainmonitor.Workflow;
 import ws.logv.trainmonitor.api.ApiClient;
 import ws.logv.trainmonitor.app.Constants;
+import ws.logv.trainmonitor.command.delete.DeleteSubscriptionCommand;
+import ws.logv.trainmonitor.command.delete.DeleteSubscriptionResult;
 import ws.logv.trainmonitor.event.*;
 import ws.logv.trainmonitor.command.fetch.FetchTrainDetailsCommand;
 import ws.logv.trainmonitor.command.fetch.FetchTrainDetailsResult;
@@ -89,9 +91,22 @@ public class BackendManager {
         try {
             StationRepository.saveStations(mCtx, stations);
         } catch (SQLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            e.printStackTrace();
         }
         bus.post(new StationSyncCompleteEvent());
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    public void onEventAsync(DeleteSubscriptionCommand event)
+    {
+        try {
+            ApiClient client = new ApiClient(mCtx);
+            client.deleteSubscription(event.getSubscribtion());
+            Workflow.getEventBus(mCtx).post(new DeleteSubscriptionResult());
+        }catch (Exception e)
+        {
+            Workflow.getEventBus(mCtx).post(new DeleteSubscriptionResult(e));
+        }
     }
 
     @SuppressWarnings("UnusedDeclaration")

@@ -128,6 +128,21 @@ public class ApiClient {
         return ret;
     }
 
+    public void deleteSubscription(Subscribtion subscribtion)
+    {
+        String idPart = Base64.encodeToString(asByteArray(subscribtion.getId()), Base64.URL_SAFE);
+
+        Map<String, String> headers = UserManager.Instance().getAuthHeader(ctx);
+        AndroidHttpClient httpClient = new AndroidHttpClient(URI, new LogvSslRequestHandler(ctx));
+
+        for(Map.Entry<String, String> item : headers.entrySet())
+        {
+            httpClient.addHeader(item.getKey(), item.getValue());
+        }
+
+        httpClient.delete("subscribtions/" + idPart.substring(0, 22), httpClient.newParams());
+    }
+
     public Device registerDevice()
     {
         Map<String, String> headers = UserManager.Instance().getAuthHeader(ctx);
