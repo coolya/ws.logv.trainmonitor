@@ -48,8 +48,10 @@ public class ApiClient {
        if(BuildConfig.DEBUG)
        {
           // SECURE_URI  = "https://trainmonitor.logv.ws/api/v1/";
-           SECURE_URI = "http://[2001:470:1f15:5e3:11c4:492:eb77:f7ab]:8080/api/v1/";
-           NONE_SECURE_URI = "http://[2001:470:1f15:5e3:11c4:492:eb77:f7ab]:8080/api/v1/";
+          // SECURE_URI = "http://[2001:470:1f15:5e3:11c4:492:eb77:f7ab]:8080/api/v1/";
+          // NONE_SECURE_URI = "http://[2001:470:1f15:5e3:11c4:492:eb77:f7ab]:8080/api/v1/";
+           SECURE_URI = "https://trainmonitor.logv.ws/api/v1/";
+           NONE_SECURE_URI = "http://trainmonitor.logv.ws/api/v1/";
        }
         else
        {
@@ -145,6 +147,24 @@ public class ApiClient {
         }
 
         httpClient.delete("subscribtions/" + idPart, httpClient.newParams());
+    }
+
+    public List<Subscribtion> pullSubscriptions()
+    {
+
+        Map<String, String> headers = new UserManager(ctx).getAuthHeader(ctx);
+        AndroidHttpClient httpClient = new AndroidHttpClient(SECURE_URI, new LogvSslRequestHandler(ctx));
+
+        for(Map.Entry<String, String> item : headers.entrySet())
+        {
+            httpClient.addHeader(item.getKey(), item.getValue());
+        }
+        HttpResponse res = httpClient.get("subscribtions", httpClient.newParams());
+
+        String body = res.getBodyAsString();
+        JsonHelper jsonHelper = new JsonHelper();
+        List<Subscribtion> ret = jsonHelper.fromJson(body, new TypeToken<List<Subscribtion>>() {}.getType());
+        return ret;
     }
 
     public Device registerDevice()

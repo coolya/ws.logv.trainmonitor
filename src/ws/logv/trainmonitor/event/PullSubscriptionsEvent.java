@@ -19,9 +19,9 @@ package ws.logv.trainmonitor.event;
 /**
  * Created with IntelliJ IDEA.
  * User: kdummann
- * Date: 26.12.12
- * Time: 19:55
+ * Date: 28.12.12
+ * Time: 11:33
  * To change this template use File | Settings | File Templates.
  */
-public class DisclaimerShownEvent {
+public class PullSubscriptionsEvent {
 }

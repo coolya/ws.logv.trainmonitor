@@ -76,7 +76,7 @@ public class DeviceManager {
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public void onEventBackgroundThread(PrepareDeviceEvent event)
+    public void onEventBackgroundThread(AccountChoosnEvent event)
     {
         File file = new File(mCtx.getFilesDir(), FILENAME);
         if (!file.exists()) {
@@ -99,7 +99,7 @@ public class DeviceManager {
             try {
                 String data = readFile(file);
                 sDevice = Device.fromString(data);
-                Workflow.getEventBus(mCtx).post(new DeviceReadyEvent());
+                Workflow.getEventBus(mCtx).post(new DeviceRegisteredEvent());
             } catch (Exception e) {
                 Log.e(LOG_TAG, "Error preparing device!", e);
                 Workflow.getEventBus(mCtx).post(new FatalErrorEvent(e));

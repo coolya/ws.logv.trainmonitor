@@ -21,7 +21,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentTransaction;
-import android.util.Log;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 
@@ -33,16 +32,12 @@ import android.os.Bundle;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import com.actionbarsherlock.widget.SearchView;
-import com.google.android.gcm.GCMRegistrar;
 import de.greenrobot.event.EventBus;
 import ws.logv.trainmonitor.Workflow;
-import ws.logv.trainmonitor.app.manager.BackendManager;
 import ws.logv.trainmonitor.event.*;
 import ws.logv.trainmonitor.ui.contract.OnRefreshRequestStateHandler;
 import ws.logv.trainmonitor.R;
 import ws.logv.trainmonitor.app.*;
-import ws.logv.trainmonitor.app.manager.DeviceManager;
-import ws.logv.trainmonitor.app.manager.UserManager;
 import ws.logv.trainmonitor.ui.fragments.ChooseAccountFragment;
 
 public class MainActivity extends SherlockFragmentActivity implements com.actionbarsherlock.app.ActionBar.OnNavigationListener {
@@ -116,7 +111,7 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
                             Installation.setDisclaimerShown(that);
-                            mBus.post(new DisclaimerShownEvent());
+                            mBus.post(new DisclaimerAcceptedEvent());
                         }
                     })
                     .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -130,12 +125,12 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
         }
         else
         {
-            mBus.post(new DisclaimerShownEvent());
+            mBus.post(new DisclaimerAcceptedEvent());
         }
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public  void onEvent(DisclaimerShownEvent event)
+    public  void onEvent(DisclaimerAcceptedEvent event)
     {
         if(!Installation.wasChooseAccountShown(this))
         {
@@ -152,8 +147,6 @@ public class MainActivity extends SherlockFragmentActivity implements com.action
         {
             mBus.post(new AccountChoosnEvent());
         }
-        mBus.post(new SetupMenuEvent());
-        mBus.post(new PrepareDeviceEvent());
     }
 
     @SuppressWarnings("UnusedDeclaration")

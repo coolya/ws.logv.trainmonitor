@@ -160,13 +160,7 @@ public class BackendManager {
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public void onEvent(DeviceReadyEvent event)
-    {
-        Workflow.getEventBus(mCtx).post(new RegisterToGcmEvent());
-    }
-
-    @SuppressWarnings("UnusedDeclaration")
-    public void onEventBackgroundThread(RegisterToGcmEvent event)
+    public void onEventBackgroundThread(DeviceRegisteredEvent event)
     {
         try{
             GCMRegistrar.checkDevice(mCtx);
@@ -202,15 +196,37 @@ public class BackendManager {
             return;
         }
         try {
-            List<Subscribtion> subscribtions = TrainRepository.loadSubscriptions(mCtx);
-            subscribtions = client.postSubscriptions(subscribtions);
+            List<Subscribtion> subscriptions = TrainRepository.loadSubscriptions(mCtx);
+            subscriptions = client.postSubscriptions(subscriptions);
             TrainRepository.clearSubscriptions(mCtx);
-            TrainRepository.saveSubscriptions(mCtx, subscribtions);
+            TrainRepository.saveSubscriptions(mCtx, subscriptions);
             Workflow.getEventBus(mCtx).post(new FavouriteTrainsChangedEvent());
         } catch (Exception e) {
             Log.e(LOG_TAG, "Error pushing subscriptions", e);
             Workflow.getEventBus(mCtx).post(new FatalErrorEvent(e));
         }
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    public void onEventBackgroundThread(PullSubscriptionsEvent event)
+    {
+        ApiClient client = new ApiClient(mCtx);
+        if(!client.isConnected())
+        {
+            Workflow.getEventBus(mCtx).post(new NoConnectionEvent());
+            return;
+        }
+
+        try {
+            List<Subscribtion> subscriptions = client.pullSubscriptions();
+            TrainRepository.clearSubscriptions(mCtx);
+            TrainRepository.saveSubscriptions(mCtx, subscriptions);
+            Workflow.getEventBus(mCtx).post(new FavouriteTrainsChangedEvent());
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "Error pulling subscriptions", e);
+            Workflow.getEventBus(mCtx).post(new FatalErrorEvent(e));
+        }
+
     }
 
     public Boolean trainsNeedSync()

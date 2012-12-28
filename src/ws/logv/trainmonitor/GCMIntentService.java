@@ -32,6 +32,7 @@ import ws.logv.trainmonitor.app.Constants;
 import ws.logv.trainmonitor.app.manager.DeviceManager;
 import ws.logv.trainmonitor.command.fetch.FetchTrainDetailsCommand;
 import ws.logv.trainmonitor.command.fetch.FetchTrainDetailsResult;
+import ws.logv.trainmonitor.event.PullSubscriptionsEvent;
 import ws.logv.trainmonitor.event.PushSubscriptionsEvent;
 import ws.logv.trainmonitor.event.RegisteredToGcmEvent;
 import ws.logv.trainmonitor.model.StationInfo;
@@ -81,7 +82,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
                 if("subscription".equals(type))
                 {
-                    Workflow.getEventBus(context).post(new PushSubscriptionsEvent());
+                    Workflow.getEventBus(context).post(new PullSubscriptionsEvent());
                 }
             }
 
