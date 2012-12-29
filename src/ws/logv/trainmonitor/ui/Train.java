@@ -16,8 +16,12 @@
 
 package ws.logv.trainmonitor.ui;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Intent;
+import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.widget.*;
 import de.greenrobot.event.EventBus;
 import ws.logv.trainmonitor.R;
@@ -25,20 +29,15 @@ import ws.logv.trainmonitor.Workflow;
 import ws.logv.trainmonitor.app.Constants;
 import ws.logv.trainmonitor.command.fetch.FetchTrainDetailsCommand;
 import ws.logv.trainmonitor.command.fetch.FetchTrainDetailsResult;
+import ws.logv.trainmonitor.data.TrainRepository;
 import ws.logv.trainmonitor.event.FavTrainEvent;
 import ws.logv.trainmonitor.event.NoConnectionEvent;
-import ws.logv.trainmonitor.ui.adapter.TrainDetailAdapter;
-import android.os.Bundle;
-import android.app.Activity;
-import android.content.Intent;
-import android.util.Log;
-import android.view.Menu;
-import ws.logv.trainmonitor.data.TrainRepository;
 import ws.logv.trainmonitor.model.StationInfo;
+import ws.logv.trainmonitor.ui.adapter.TrainDetailAdapter;
 
 import java.util.ArrayList;
 
-public class Train extends Activity{
+public class Train extends Activity {
     private ProgressDialog mDialog;
     private String mCurrentTrain;
     private EventBus mBus = Workflow.getEventBus(this);
@@ -54,42 +53,40 @@ public class Train extends Activity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_train);
-        
+
         Intent intent = this.getIntent();
-        
-        if(intent != null)
-        {
+
+        if (intent != null) {
             handleIntent(intent);
         }
     }
 
     @Override
     protected void onStop() {
-        mAdapter.unRegister();
+        if (mAdapter != null)
+            mAdapter.unRegister();
+
         super.onStop();
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public void onEventMainThread(FetchTrainDetailsResult event)
-    {
+    public void onEventMainThread(FetchTrainDetailsResult event) {
         mBus.unregister(this, FetchTrainDetailsResult.class);
         mBus.unregister(this, NoConnectionEvent.class);
-         if(!event.isFaulted())
-         {
-             setListView(event.getTrain());
-             hideDialog();
-         }
-        else {
-             Log.e(this.getClass().getName(), "Error getting train details ", event.getException());
-             hideDialog();
-             Toast toast = Toast.makeText(this.getApplicationContext(),R.string.train_details_error, Toast.LENGTH_LONG);
-             toast.show();
-             this.finish();
-         }
+        if (!event.isFaulted()) {
+            setListView(event.getTrain());
+            hideDialog();
+        } else {
+            Log.e(this.getClass().getName(), "Error getting train details ", event.getException());
+            hideDialog();
+            Toast toast = Toast.makeText(this.getApplicationContext(), R.string.train_details_error, Toast.LENGTH_LONG);
+            toast.show();
+            this.finish();
+        }
     }
+
     @SuppressWarnings("UnusedDeclaration")
-    public void onEvent(NoConnectionEvent event)
-    {
+    public void onEvent(NoConnectionEvent event) {
         mBus.unregister(this, NoConnectionEvent.class);
         hideDialog();
         Toast toast = Toast.makeText(getApplicationContext(), R.string.error_no_connection, Toast.LENGTH_LONG);
@@ -112,7 +109,8 @@ public class Train extends Activity{
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 mBus.post(new FavTrainEvent(mCurrentTrain, b));
-            }});
+            }
+        });
 
         mDialog = new ProgressDialog(this);
         mDialog.setMessage(getString(R.string.progess_getting_train_details));
@@ -130,8 +128,7 @@ public class Train extends Activity{
     }
 
     private void hideDialog() {
-        if(mDialog != null)
-        {
+        if (mDialog != null) {
             mDialog.dismiss();
         }
     }
