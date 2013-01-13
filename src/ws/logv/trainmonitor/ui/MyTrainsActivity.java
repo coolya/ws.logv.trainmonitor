@@ -75,6 +75,7 @@ public class MyTrainsActivity extends FragmentActivity {
             mBus.register(this, RefreshEvent.class);
             mBus.register(this, FavouriteTrainsChangedEvent.class);
             mAdapter.register();
+            mBus.post(new RefreshEvent());
         }
 
         @SuppressWarnings("UnusedDeclaration")

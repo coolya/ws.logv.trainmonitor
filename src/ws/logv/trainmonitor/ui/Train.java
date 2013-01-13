@@ -24,6 +24,7 @@ import android.text.format.DateFormat;
 import android.util.Log;
 import android.widget.*;
 import de.greenrobot.event.EventBus;
+import de.greenrobot.event.EventBusException;
 import ws.logv.trainmonitor.R;
 import ws.logv.trainmonitor.Workflow;
 import ws.logv.trainmonitor.app.Constants;
@@ -96,8 +97,13 @@ public class Train extends Activity {
 
     private void handleIntent(Intent intent) {
         mCurrentTrain = intent.getStringExtra(Constants.IntentsExtra.Train);
-        mBus.register(this, FetchTrainDetailsResult.class);
-        mBus.register(this, NoConnectionEvent.class);
+
+        try {
+            mBus.register(this, FetchTrainDetailsResult.class);
+            mBus.register(this, NoConnectionEvent.class);
+        } catch (EventBusException e) {
+            e.printStackTrace();
+        }
         mBus.post(new FetchTrainDetailsCommand(mCurrentTrain));
         TextView tv = (TextView) findViewById(R.id.train_id);
         tv.setText(mCurrentTrain);
