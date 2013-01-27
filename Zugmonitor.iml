@@ -65,6 +65,7 @@
     <orderEntry type="module" module-name="ActionbarSherlock" />
     <orderEntry type="library" name="android-support-v4" level="project" />
     <orderEntry type="module" module-name="EventBus" />
+    <orderEntry type="module" module-name="Facebook-like Slide-out Navigation" />
   </component>
 </module>
 

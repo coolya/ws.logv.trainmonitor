@@ -26,16 +26,16 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import com.actionbarsherlock.app.SherlockFragment;
 import de.greenrobot.event.EventBus;
+import ws.logv.trainmonitor.R;
 import ws.logv.trainmonitor.Workflow;
+import ws.logv.trainmonitor.app.Constants;
 import ws.logv.trainmonitor.command.load.LoadFavouriteTrainsCommand;
 import ws.logv.trainmonitor.command.load.LoadFavouriteTrainsResult;
 import ws.logv.trainmonitor.event.FavouriteTrainsChangedEvent;
-import ws.logv.trainmonitor.event.RefreshEvent;
-import ws.logv.trainmonitor.event.SetUpActionBarEvent;
-import ws.logv.trainmonitor.R;
-import ws.logv.trainmonitor.app.Constants;
-import ws.logv.trainmonitor.ui.adapter.FavouriteTrainAdapter;
+import ws.logv.trainmonitor.event.ui.RefreshEvent;
+import ws.logv.trainmonitor.event.ui.SetUpActionBarEvent;
 import ws.logv.trainmonitor.model.FavouriteTrain;
+import ws.logv.trainmonitor.ui.adapter.FavouriteTrainAdapter;
 
 import java.util.LinkedList;
 
@@ -49,8 +49,7 @@ import java.util.LinkedList;
 public class MyTrainsActivity extends FragmentActivity {
 
 
-    public static class MyTrainsFragment extends SherlockFragment
-    {
+    public static class MyTrainsFragment extends SherlockFragment {
         public MyTrainsFragment() {
         }
 
@@ -79,11 +78,9 @@ public class MyTrainsActivity extends FragmentActivity {
         }
 
         @SuppressWarnings("UnusedDeclaration")
-        public void onEventMainThread(LoadFavouriteTrainsResult event)
-        {
+        public void onEventMainThread(LoadFavouriteTrainsResult event) {
             mBus.unregister(this, LoadFavouriteTrainsResult.class);
-            if(!event.isFaulted())
-            {
+            if (!event.isFaulted()) {
                 mAdapter.setNotifyOnChange(false);
                 mAdapter.clear();
                 mAdapter.addAll(event.getData());
@@ -93,14 +90,12 @@ public class MyTrainsActivity extends FragmentActivity {
         }
 
         @SuppressWarnings("UnusedDeclaration")
-        public void onEvent(RefreshEvent event)
-        {
+        public void onEvent(RefreshEvent event) {
             refreshMe();
         }
 
         @SuppressWarnings("UnusedDeclaration")
-        public void onEvent(FavouriteTrainsChangedEvent event)
-        {
+        public void onEvent(FavouriteTrainsChangedEvent event) {
             refreshMe();
         }
 
@@ -117,19 +112,19 @@ public class MyTrainsActivity extends FragmentActivity {
             ListView lvTrains = (ListView) v.findViewById(R.id.listView_trains);
 
 
-                LinkedList<FavouriteTrain> list = new LinkedList<FavouriteTrain>();
-                mAdapter = new FavouriteTrainAdapter(v.getContext(), 0, list);
-                lvTrains.setAdapter(mAdapter);
+            LinkedList<FavouriteTrain> list = new LinkedList<FavouriteTrain>();
+            mAdapter = new FavouriteTrainAdapter(v.getContext(), 0, list);
+            lvTrains.setAdapter(mAdapter);
 
-                lvTrains.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                    @Override
-                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                        FavouriteTrain item = mAdapter.getItem(i);
-                        Intent intent = new Intent(view.getContext(), Train.class);
-                        intent.putExtra(Constants.IntentsExtra.Train, item.getTrainId());
-                        view.getContext().startActivity(intent);
-                    }
-                });
+            lvTrains.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    FavouriteTrain item = mAdapter.getItem(i);
+                    Intent intent = new Intent(view.getContext(), Train.class);
+                    intent.putExtra(Constants.IntentsExtra.Train, item.getTrainId());
+                    view.getContext().startActivity(intent);
+                }
+            });
             mBus.post(new SetUpActionBarEvent(false, true));
             refreshMe();
             return v;

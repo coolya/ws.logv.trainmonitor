@@ -8,6 +8,7 @@
       <directory url="file://$PROJECT_DIR$/../../Code/Android-PullToRefresh/library/gen" includeSubdirectories="true" />
       <directory url="file://$PROJECT_DIR$/../JakeWharton-ActionBarSherlock-88fc341/library/gen" includeSubdirectories="true" />
       <directory url="file://$PROJECT_DIR$/../../GitHub/EventBus/EventBus/gen" includeSubdirectories="true" />
+      <directory url="file://$PROJECT_DIR$/../../GitHub/android-fb-like-slideout-navigation/lib/gen" includeSubdirectories="true" />
     </excludeFromCompile>
     <resourceExtensions />
     <wildcardResourcePatterns>

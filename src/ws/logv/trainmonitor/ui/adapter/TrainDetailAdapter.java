@@ -56,40 +56,34 @@ public class TrainDetailAdapter extends BaseArrayAdapter<StationInfo> {
         mBus = Workflow.getEventBus(context);
         mBus.register(this);
     }
-    public void unRegister()
-    {
+
+    public void unRegister() {
         mBus.unregister(this);
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public void onEventMainThread(LoadStationResult event)
-    {
-         if(!event.isFaulted())
-         {
-             if(event.getTag() instanceof  TextView)
-             {
-                 TextView view = (TextView) event.getTag();
-                 view.setText(event.getResult().getName());
-                 mStationCache.put(event.getResult().getId(), event.getResult());
-             }
-         }
+    public void onEventMainThread(LoadStationResult event) {
+        if (!event.isFaulted()) {
+            if (event.getTag() instanceof TextView) {
+                TextView view = (TextView) event.getTag();
+                view.setText(event.getResult().getName());
+                mStationCache.put(event.getResult().getId(), event.getResult());
+            }
+        }
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         StationInfo item = this.getItem(position);
-        View rowView = mInflater.inflate(R.layout.station_info_item, parent, false);
-        TextView tvName =  (TextView) rowView.findViewById(R.id.name);
+        View rowView = mInflater.inflate(R.layout.item_station_info, parent, false);
+        TextView tvName = (TextView) rowView.findViewById(R.id.name);
         TextView tvDelay = (TextView) rowView.findViewById(R.id.delay);
         TextView tvArrival = (TextView) rowView.findViewById(R.id.arrival);
 
-        if(mStationCache.containsKey(item.getStationId()))
-        {
+        if (mStationCache.containsKey(item.getStationId())) {
             tvName.setText(mStationCache.get(item.getStationId()).getName());
-        }
-        else
-        {
-            mBus.post(new LoadStationCommand(item.getStationId(),tvName));
+        } else {
+            mBus.post(new LoadStationCommand(item.getStationId(), tvName));
         }
 
         int delay = item.getDelay();
@@ -97,25 +91,20 @@ public class TrainDetailAdapter extends BaseArrayAdapter<StationInfo> {
         Time time = new Time();
 
         int seconds = item.getArrival();
-        if(seconds == 0)
+        if (seconds == 0)
             seconds = item.getDeparture();
 
         time.set(seconds * 60 * 1000);
-        time.hour = time.hour -1;
+        time.hour = time.hour - 1;
 
         time.normalize(false);
         String arrival = time.format("%H:%M");
         tvArrival.setText(arrival);
-        if(delay == 0)
-        {
+        if (delay == 0) {
             //rowView.setBackgroundColor(mCtx.getResources().getColor(R.color.OnTime));
-        }
-        else if(delay > 14)
-        {
+        } else if (delay > 14) {
             rowView.setBackgroundColor(mCtx.getResources().getColor(R.color.Late));
-        }
-        else
-        {
+        } else {
             rowView.setBackgroundColor(mCtx.getResources().getColor(R.color.LittleLate));
         }
 

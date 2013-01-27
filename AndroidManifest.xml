@@ -54,6 +54,7 @@
         </activity>
         <activity android:name=".ui.SettingsActivity"/>
         <activity android:name=".ui.ChooseAccountActivity"/>
+        <activity android:name=".ui.MenuActivity"/>
 
         <receiver
                 android:name="com.google.android.gcm.GCMBroadcastReceiver"

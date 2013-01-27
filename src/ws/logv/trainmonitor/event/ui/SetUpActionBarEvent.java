@@ -16,6 +16,8 @@
 
 package ws.logv.trainmonitor.event.ui;
 
+import com.actionbarsherlock.app.ActionBar;
+
 /**
  * Created with IntelliJ IDEA.
  * User: kdummann
@@ -26,10 +28,20 @@ package ws.logv.trainmonitor.event.ui;
 public class SetUpActionBarEvent {
     private boolean enableSearch;
     private boolean enableRefresh;
+    private String[] dropDownItems;
+    private ActionBar.OnNavigationListener navigationListener;
 
     public SetUpActionBarEvent(boolean enableSearch, boolean enableRefresh) {
         this.enableSearch = enableSearch;
         this.enableRefresh = enableRefresh;
+        this.dropDownItems = null;
+    }
+
+    public SetUpActionBarEvent(boolean enableSearch, boolean enableRefresh, String[] dropDownItems, ActionBar.OnNavigationListener navigationListener) {
+        this.enableSearch = enableSearch;
+        this.enableRefresh = enableRefresh;
+        this.dropDownItems = dropDownItems;
+        this.navigationListener = navigationListener;
     }
 
     public boolean isSearchEnabled() {
@@ -40,4 +52,11 @@ public class SetUpActionBarEvent {
         return enableRefresh;
     }
 
+    public String[] getDropDownItems() {
+        return this.dropDownItems;
+    }
+
+    public ActionBar.OnNavigationListener getNavigationListener() {
+        return navigationListener;
+    }
 }

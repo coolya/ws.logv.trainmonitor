@@ -16,29 +16,33 @@
 
 package ws.logv.trainmonitor.ui;
 
-import java.util.LinkedList;
-
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
+import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.SherlockFragment;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
-
 import de.greenrobot.event.EventBus;
 import ws.logv.trainmonitor.R;
 import ws.logv.trainmonitor.Workflow;
 import ws.logv.trainmonitor.app.manager.BackendManager;
-import ws.logv.trainmonitor.event.TrainSyncEvent;
 import ws.logv.trainmonitor.command.load.LoadTrainCommand;
 import ws.logv.trainmonitor.command.load.LoadTrainResult;
 import ws.logv.trainmonitor.event.*;
-import ws.logv.trainmonitor.ui.adapter.TrainAdapter;
+import ws.logv.trainmonitor.event.ui.RefreshEvent;
+import ws.logv.trainmonitor.event.ui.SearchEvent;
+import ws.logv.trainmonitor.event.ui.SetUpActionBarEvent;
 import ws.logv.trainmonitor.model.Train;
-import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
+import ws.logv.trainmonitor.ui.adapter.TrainAdapter;
+
+import java.util.LinkedList;
 
 public class AllTrainsActivity extends FragmentActivity {
 
@@ -48,12 +52,12 @@ public class AllTrainsActivity extends FragmentActivity {
         setContentView(R.layout.activity_all_trains);
     }
 
-    
-    public static class AllTrainsFragment extends SherlockFragment  {
-        private static  final String LOG_TAG = AllTrainsFragment.class.getSimpleName();
+
+    public static class AllTrainsFragment extends SherlockFragment implements ActionBar.OnNavigationListener {
+        private static final String LOG_TAG = AllTrainsFragment.class.getSimpleName();
 
         static AllTrainsFragment newInstance() {
-        	AllTrainsFragment f = new AllTrainsFragment();
+            AllTrainsFragment f = new AllTrainsFragment();
             return f;
         }
 
@@ -87,7 +91,7 @@ public class AllTrainsActivity extends FragmentActivity {
          */
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
+                                 Bundle savedInstanceState) {
             View v = inflater.inflate(R.layout.activity_all_trains, container, false);
 
             LinkedList<Train> mListItems;
@@ -101,8 +105,7 @@ public class AllTrainsActivity extends FragmentActivity {
             mRefreshView.setOnLastItemVisibleListener(new PullToRefreshBase.OnLastItemVisibleListener() {
                 @Override
                 public void onLastItemVisible() {
-                    if(mLoadMore)
-                    {
+                    if (mLoadMore) {
                         fetchData();
                     }
                 }
@@ -110,13 +113,12 @@ public class AllTrainsActivity extends FragmentActivity {
 
             BackendManager syncAdapter = new BackendManager(getActivity());
 
-            if(syncAdapter.trainsNeedSync())
-            {
+            if (syncAdapter.trainsNeedSync()) {
                 refreshDataFromServer(getActivity());
             } else {
                 fetchData();
             }
-            mBus.post(new SetUpActionBarEvent(true, true));
+            mBus.post(new SetUpActionBarEvent(true, true, getResources().getStringArray(R.array.traintypes), this));
             return v;
         }
 
@@ -126,25 +128,19 @@ public class AllTrainsActivity extends FragmentActivity {
         }
 
         @SuppressWarnings("UnusedDeclaration")
-        public void onEventMainThread(LoadTrainResult result)
-        {
-            if(result.isFaulted())
-            {
+        public void onEventMainThread(LoadTrainResult result) {
+            if (result.isFaulted()) {
                 Log.e(LOG_TAG, "Error getting trains from DB", result.getException());
                 Toast.makeText(getActivity(), R.string.error_reading_trains, Toast.LENGTH_LONG).show();
-            }
-            else
-            {
+            } else {
                 mAdapter.addAll(result.getResult());
             }
             WindowMediator.EndRefreshState();
         }
 
         @SuppressWarnings("UnusedDeclaration")
-        public void onEventMainThread(NoConnectionEvent event)
-        {
-            if(mDialog != null)
-            {
+        public void onEventMainThread(NoConnectionEvent event) {
+            if (mDialog != null) {
                 mDialog.dismiss();
             }
 
@@ -152,34 +148,28 @@ public class AllTrainsActivity extends FragmentActivity {
         }
 
         @SuppressWarnings("UnusedDeclaration")
-        public void onFatalError(FatalErrorEvent event)
-        {
+        public void onFatalError(FatalErrorEvent event) {
             mBus.unregister(this, FatalErrorEvent.class);
-            if(mDialog != null)
-            {
+            if (mDialog != null) {
                 mDialog.dismiss();
             }
-            if(event.getResId() != 0)
-            {
-                Toast toast = Toast.makeText(getActivity().getApplicationContext(),event.getResId(), Toast.LENGTH_SHORT);
+            if (event.getResId() != 0) {
+                Toast toast = Toast.makeText(getActivity().getApplicationContext(), event.getResId(), Toast.LENGTH_SHORT);
                 toast.show();
             }
 
         }
 
         @SuppressWarnings("UnusedDeclaration")
-        public  void onEventMainThread(TrainSyncProgressEvent event)
-        {
-            if(mDialog != null)
-            {
+        public void onEventMainThread(TrainSyncProgressEvent event) {
+            if (mDialog != null) {
                 mDialog.setMessage(event.getMessage());
             }
         }
+
         @SuppressWarnings("UnusedDeclaration")
-        public  void onEventMainThread(TrainSyncCompleteEvent event)
-        {
-            if(mDialog != null)
-            {
+        public void onEventMainThread(TrainSyncCompleteEvent event) {
+            if (mDialog != null) {
                 mDialog.dismiss();
                 mAdapter.clear();
                 fetchData();
@@ -187,30 +177,24 @@ public class AllTrainsActivity extends FragmentActivity {
         }
 
         @SuppressWarnings("UnusedDeclaration")
-        public void onEventMainThread(SearchEvent event)
-        {
+        public void onEventMainThread(SearchEvent event) {
             WindowMediator.RequestRefreshState();
             mAdapter.clear();
-            if(!event.getSearchCanceled())
-            {
+            if (!event.getSearchCanceled()) {
                 mLoadMore = false;
                 mBus.post(new LoadTrainCommand(event.getQuery()));
-            }
-            else
-            {
+            } else {
                 mLoadMore = true;
                 mBus.post(new LoadTrainCommand(50l, 0));
             }
         }
 
         @SuppressWarnings("UnusedDeclaration")
-        public void onEvent(RefreshEvent event)
-        {
+        public void onEvent(RefreshEvent event) {
             refreshDataFromServer(getActivity());
         }
 
-        public void refreshDataFromServer(Context ctx)
-		{
+        public void refreshDataFromServer(Context ctx) {
             mDialog = new ProgressDialog(ctx);
             mDialog.setCancelable(false);
             mDialog.setIndeterminate(true);
@@ -220,7 +204,11 @@ public class AllTrainsActivity extends FragmentActivity {
             mBus.register(this, "onFatalError", FatalErrorEvent.class);
             mBus.post(new TrainSyncEvent());
 
-		}
+        }
 
+        @Override
+        public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+            return false;  //To change body of implemented methods use File | Settings | File Templates.
+        }
     }
 }

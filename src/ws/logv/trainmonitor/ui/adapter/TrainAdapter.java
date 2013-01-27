@@ -16,7 +16,11 @@
 
 package ws.logv.trainmonitor.ui.adapter;
 
+import android.content.Context;
 import android.content.Intent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
@@ -30,10 +34,6 @@ import ws.logv.trainmonitor.event.FavTrainEvent;
 import ws.logv.trainmonitor.event.FavouriteTrainsChangedEvent;
 import ws.logv.trainmonitor.model.FavouriteTrain;
 import ws.logv.trainmonitor.model.Train;
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import java.util.HashMap;
 import java.util.List;
@@ -43,33 +43,29 @@ public class TrainAdapter extends BaseArrayAdapter<Train> {
 
     private EventBus mBus = Workflow.getEventBus(this.getContext());
 
-	private Context ctx;
-	public TrainAdapter(Context context, int textViewResourceId, List<Train> objects) {
-		super(context, textViewResourceId, objects);
-		this.ctx = context;
+    private Context ctx;
+
+    public TrainAdapter(Context context, int textViewResourceId, List<Train> objects) {
+        super(context, textViewResourceId, objects);
+        this.ctx = context;
         mBus.register(this, FavouriteTrainsChangedEvent.class, LoadFavouriteTrainsResult.class);
         mBus.post(new LoadFavouriteTrainsCommand());
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public void onEvent(FavouriteTrainsChangedEvent event)
-    {
+    public void onEvent(FavouriteTrainsChangedEvent event) {
         mBus.register(this, LoadFavouriteTrainsResult.class);
         mBus.post(new LoadFavouriteTrainsCommand());
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public void onEventMainThread(LoadFavouriteTrainsResult event)
-    {
+    public void onEventMainThread(LoadFavouriteTrainsResult event) {
         mBus.unregister(this, LoadFavouriteTrainsResult.class);
-        if(!event.isFaulted())
-        {
-            synchronized (favs)
-            {
+        if (!event.isFaulted()) {
+            synchronized (favs) {
                 favs.clear();
 
-                for(FavouriteTrain train : event.getData())
-                {
+                for (FavouriteTrain train : event.getData()) {
                     favs.put(train.getTrainId(), true);
                 }
                 this.notifyDataSetChanged();
@@ -77,24 +73,21 @@ public class TrainAdapter extends BaseArrayAdapter<Train> {
         }
     }
 
-    public void onDestroy()
-    {
+    public void onDestroy() {
         mBus.unregister(this);
     }
 
 
     @Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent) {
 
         View rowView;
-        if(convertView != null)
-        {
+        if (convertView != null) {
             rowView = convertView;
-        }
-        else {
+        } else {
             LayoutInflater inflater = (LayoutInflater) ctx
-            .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            rowView = inflater.inflate(R.layout.all_trains_item, parent, false);
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            rowView = inflater.inflate(R.layout.item_all_trains, parent, false);
         }
         final Train item = this.getItem(position);
 
@@ -102,8 +95,7 @@ public class TrainAdapter extends BaseArrayAdapter<Train> {
         tvId.setText(item.getTrainId());
         CheckBox cbFav = (CheckBox) rowView.findViewById(R.id.fav);
         cbFav.setOnCheckedChangeListener(null);
-        synchronized (favs)
-        {
+        synchronized (favs) {
             cbFav.setChecked(favs.containsKey(item.getTrainId()));
         }
         cbFav.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -121,7 +113,7 @@ public class TrainAdapter extends BaseArrayAdapter<Train> {
             }
         });
         return rowView;
-	}
+    }
 
 
 }
