@@ -14,14 +14,35 @@
  *    limitations under the License.
  */
 
-package ws.logv.trainmonitor.event;
+package ws.logv.trainmonitor.event.ui;
 
 /**
  * Created with IntelliJ IDEA.
  * User: kdummann
  * Date: 26.12.12
- * Time: 20:39
+ * Time: 12:15
  * To change this template use File | Settings | File Templates.
  */
-public class SetupMenuEvent {
+public class SearchEvent {
+
+    private String query;
+    private boolean searchCanceled;
+
+    public SearchEvent(String query) {
+        this.query = query;
+    }
+
+    public SearchEvent(boolean canceled) {
+        this.searchCanceled = canceled;
+    }
+
+    public String getQuery() {
+        return this.query;
+    }
+
+    public boolean getSearchCanceled() {
+        return searchCanceled;
+    }
+
+
 }

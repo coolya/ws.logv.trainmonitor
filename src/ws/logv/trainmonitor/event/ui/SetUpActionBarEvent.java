@@ -14,14 +14,30 @@
  *    limitations under the License.
  */
 
-package ws.logv.trainmonitor.event;
+package ws.logv.trainmonitor.event.ui;
 
 /**
  * Created with IntelliJ IDEA.
  * User: kdummann
  * Date: 26.12.12
- * Time: 19:52
+ * Time: 12:52
  * To change this template use File | Settings | File Templates.
  */
-public class ShowDisclaimerEvent {
+public class SetUpActionBarEvent {
+    private boolean enableSearch;
+    private boolean enableRefresh;
+
+    public SetUpActionBarEvent(boolean enableSearch, boolean enableRefresh) {
+        this.enableSearch = enableSearch;
+        this.enableRefresh = enableRefresh;
+    }
+
+    public boolean isSearchEnabled() {
+        return enableSearch;
+    }
+
+    public boolean isRefreshEnabled() {
+        return enableRefresh;
+    }
+
 }
