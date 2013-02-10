@@ -20,4 +20,5 @@
     <string name="url_trainmonitor_website">http://trainmonitor.logv.ws/</string>
     <string name="uri_trainmonitor_donate">http://trainmonitor.logv.ws/donate.html</string>
     <string name="settings_default_notify">true</string>
+    <integer name="visible_width_content_dp">120</integer>
 </resources>

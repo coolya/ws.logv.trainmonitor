@@ -61,5 +61,7 @@
     <string name="menu_image">menu image</string>
     <string name="menu_all_trains">All Trains</string>
     <string name="menu_fav_trains">My Trains</string>
+    <string name="show">show train details</string>
+    <string name="Settings">Settings</string>
 
 </resources>

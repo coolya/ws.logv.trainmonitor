@@ -36,6 +36,7 @@ import ws.logv.trainmonitor.event.PullSubscriptionsEvent;
 import ws.logv.trainmonitor.event.PushSubscriptionsEvent;
 import ws.logv.trainmonitor.event.RegisteredToGcmEvent;
 import ws.logv.trainmonitor.model.StationInfo;
+import ws.logv.trainmonitor.ui.MainActivity;
 import ws.logv.trainmonitor.ui.Train;
 
 import java.util.Collection;
@@ -45,53 +46,44 @@ public class GCMIntentService extends GCMBaseIntentService {
     private final String TAG = "GCMIntentService";
     private PowerManager.WakeLock wl;
 
-    public GCMIntentService()
-    {
+    public GCMIntentService() {
         super(Constants.GCM.SENDER_ID);
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public void onEvent(FetchTrainDetailsResult result)
-    {
+    public void onEvent(FetchTrainDetailsResult result) {
         Workflow.getEventBus(this).unregister(this, FetchTrainDetailsResult.class);
         Collection<StationInfo> stations = result.getTrain().getStations();
         int delay = 0;
-        for (StationInfo station : stations)
-        {
-            if(station.getDelay() > delay)
+        for (StationInfo station : stations) {
+            if (station.getDelay() > delay)
                 delay = station.getDelay();
 
         }
 
-        if(delay > 0)
-        {
+        if (delay > 0) {
             generateTrainLateNotification(this, result.getTrain().getTrainId(), delay);
         }
         wl.release();
     }
+
     @Override
     protected void onMessage(final Context context, Intent intent) {
 
-        if(intent.hasExtra("command"))
-        {
+        if (intent.hasExtra("command")) {
             String command = intent.getStringExtra("command");
 
-            if("sync".equals(command))
-            {
+            if ("sync".equals(command)) {
                 String type = intent.getStringExtra("type");
 
-                if("subscription".equals(type))
-                {
+                if ("subscription".equals(type)) {
                     Workflow.getEventBus(context).post(new PullSubscriptionsEvent());
                 }
             }
 
-        }
-        else
-        {
+        } else {
             String train = intent.getStringExtra("train");
-            if(wl == null)
-            {
+            if (wl == null) {
                 PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
                 wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "Refresh trains");
             }
@@ -135,7 +127,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
         SharedPreferences pref = context.getSharedPreferences(Constants.Settings.PERF, 0);
 
-        if(!pref.getBoolean(Constants.Settings.NOTIFICATION_ON, true))
+        if (!pref.getBoolean(Constants.Settings.NOTIFICATION_ON, true))
             return;
 
         int icon = R.drawable.notification;
@@ -148,22 +140,29 @@ public class GCMIntentService extends GCMBaseIntentService {
 
         String title = context.getString(R.string.app_name);
 
-        Intent notificationIntent = new Intent(context, Train.class);
-        notificationIntent.putExtra(Constants.IntentsExtra.Train, trainId);
+        Intent notificationIntent = new Intent(context, MainActivity.class);
+        notificationIntent.putExtra(Constants.IntentsExtra.NOTIFICATION, true);
         // set intent so it does not start a new activity
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent intent =
                 PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
-        NotificationCompat.Builder  builder =  new NotificationCompat.Builder(context)
+        Intent iShow = new Intent(context, Train.class);
+        iShow.setAction(Constants.Actions.TRAIN_ACTION + trainId);
+        PendingIntent piShow = PendingIntent.getActivity(context, 0, iShow, 0);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setContentText(message)
                 .setContentTitle(title)
                 .setSmallIcon(icon)
                 .setWhen(when)
                 .setAutoCancel(true)
                 .setSubText(subText)
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(message))
+                .addAction(R.drawable.notification_trains, context.getString(R.string.show), piShow)
                 .setContentIntent(intent);
+
         builder.setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND | Notification.FLAG_SHOW_LIGHTS);
 
         Notification notification = builder.build();

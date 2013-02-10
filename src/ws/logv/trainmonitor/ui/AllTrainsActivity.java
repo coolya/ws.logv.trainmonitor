@@ -18,6 +18,7 @@ package ws.logv.trainmonitor.ui;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
@@ -32,9 +33,11 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import de.greenrobot.event.EventBus;
 import ws.logv.trainmonitor.R;
 import ws.logv.trainmonitor.Workflow;
+import ws.logv.trainmonitor.app.Constants;
 import ws.logv.trainmonitor.app.manager.BackendManager;
 import ws.logv.trainmonitor.command.load.LoadTrainCommand;
 import ws.logv.trainmonitor.command.load.LoadTrainResult;
+import ws.logv.trainmonitor.data.TrainType;
 import ws.logv.trainmonitor.event.*;
 import ws.logv.trainmonitor.event.ui.RefreshEvent;
 import ws.logv.trainmonitor.event.ui.SearchEvent;
@@ -66,6 +69,7 @@ public class AllTrainsActivity extends FragmentActivity {
         private PullToRefreshListView mRefreshView;
         private ProgressDialog mDialog;
         private boolean mLoadMore = true;
+        private TrainType mCurrentType = TrainType.All;
 
         @Override
         public void onPause() {
@@ -106,7 +110,10 @@ public class AllTrainsActivity extends FragmentActivity {
                 @Override
                 public void onLastItemVisible() {
                     if (mLoadMore) {
-                        fetchData();
+                        if (mCurrentType == TrainType.All)
+                            fetchData();
+                        else
+                            fetchData(mCurrentType);
                     }
                 }
             });
@@ -116,15 +123,25 @@ public class AllTrainsActivity extends FragmentActivity {
             if (syncAdapter.trainsNeedSync()) {
                 refreshDataFromServer(getActivity());
             } else {
-                fetchData();
+                //fetchData();
             }
-            mBus.post(new SetUpActionBarEvent(true, true, getResources().getStringArray(R.array.traintypes), this));
+
+            SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+            int selectedItem = sharedPref.getInt(Constants.Settings.SELECTED_TRAIN_TYPE, 0);
+
+            mBus.post(new SetUpActionBarEvent(true, true, getResources().getStringArray(R.array.traintypes),
+                    selectedItem, this));
             return v;
         }
 
         private void fetchData() {
             WindowMediator.RequestRefreshState();
             mBus.post(new LoadTrainCommand(50l, mAdapter.getCount()));
+        }
+
+        private void fetchData(TrainType type) {
+            WindowMediator.RequestRefreshState();
+            mBus.post(new LoadTrainCommand(50l, mAdapter.getCount(), type));
         }
 
         @SuppressWarnings("UnusedDeclaration")
@@ -208,7 +225,19 @@ public class AllTrainsActivity extends FragmentActivity {
 
         @Override
         public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-            return false;  //To change body of implemented methods use File | Settings | File Templates.
+            TrainType type = TrainType.values()[itemPosition];
+
+            if (type != mCurrentType) {
+                SharedPreferences sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putInt(Constants.Settings.SELECTED_TRAIN_TYPE, itemPosition);
+                editor.commit();
+                mCurrentType = type;
+                mAdapter.clear();
+                fetchData(type);
+            }
+
+            return true;
         }
     }
 }

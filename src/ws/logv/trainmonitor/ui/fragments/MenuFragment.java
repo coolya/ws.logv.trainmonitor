@@ -45,7 +45,7 @@ public class MenuFragment extends SherlockListFragment {
         setListAdapter(new MenuAdapter(getActivity(), new MenuItem[]{
                 new MenuItem(R.string.menu_fav_trains, R.drawable.check_on_big, NavigationTarget.MY_TRAINS),
                 new MenuItem(R.string.menu_all_trains, R.drawable.menu_all_trains, NavigationTarget.ALL_TRAINS),
-                new MenuItem(R.string.menu_settings, R.drawable.tools, NavigationTarget.SETTINGS)
+                new MenuItem(R.string.Settings, R.drawable.tools, NavigationTarget.SETTINGS)
         }));
         // getListView().setCacheColorHint(0);
     }

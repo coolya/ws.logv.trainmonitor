@@ -121,7 +121,7 @@ public class MyTrainsActivity extends FragmentActivity {
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     FavouriteTrain item = mAdapter.getItem(i);
                     Intent intent = new Intent(view.getContext(), Train.class);
-                    intent.putExtra(Constants.IntentsExtra.Train, item.getTrainId());
+                    intent.setAction(Constants.Actions.TRAIN_ACTION + item.getTrainId());
                     view.getContext().startActivity(intent);
                 }
             });

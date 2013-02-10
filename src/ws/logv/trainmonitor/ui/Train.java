@@ -17,7 +17,9 @@
 package ws.logv.trainmonitor.ui;
 
 import android.app.Activity;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.format.DateFormat;
@@ -96,7 +98,13 @@ public class Train extends Activity {
     }
 
     private void handleIntent(Intent intent) {
-        mCurrentTrain = intent.getStringExtra(Constants.IntentsExtra.Train);
+
+        mCurrentTrain = intent.getAction().substring(Constants.Actions.TRAIN_ACTION.length()).trim();
+
+        NotificationManager notificationManager = (NotificationManager)
+                this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.cancel(mCurrentTrain.hashCode());
 
         try {
             mBus.register(this, FetchTrainDetailsResult.class);

@@ -16,6 +16,8 @@
 
 package ws.logv.trainmonitor.command.load;
 
+import ws.logv.trainmonitor.data.TrainType;
+
 /**
  * Created with IntelliJ IDEA.
  * User: kdummann
@@ -27,35 +29,46 @@ public class LoadTrainCommand {
     private String query;
     private long count;
     private long start;
-    public LoadTrainCommand()
-    {
+    private TrainType type;
+    private boolean hasType;
+
+    public LoadTrainCommand() {
 
     }
-    public LoadTrainCommand(String query)
-    {
+
+    public LoadTrainCommand(String query) {
         this.query = query;
     }
 
-    public LoadTrainCommand(long count, long start)
-    {
-         this.count = count;
-         this.start = start;
+    public LoadTrainCommand(long count, long start) {
+        this.count = count;
+        this.start = start;
     }
 
-    public String getQuery()
-    {
+    public LoadTrainCommand(long count, int start, TrainType type) {
+        this.count = count;
+        this.start = start;
+        this.type = type;
+        this.hasType = true;
+    }
+
+    public String getQuery() {
         return query;
     }
 
-    public long getCount()
-    {
+    public long getCount() {
         return count;
     }
 
-    public long getStart()
-    {
+    public long getStart() {
         return start;
     }
 
+    public TrainType getType() {
+        return type;
+    }
 
+    public boolean hasType() {
+        return hasType;
+    }
 }

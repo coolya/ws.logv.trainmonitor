@@ -1,5 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright 2012. Kolja Dummann <k.dummann@gmail.com>
+  ~ Copyright 2013. Kolja Dummann <k.dummann@gmail.com>
   ~
   ~    Licensed under the Apache License, Version 2.0 (the "License");
   ~    you may not use this file except in compliance with the License.
@@ -15,18 +16,5 @@
   -->
 
 <resources>
-    <string-array name="navigation">
-        <item>Alle Züge</item>
-        <item>Meine Züge</item>
-    </string-array>
-    <string-array name="traintypes">
-        <item>Alle</item>
-        <item>CNL</item>
-        <item>EC</item>
-        <item>IC</item>
-        <item>ICE</item>
-        <item>RJ</item>
-        <item>TGV</item>
-        <item>THA</item>
-    </string-array>
+    <integer name="visible_width_content_dp">350</integer>
 </resources>

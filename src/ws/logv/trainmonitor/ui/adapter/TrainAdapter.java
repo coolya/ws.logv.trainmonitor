@@ -108,7 +108,7 @@ public class TrainAdapter extends BaseArrayAdapter<Train> {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(view.getContext(), ws.logv.trainmonitor.ui.Train.class);
-                intent.putExtra(Constants.IntentsExtra.Train, item.getTrainId());
+                intent.setAction(Constants.Actions.TRAIN_ACTION + item.getTrainId());
                 view.getContext().startActivity(intent);
             }
         });

@@ -30,6 +30,7 @@ public class SetUpActionBarEvent {
     private boolean enableRefresh;
     private String[] dropDownItems;
     private ActionBar.OnNavigationListener navigationListener;
+    private int selectedItem;
 
     public SetUpActionBarEvent(boolean enableSearch, boolean enableRefresh) {
         this.enableSearch = enableSearch;
@@ -42,6 +43,12 @@ public class SetUpActionBarEvent {
         this.enableRefresh = enableRefresh;
         this.dropDownItems = dropDownItems;
         this.navigationListener = navigationListener;
+    }
+
+    public SetUpActionBarEvent(boolean enableSearch, boolean enableRefresh,
+                               String[] dropDownItems, int selectedItem, ActionBar.OnNavigationListener navigationListener) {
+        this(enableSearch, enableRefresh, dropDownItems, navigationListener);
+        this.selectedItem = selectedItem;
     }
 
     public boolean isSearchEnabled() {
@@ -58,5 +65,9 @@ public class SetUpActionBarEvent {
 
     public ActionBar.OnNavigationListener getNavigationListener() {
         return navigationListener;
+    }
+
+    public int getSelectedItem() {
+        return selectedItem;
     }
 }

@@ -18,21 +18,24 @@ package ws.logv.trainmonitor.app;
 
 public class Constants {
 
-	public class IntentsExtra
-	{
-		public static final String Train = "ws.logv.trainmonitor.train";
-	}
-    public static class GCM
-    {
+    public class IntentsExtra {
+        public static final String NOTIFICATION = "ws.logv.trainmonitor.notification";
+    }
+
+    public static class GCM {
         public static final String SENDER_ID = "643069411443";
     }
 
-    public static class Settings
-    {
-        public static final String PERF ="trainmonitor";
-        public static  final String CURRENT_ACCOUNT ="current_account";
+    public static class Settings {
+        public static final String PERF = "trainmonitor";
+        public static final String CURRENT_ACCOUNT = "current_account";
         public static final String LICENSE = "about_license";
-        public  static final String NOTIFICATION_ON = "notify_on";
+        public static final String NOTIFICATION_ON = "notify_on";
+        public static final String SELECTED_TRAIN_TYPE = "selected_train_type";
+    }
+
+    public static class Actions {
+        public static final String TRAIN_ACTION = "ws.logv.trainmonitor.SHOWTRAIN:";
     }
 
 

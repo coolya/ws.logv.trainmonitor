@@ -32,8 +32,11 @@
     <string name="refresh_trains_2">Lösche lokalen Cache</string>
     <string name="refresh_trains_3">Zug %1$s von %2$s verarbeitet</string>
     <string name="disclaimer_header">Disclaimer</string>
-    <string name="disclaimer">Diese Software steht in keiner direkten Beziehung zur Deutschen Bahn. Alle Informationen die, diese Software bereitstellt sind nicht von der Deutsche Bahn überprüft.
-        Für belastbare Informationen, ins besondere zur Reiseplanung verwenden Sie bitte die offiziellen Angebote der Deutsche Bahn.</string>
+    <string name="disclaimer">Diese Software steht in keiner direkten Beziehung zur Deutschen Bahn. Alle Informationen
+        die, diese Software bereitstellt sind nicht von der Deutsche Bahn überprüft.
+        Für belastbare Informationen, ins besondere zur Reiseplanung verwenden Sie bitte die offiziellen Angebote der
+        Deutsche Bahn.
+    </string>
     <string name="accept">Akzeptieren</string>
     <string name="cancel">Ablehnen</string>
     <string name="next_refresh">nächste Aktulisierung:</string>
@@ -51,8 +54,15 @@
     <string name="settings_about_license">License</string>
     <string name="settings_about_summary_donate">Du magst diese App? Dann spende doch ein Bier.</string>
     <string name="settings_about_donate">Spenden</string>
-    <string name="settings_summary_notify">Sollen Benachrichtigungen angezeigt werden, wenn einer "meiner Züge" zu spät ist?</string>
+    <string name="settings_summary_notify">Sollen Benachrichtigungen angezeigt werden, wenn einer "meiner Züge" zu spät
+        ist?
+    </string>
     <string name="settings_notify">Benachritigungen</string>
     <string name="settings_summary_account">Tippen um einen Account auszuwählen.</string>
     <string name="settings_account">Account</string>
+
+    <string name="show">Zugdetails anzeigen</string>
+    <string name="Settings">Einstellungen</string>
+    <string name="menu_all_trains">Alle Züge</string>
+    <string name="menu_fav_trains">Meine Züge</string>
 </resources>

@@ -17,7 +17,6 @@
 package ws.logv.trainmonitor.data;
 
 import android.content.Context;
-import android.mtp.MtpConstants;
 import android.util.Log;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.dao.Dao;
@@ -29,7 +28,10 @@ import ws.logv.trainmonitor.command.load.LoadFavouriteTrainsCommand;
 import ws.logv.trainmonitor.command.load.LoadFavouriteTrainsResult;
 import ws.logv.trainmonitor.command.load.LoadTrainCommand;
 import ws.logv.trainmonitor.command.load.LoadTrainResult;
-import ws.logv.trainmonitor.event.*;
+import ws.logv.trainmonitor.event.FatalErrorEvent;
+import ws.logv.trainmonitor.event.FavTrainEvent;
+import ws.logv.trainmonitor.event.FavouriteTrainsChangedEvent;
+import ws.logv.trainmonitor.event.PushSubscriptionsEvent;
 import ws.logv.trainmonitor.model.FavouriteTrain;
 import ws.logv.trainmonitor.model.Subscribtion;
 import ws.logv.trainmonitor.model.Train;
@@ -40,48 +42,57 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
-public class TrainRepository 
-{
-   private static final String TAG = "TrainRepository" ;
+public class TrainRepository {
+    private static final String TAG = "TrainRepository";
     private Context mContext;
 
-    public TrainRepository(Context context)
-    {
+    public TrainRepository(Context context) {
         mContext = context;
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public void onEventBackgroundThread(LoadTrainCommand event)
-    {
-        if(event.getQuery() != null)
-        {
-             searchTrain(mContext, event.getQuery());
-        }
-        else
-        {
-            if(event.getCount() > 0)
-            {
-                loadTrainsOrdered(mContext, event.getStart(), event.getCount());
-            }
-            else
+    public void onEventBackgroundThread(LoadTrainCommand event) {
+        if (event.getQuery() != null) {
+            searchTrain(mContext, event.getQuery());
+        } else {
+            if (event.getCount() > 0) {
+                if (event.hasType()) {
+                    loadTrainsOrdered(mContext, event.getStart(), event.getCount(), event.getType());
+                } else {
+                    loadTrainsOrdered(mContext, event.getStart(), event.getCount());
+                }
+
+            } else
                 loadTrains(mContext);
         }
     }
 
+    private void loadTrainsOrdered(Context context, long offset, long count, TrainType type) {
+        DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        try {
+            Dao<Train, Integer> dao = databaseHelper.getTrainDataDao();
+            Workflow.getEventBus(context).post(new LoadTrainResult(dao.query(dao.queryBuilder()
+                    .limit(count).offset(offset).orderBy("trainId", true)
+                    .where().like("trainId", TrainType.getString(type) + "%")
+                    .prepare())));
+        } catch (SQLException e) {
+            Workflow.getEventBus(context).post(new LoadTrainResult(e));
+            Workflow.getEventBus(context).post(new FatalErrorEvent(e));
+        } finally {
+            OpenHelperManager.releaseHelper();
+        }
+    }
+
     @SuppressWarnings("UnusedDeclaration")
-    public void onEventBackgroundThread(FavTrainEvent event)
-    {
-        if(event.isFav())
-        {
+    public void onEventBackgroundThread(FavTrainEvent event) {
+        if (event.isFav()) {
             try {
                 favTrain(mContext, event.getTrain());
                 Workflow.getEventBus(mContext).post(new PushSubscriptionsEvent());
             } catch (SQLException e) {
                 Workflow.getEventBus(mContext).post(new FatalErrorEvent(e));
             }
-        }
-        else
-        {
+        } else {
             try {
                 Subscribtion subscribtion = loadSubscription(mContext, event.getTrain());
                 Workflow.getEventBus(mContext).post(new DeleteSubscriptionCommand(subscribtion));
@@ -94,56 +105,47 @@ public class TrainRepository
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public void onEventBackgroundThread(LoadFavouriteTrainsCommand event)
-    {
+    public void onEventBackgroundThread(LoadFavouriteTrainsCommand event) {
         loadFavouriteTrains(mContext);
     }
 
-    private static void loadTrains(final Context context)
-    {
+    private static void loadTrains(final Context context) {
 
-                DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
-                try {
-                    Dao<Train, Integer> dao = databaseHelper.getTrainDataDao();
-                    Workflow.getEventBus(context).post(new LoadTrainResult(dao.query(dao.queryBuilder().limit(20l).prepare())));
-                } catch (SQLException e) {
-                    Workflow.getEventBus(context).post(new LoadTrainResult(e));
-                    Workflow.getEventBus(context).post(new FatalErrorEvent(e));
-                }
-                finally
-                {
-                    OpenHelperManager.releaseHelper();
-                }
-    }
-    private static void loadTrainsOrdered(Context context, long offset, long count)
-    {
-                DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
-                try {
-                    Dao<Train, Integer> dao = databaseHelper.getTrainDataDao();
-                    Workflow.getEventBus(context).post(new LoadTrainResult(dao.query(dao.queryBuilder()
-                            .limit(count).offset(offset).orderBy("trainId", true)
-                            .prepare())));
-                } catch (SQLException e) {
-                    Workflow.getEventBus(context).post(new LoadTrainResult(e));
-                    Workflow.getEventBus(context).post(new FatalErrorEvent(e));
-                }
-                finally
-                {
-                    OpenHelperManager.releaseHelper();
-                }
+        DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        try {
+            Dao<Train, Integer> dao = databaseHelper.getTrainDataDao();
+            Workflow.getEventBus(context).post(new LoadTrainResult(dao.query(dao.queryBuilder().limit(20l).prepare())));
+        } catch (SQLException e) {
+            Workflow.getEventBus(context).post(new LoadTrainResult(e));
+            Workflow.getEventBus(context).post(new FatalErrorEvent(e));
+        } finally {
+            OpenHelperManager.releaseHelper();
+        }
     }
 
-    public static Boolean isTrainFav(Context ctx, String trainId)
-    {
+    private static void loadTrainsOrdered(Context context, long offset, long count) {
+        DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
+        try {
+            Dao<Train, Integer> dao = databaseHelper.getTrainDataDao();
+            Workflow.getEventBus(context).post(new LoadTrainResult(dao.query(dao.queryBuilder()
+                    .limit(count).offset(offset).orderBy("trainId", true)
+                    .prepare())));
+        } catch (SQLException e) {
+            Workflow.getEventBus(context).post(new LoadTrainResult(e));
+            Workflow.getEventBus(context).post(new FatalErrorEvent(e));
+        } finally {
+            OpenHelperManager.releaseHelper();
+        }
+    }
+
+    public static Boolean isTrainFav(Context ctx, String trainId) {
         DatabaseHelper databaseHelper = OpenHelperManager.getHelper(ctx, DatabaseHelper.class);
         try {
             Dao<Subscribtion, UUID> dao = databaseHelper.getSubscribtionDao();
-            return dao.countOf(dao.queryBuilder().setCountOf(true).where().eq("train",trainId).prepare()) != 0;
+            return dao.countOf(dao.queryBuilder().setCountOf(true).where().eq("train", trainId).prepare()) != 0;
         } catch (Exception e) {
             return false;
-        }
-        finally
-        {
+        } finally {
             OpenHelperManager.releaseHelper();
         }
     }
@@ -167,9 +169,7 @@ public class TrainRepository
         try {
             Dao<Train, Integer> dao = databaseHelper.getTrainDataDao();
             dao.delete(dao.deleteBuilder().prepare());
-        }
-        finally
-        {
+        } finally {
             OpenHelperManager.releaseHelper();
         }
     }
@@ -179,34 +179,28 @@ public class TrainRepository
         try {
             Dao<Train, Integer> dao = databaseHelper.getTrainDataDao();
             dao.create(train);
-        }
-        finally
-        {
+        } finally {
             OpenHelperManager.releaseHelper();
         }
     }
 
-    private static void searchTrain(Context ctx, String name)
-    {
-                DatabaseHelper databaseHelper = OpenHelperManager.getHelper(ctx, DatabaseHelper.class);
-                try {
-                    Dao<Train, Integer> dao = databaseHelper.getTrainDataDao();
-                    Workflow.getEventBus(ctx).post(new LoadTrainResult(dao.query(dao.queryBuilder()
-                            .orderBy("trainId", true)
-                            .where().like("trainId", "%" + name + "%").prepare())));
-                } catch (SQLException e) {
-                    Workflow.getEventBus(ctx).post(new LoadTrainResult(e));
-                    Workflow.getEventBus(ctx).post(new FatalErrorEvent(e));
-                }
-                finally
-                {
-                    OpenHelperManager.releaseHelper();
-                }
+    private static void searchTrain(Context ctx, String name) {
+        DatabaseHelper databaseHelper = OpenHelperManager.getHelper(ctx, DatabaseHelper.class);
+        try {
+            Dao<Train, Integer> dao = databaseHelper.getTrainDataDao();
+            Workflow.getEventBus(ctx).post(new LoadTrainResult(dao.query(dao.queryBuilder()
+                    .orderBy("trainId", true)
+                    .where().like("trainId", "%" + name + "%").prepare())));
+        } catch (SQLException e) {
+            Workflow.getEventBus(ctx).post(new LoadTrainResult(e));
+            Workflow.getEventBus(ctx).post(new FatalErrorEvent(e));
+        } finally {
+            OpenHelperManager.releaseHelper();
+        }
     }
 
     private static void favTrain(Context context, String train) throws SQLException {
-        if(!isTrainFav(context, train))
-        {
+        if (!isTrainFav(context, train)) {
             DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
             try {
                 Dao<Subscribtion, UUID> dao = databaseHelper.getSubscribtionDao();
@@ -214,43 +208,36 @@ public class TrainRepository
                 data.setTrain(train);
                 dao.create(data);
                 Workflow.getEventBus(context).post(new FavouriteTrainsChangedEvent());
-            }
-            finally
-            {
+            } finally {
                 OpenHelperManager.releaseHelper();
             }
         }
     }
 
     private static void unFavTrain(Context context, String train) throws SQLException {
-        if(isTrainFav(context, train))
-        {
+        if (isTrainFav(context, train)) {
             DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
             try {
                 Dao<Subscribtion, UUID> dao = databaseHelper.getSubscribtionDao();
-                DeleteBuilder<Subscribtion, UUID> builder =  dao.deleteBuilder();
+                DeleteBuilder<Subscribtion, UUID> builder = dao.deleteBuilder();
 
                 builder.setWhere(dao.queryBuilder().where().eq("train", train));
                 dao.delete(builder.prepare());
                 Workflow.getEventBus(context).post(new FavouriteTrainsChangedEvent());
-            }
-            finally
-            {
+            } finally {
                 OpenHelperManager.releaseHelper();
             }
         }
     }
 
-    private static void loadFavouriteTrains(Context context)
-    {
+    private static void loadFavouriteTrains(Context context) {
         DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
         try {
             List<FavouriteTrain> ret = new ArrayList<FavouriteTrain>();
-            Dao<Subscribtion,UUID> dao = databaseHelper.getSubscribtionDao();
+            Dao<Subscribtion, UUID> dao = databaseHelper.getSubscribtionDao();
 
-            for(Subscribtion item : dao.queryForAll())
-            {
-                FavouriteTrain newTrain =  new FavouriteTrain();
+            for (Subscribtion item : dao.queryForAll()) {
+                FavouriteTrain newTrain = new FavouriteTrain();
                 newTrain.setTrainId(item.getTrain());
                 ret.add(newTrain);
             }
@@ -258,9 +245,7 @@ public class TrainRepository
         } catch (Exception e) {
             Workflow.getEventBus(context).post(new LoadFavouriteTrainsResult(e));
             Workflow.getEventBus(context).post(new FatalErrorEvent(e));
-        }
-        finally
-        {
+        } finally {
             OpenHelperManager.releaseHelper();
         }
     }
@@ -270,20 +255,17 @@ public class TrainRepository
         try {
             Dao<Subscribtion, UUID> dao = databaseHelper.getSubscribtionDao();
             return dao.query(dao.queryBuilder().prepare());
-        }
-        finally
-        {
+        } finally {
             OpenHelperManager.releaseHelper();
         }
     }
+
     public static Subscribtion loadSubscription(Context context, String train) throws SQLException {
         DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
         try {
             Dao<Subscribtion, UUID> dao = databaseHelper.getSubscribtionDao();
             return dao.queryForFirst(dao.queryBuilder().where().eq("train", train).prepare());
-        }
-        finally
-        {
+        } finally {
             OpenHelperManager.releaseHelper();
         }
     }
@@ -293,9 +275,7 @@ public class TrainRepository
         try {
             Dao<Subscribtion, UUID> dao = databaseHelper.getSubscribtionDao();
             dao.delete(dao.deleteBuilder().prepare());
-        }
-        finally
-        {
+        } finally {
             OpenHelperManager.releaseHelper();
         }
     }
@@ -305,13 +285,10 @@ public class TrainRepository
         try {
             Dao<Subscribtion, UUID> dao = databaseHelper.getSubscribtionDao();
 
-            for(Subscribtion subscribtion : data)
-            {
+            for (Subscribtion subscribtion : data) {
                 dao.createOrUpdate(subscribtion);
             }
-        }
-        finally
-        {
+        } finally {
             OpenHelperManager.releaseHelper();
         }
 

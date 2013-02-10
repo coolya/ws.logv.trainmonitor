@@ -17,6 +17,7 @@
 package ws.logv.trainmonitor.ui;
 
 import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -36,6 +37,7 @@ import com.korovyansk.android.slideout.SlideoutActivity;
 import de.greenrobot.event.EventBus;
 import ws.logv.trainmonitor.R;
 import ws.logv.trainmonitor.Workflow;
+import ws.logv.trainmonitor.app.Constants;
 import ws.logv.trainmonitor.app.Installation;
 import ws.logv.trainmonitor.event.AccountChoosnEvent;
 import ws.logv.trainmonitor.event.DisclaimerAcceptedEvent;
@@ -44,6 +46,7 @@ import ws.logv.trainmonitor.ui.contract.NavigationTarget;
 import ws.logv.trainmonitor.ui.contract.OnRefreshRequestStateHandler;
 import ws.logv.trainmonitor.ui.fragments.ChooseAccountFragment;
 
+import java.io.File;
 import java.util.Arrays;
 
 public class MainActivity extends SherlockFragmentActivity {
@@ -59,10 +62,18 @@ public class MainActivity extends SherlockFragmentActivity {
     @Override
     protected synchronized void onCreate(Bundle savedInstanceState) {
         setTheme(R.style.Theme_Sherlock);
-
-
         super.onCreate(savedInstanceState);
         PreferenceManager.setDefaultValues(this, R.xml.settings, false);
+
+        try {
+            File httpCacheDir = new File(this.getCacheDir(), "http");
+            long httpCacheSize = 10 * 1024 * 1024; // 10 MiB
+            Class.forName("android.net.http.HttpResponseCache")
+                    .getMethod("install", File.class, long.class)
+                    .invoke(null, httpCacheDir, httpCacheSize);
+        } catch (Exception httpResponseCacheNotAvailable) {
+        }
+
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         WindowMediator.setOnRefreshStateRequestHandler(new OnRefreshRequestStateHandler() {
             @Override
@@ -75,6 +86,17 @@ public class MainActivity extends SherlockFragmentActivity {
                 setProgressBarIndeterminateVisibility(false);
             }
         });
+
+        Intent intent = this.getIntent();
+
+        if (intent != null) {
+            if (intent.getBooleanExtra(Constants.IntentsExtra.NOTIFICATION, false)) {
+                NotificationManager notificationManager = (NotificationManager)
+                        this.getSystemService(Context.NOTIFICATION_SERVICE);
+
+                notificationManager.cancelAll();
+            }
+        }
 
         setContentView(R.layout.activity_main);
         mBus.registerSticky(this);
@@ -116,6 +138,7 @@ public class MainActivity extends SherlockFragmentActivity {
             list.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
             getSupportActionBar().setNavigationMode(com.actionbarsherlock.app.ActionBar.NAVIGATION_MODE_LIST);
             getSupportActionBar().setListNavigationCallbacks(list, event.getNavigationListener());
+            getSupportActionBar().setSelectedNavigationItem(event.getSelectedItem());
         } else {
             getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         }
@@ -196,7 +219,10 @@ public class MainActivity extends SherlockFragmentActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            int width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 120, getResources().getDisplayMetrics());
+
+            int width = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                    this.getResources().getInteger(R.integer.visible_width_content_dp),
+                    getResources().getDisplayMetrics());
             SlideoutActivity.prepare(MainActivity.this, android.R.id.content, width);
             startActivity(new Intent(MainActivity.this, MenuActivity.class));
             overridePendingTransition(0, 0);
@@ -244,7 +270,7 @@ public class MainActivity extends SherlockFragmentActivity {
                 })
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
-        menu.add("Settings").setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        menu.add(getString(R.string.Settings)).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 Intent settingsIntent = new Intent(that, SettingsActivity.class);

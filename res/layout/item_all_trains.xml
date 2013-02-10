@@ -35,8 +35,8 @@
     <CheckBox
             android:id="@+id/fav"
             android:button="@drawable/check"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:layout_width="36dp"
             android:layout_below="@+id/parent"
             android:layout_alignRight="@+id/train_id"
             android:layout_alignParentRight="true"/>
