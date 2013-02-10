@@ -27,40 +27,11 @@
   <component name="ChangeListManager">
     <list id="f5929a66-7313-4250-a1b2-6de6930bc653" name="TM-64 Create Licence Fragment" comment="" />
     <list default="true" id="ee5e8089-03f1-45f5-9f5c-bdb566dfe2d9" name="TM-117 java.lang.NullPointerException in ws.logv.trainmonitor.ui.Train.onStop" comment="new menu">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/res/values-land/values.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/images/play_store/Thumbs.db" afterPath="$PROJECT_DIR$/images/play_store/Thumbs.db" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/drawable-hdpi/check_off.png" afterPath="$PROJECT_DIR$/res/drawable-hdpi/check_off.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/drawable-mdpi/check_off.png" afterPath="$PROJECT_DIR$/res/drawable-mdpi/check_off.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/drawable-xhdpi/check_off.png" afterPath="$PROJECT_DIR$/res/drawable-xhdpi/check_off.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/drawable-hdpi/check_on.png" afterPath="$PROJECT_DIR$/res/drawable-hdpi/check_on.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/drawable-mdpi/check_on.png" afterPath="$PROJECT_DIR$/res/drawable-mdpi/check_on.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/drawable-xhdpi/check_on.png" afterPath="$PROJECT_DIR$/res/drawable-xhdpi/check_on.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/images/play_store/zm1.png" afterPath="$PROJECT_DIR$/images/play_store/zm1.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/images/play_store/zm2.png" afterPath="$PROJECT_DIR$/images/play_store/zm2.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/AllTrainsActivity.java" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/AllTrainsActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AndroidManifest.xml" afterPath="$PROJECT_DIR$/AndroidManifest.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/app/Constants.java" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/app/Constants.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/GCMIntentService.java" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/GCMIntentService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/command/load/LoadTrainCommand.java" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/command/load/LoadTrainCommand.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/MainActivity.java" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/MainActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/fragments/MenuFragment.java" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/fragments/MenuFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/MyTrainsActivity.java" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/MyTrainsActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/event/ui/SetUpActionBarEvent.java" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/event/ui/SetUpActionBarEvent.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/Train.java" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/Train.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/adapter/TrainAdapter.java" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/adapter/TrainAdapter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/data/TrainRepository.java" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/data/TrainRepository.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/data/TrainType.java" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/data/TrainType.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/layout/item_all_trains.xml" afterPath="$PROJECT_DIR$/res/layout/item_all_trains.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/values/navigation.xml" afterPath="$PROJECT_DIR$/res/values/navigation.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/values-de/navigation.xml" afterPath="$PROJECT_DIR$/res/values-de/navigation.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/values/strings.xml" afterPath="$PROJECT_DIR$/res/values/strings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/values-de/strings.xml" afterPath="$PROJECT_DIR$/res/values-de/strings.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/res/values/values.xml" afterPath="$PROJECT_DIR$/res/values/values.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Zugmonitor.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="ee5e8089-03f1-45f5-9f5c-bdb566dfe2d9" time="1360517350848" ignored="false" />
+    <file path="/Dummy.txt" changelist="ee5e8089-03f1-45f5-9f5c-bdb566dfe2d9" time="1360529565919" ignored="false" />
     <file path="/TrainType.java" changelist="ee5e8089-03f1-45f5-9f5c-bdb566dfe2d9" time="1360422744745" ignored="false" />
     <file path="/strings.xml" changelist="ee5e8089-03f1-45f5-9f5c-bdb566dfe2d9" time="1360420370407" ignored="false" />
     <file path="/navigation.xml" changelist="ee5e8089-03f1-45f5-9f5c-bdb566dfe2d9" time="1360421334921" ignored="false" />
@@ -270,8 +241,10 @@
       <file leaf-file-name="MainActivity.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="66" column="37" selection-start="2537" selection-end="2537" vertical-scroll-proportion="0.0">
-              <folding />
+            <state line="65" column="37" selection-start="2491" selection-end="2491" vertical-scroll-proportion="0.0">
+              <folding>
+                <element signature="imports" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -306,7 +279,7 @@
       <file leaf-file-name="TrainRepository.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/data/TrainRepository.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="79" column="0" selection-start="2640" selection-end="2640" vertical-scroll-proportion="0.0">
+            <state line="70" column="0" selection-start="2688" selection-end="2688" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -315,7 +288,7 @@
       <file leaf-file-name="TrainType.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/data/TrainType.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="16" column="44" selection-start="385" selection-end="385" vertical-scroll-proportion="0.0">
+            <state line="15" column="28" selection-start="383" selection-end="383" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -461,6 +434,16 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="External Libraries" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Zugmonitor" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ws.logv.trainminitor.MainActivity" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -870,7 +853,11 @@
       <created>1359298298990</created>
       <updated>1359298298990</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="new menu">
+      <created>1360529608159</created>
+      <updated>1360529608159</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <option name="markAsInProgress" value="true" />
     <servers>
       <YouTrack shared="false" url="http://logv.myjetbrains.com/youtrack">
@@ -974,7 +961,7 @@
     <option name="MAXIMUM_HISTORY_ROWS" value="1000" />
     <option name="FORCE_NON_EMPTY_COMMENT" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="false" />
-    <option name="LAST_COMMIT_MESSAGE" value="new assets" />
+    <option name="LAST_COMMIT_MESSAGE" value="new menu" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="false" />
     <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="CHECK_FILES_UP_TO_DATE_BEFORE_COMMIT" value="false" />
@@ -1010,8 +997,8 @@
     <MESSAGE value="V0.3.1" />
     <MESSAGE value="new naming schema for resources" />
     <MESSAGE value="move ui event to its own package" />
-    <MESSAGE value="new menu" />
     <MESSAGE value="new assets" />
+    <MESSAGE value="new menu" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -1030,7 +1017,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/MenuActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="32" column="13" selection-start="1107" selection-end="1107" vertical-scroll-proportion="0.0" />
+        <state line="32" column="13" selection-start="1107" selection-end="1107" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/app/Constants.java">
@@ -1042,12 +1031,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/SettingsActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="40" column="13" selection-start="1359" selection-end="1359" vertical-scroll-proportion="0.0" />
+        <state line="40" column="13" selection-start="1359" selection-end="1359" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/command/load/LoadTrainCommand.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="27" column="23" selection-start="915" selection-end="915" vertical-scroll-proportion="0.0" />
+        <state line="27" column="23" selection-start="915" selection-end="915" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/event/ui/SetUpActionBarEvent.java">
@@ -1066,7 +1059,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/data/TrainType.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="16" column="44" selection-start="385" selection-end="385" vertical-scroll-proportion="0.0">
+        <state line="15" column="28" selection-start="383" selection-end="383" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -1080,7 +1073,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/data/TrainRepository.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="79" column="0" selection-start="2640" selection-end="2640" vertical-scroll-proportion="0.0">
+        <state line="70" column="0" selection-start="2688" selection-end="2688" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
@@ -1104,8 +1097,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="66" column="37" selection-start="2537" selection-end="2537" vertical-scroll-proportion="0.0">
-          <folding />
+        <state line="65" column="37" selection-start="2491" selection-end="2491" vertical-scroll-proportion="0.0">
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
