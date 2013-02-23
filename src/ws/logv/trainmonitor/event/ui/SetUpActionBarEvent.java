@@ -38,7 +38,7 @@ public class SetUpActionBarEvent {
         this.dropDownItems = null;
     }
 
-    public SetUpActionBarEvent(boolean enableSearch, boolean enableRefresh, String[] dropDownItems, ActionBar.OnNavigationListener navigationListener) {
+    private SetUpActionBarEvent(boolean enableSearch, boolean enableRefresh, String[] dropDownItems, ActionBar.OnNavigationListener navigationListener) {
         this.enableSearch = enableSearch;
         this.enableRefresh = enableRefresh;
         this.dropDownItems = dropDownItems;

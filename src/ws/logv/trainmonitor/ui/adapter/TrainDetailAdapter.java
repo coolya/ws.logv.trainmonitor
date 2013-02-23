@@ -45,7 +45,7 @@ public class TrainDetailAdapter extends BaseArrayAdapter<StationInfo> {
 
     private Context mCtx;
     private HashMap<Integer, Station> mStationCache = new HashMap<Integer, Station>();
-    LayoutInflater mInflater = null;
+    private LayoutInflater mInflater = null;
     private EventBus mBus;
 
     public TrainDetailAdapter(Context context, int textViewResourceId, List<StationInfo> objects) {

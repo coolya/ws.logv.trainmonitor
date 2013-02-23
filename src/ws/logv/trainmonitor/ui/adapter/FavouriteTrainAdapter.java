@@ -47,8 +47,8 @@ public class FavouriteTrainAdapter extends BaseArrayAdapter<FavouriteTrain> {
     private Context mCtx;
     private EventBus mBus;
 
-    public FavouriteTrainAdapter(Context context, int textViewResourceId, List<FavouriteTrain> objects) {
-        super(context, textViewResourceId, objects);
+    public FavouriteTrainAdapter(Context context, List<FavouriteTrain> objects) {
+        super(context, 0, objects);
         mCtx = context;
         mBus = Workflow.getEventBus(mCtx);
     }

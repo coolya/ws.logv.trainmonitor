@@ -260,7 +260,7 @@ public class TrainRepository {
         }
     }
 
-    public static Subscribtion loadSubscription(Context context, String train) throws SQLException {
+    private static Subscribtion loadSubscription(Context context, String train) throws SQLException {
         DatabaseHelper databaseHelper = OpenHelperManager.getHelper(context, DatabaseHelper.class);
         try {
             Dao<Subscribtion, UUID> dao = databaseHelper.getSubscribtionDao();

@@ -123,7 +123,7 @@ public class GCMIntentService extends GCMBaseIntentService {
     /**
      * Issues a notification to inform the user that server has sent a message.
      */
-    public static void generateTrainLateNotification(Context context, String trainId, int delay) {
+    private static void generateTrainLateNotification(Context context, String trainId, int delay) {
 
         SharedPreferences pref = context.getSharedPreferences(Constants.Settings.PERF, 0);
 

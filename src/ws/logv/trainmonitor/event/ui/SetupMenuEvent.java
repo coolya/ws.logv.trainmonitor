@@ -23,5 +23,5 @@ package ws.logv.trainmonitor.event.ui;
  * Time: 20:39
  * To change this template use File | Settings | File Templates.
  */
-public class SetupMenuEvent {
+class SetupMenuEvent {
 }

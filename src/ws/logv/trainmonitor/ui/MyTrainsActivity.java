@@ -46,7 +46,7 @@ import java.util.LinkedList;
  * Time: 5:04 PM
  * To change this template use File | Settings | File Templates.
  */
-public class MyTrainsActivity extends FragmentActivity {
+class MyTrainsActivity extends FragmentActivity {
 
 
     public static class MyTrainsFragment extends SherlockFragment {
@@ -113,7 +113,7 @@ public class MyTrainsActivity extends FragmentActivity {
 
 
             LinkedList<FavouriteTrain> list = new LinkedList<FavouriteTrain>();
-            mAdapter = new FavouriteTrainAdapter(v.getContext(), 0, list);
+            mAdapter = new FavouriteTrainAdapter(v.getContext(), list);
             lvTrains.setAdapter(mAdapter);
 
             lvTrains.setOnItemClickListener(new AdapterView.OnItemClickListener() {

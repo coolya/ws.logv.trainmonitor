@@ -27,22 +27,19 @@ import ws.logv.trainmonitor.event.WorkflowWiredUpEvent;
  * Time: 10:51
  * To change this template use File | Settings | File Templates.
  */
-public class WorkflowManager {
+class WorkflowManager {
 
     private Context mContext;
 
-    public WorkflowManager(Context context)
-    {
+    public WorkflowManager(Context context) {
         mContext = context;
     }
 
-    public void onEventAsync(PersistEvent event)
-    {
+    public void onEventAsync(PersistEvent event) {
 
     }
 
-    public void onEventBackgroundThread(WorkflowWiredUpEvent event)
-    {
+    public void onEventBackgroundThread(WorkflowWiredUpEvent event) {
 
     }
 
