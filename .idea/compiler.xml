@@ -8,6 +8,9 @@
       <directory url="file://$PROJECT_DIR$/../../Code/Android-PullToRefresh/library/gen" includeSubdirectories="true" />
       <directory url="file://$PROJECT_DIR$/../JakeWharton-ActionBarSherlock-88fc341/library/gen" includeSubdirectories="true" />
       <directory url="file://$PROJECT_DIR$/../../GitHub/EventBus/EventBus/gen" includeSubdirectories="true" />
+      <directory url="file://$PROJECT_DIR$/../EventBus/EventBus/gen" includeSubdirectories="true" />
+      <directory url="file://$PROJECT_DIR$/../ActionBarSherlock/library/gen" includeSubdirectories="true" />
+      <directory url="file://$PROJECT_DIR$/../Android-PullToRefresh/library/gen" includeSubdirectories="true" />
     </excludeFromCompile>
     <resourceExtensions />
     <wildcardResourcePatterns>
