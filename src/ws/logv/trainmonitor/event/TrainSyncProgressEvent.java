@@ -26,14 +26,25 @@ package ws.logv.trainmonitor.event;
 public class TrainSyncProgressEvent {
 
     private String message;
-    public TrainSyncProgressEvent(String message)
-    {
-      this.message = message;
+    private int totalCount;
+    private int currentCount;
+
+    public TrainSyncProgressEvent(String message, int totalCount, int currentCount) {
+
+        this.message = message;
+        this.totalCount = totalCount;
+        this.currentCount = currentCount;
     }
 
-    public String getMessage()
-    {
+    public String getMessage() {
         return message;
     }
 
+    public int getCurrentCount() {
+        return currentCount;
+    }
+
+    public int getTotalCount() {
+        return totalCount;
+    }
 }

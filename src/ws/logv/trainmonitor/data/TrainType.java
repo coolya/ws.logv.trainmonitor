@@ -8,7 +8,7 @@ package ws.logv.trainmonitor.data;
  * To change this template use File | Settings | File Templates.
  */
 public enum TrainType {
-    All, CNL, EC, IC, ICE, RJ, TGV, THA;
+    NONE, All, CNL, EC, IC, ICE, RJ, TGV, THA;
 
     public static String getString(TrainType type) {
         switch (type) {

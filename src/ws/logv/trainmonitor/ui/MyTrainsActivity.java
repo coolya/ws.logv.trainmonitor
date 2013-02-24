@@ -46,7 +46,7 @@ import java.util.LinkedList;
  * Time: 5:04 PM
  * To change this template use File | Settings | File Templates.
  */
-class MyTrainsActivity extends FragmentActivity {
+public class MyTrainsActivity extends FragmentActivity {
 
 
     public static class MyTrainsFragment extends SherlockFragment {

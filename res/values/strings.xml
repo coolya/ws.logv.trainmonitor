@@ -63,5 +63,8 @@
     <string name="menu_fav_trains">My Trains</string>
     <string name="show">show train details</string>
     <string name="Settings">Settings</string>
+    <string name="train_sync">Train synchronisation</string>
+    <string name="train_sync_starting">synchronisation starting</string>
+    <string name="train_sync_completed">synchronisation completed</string>
 
 </resources>

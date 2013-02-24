@@ -65,4 +65,7 @@
     <string name="Settings">Einstellungen</string>
     <string name="menu_all_trains">Alle Züge</string>
     <string name="menu_fav_trains">Meine Züge</string>
+    <string name="train_sync">Synchronisiere Züge</string>
+    <string name="train_sync_starting">Starte Synchronisation</string>
+    <string name="train_sync_completed">Synchronisation beendet</string>
 </resources>

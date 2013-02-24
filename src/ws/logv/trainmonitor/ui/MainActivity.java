@@ -57,7 +57,30 @@ public class MainActivity extends SherlockFragmentActivity {
     private static final String LOG_TAG = "MainActivity";
 
     private EventBus mBus = Workflow.getEventBus(this);
+    private boolean isPaused = false;
 
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        handleIntent(intent);
+    }
+
+    private void handleIntent(Intent intent) {
+
+        if (intent != null) {
+            NotificationManager notificationManager = (NotificationManager)
+                    this.getSystemService(Context.NOTIFICATION_SERVICE);
+            if (intent.getBooleanExtra(Constants.IntentsExtra.NOTIFICATION, false)) {
+
+                notificationManager.cancelAll();
+            } else if (Constants.Actions.SHOWW_ALL_TRAINS_FRAGMENT.equals(intent.getAction())) {
+                notificationManager.cancel(Constants.Notification.PROGRESS);
+                mBus.post(new NavigateToEvent(NavigationTarget.ALL_TRAINS));
+            }
+        }
+
+    }
 
     @Override
     protected synchronized void onCreate(Bundle savedInstanceState) {
@@ -87,33 +110,27 @@ public class MainActivity extends SherlockFragmentActivity {
             }
         });
 
-        Intent intent = this.getIntent();
-
-        if (intent != null) {
-            if (intent.getBooleanExtra(Constants.IntentsExtra.NOTIFICATION, false)) {
-                NotificationManager notificationManager = (NotificationManager)
-                        this.getSystemService(Context.NOTIFICATION_SERVICE);
-
-                notificationManager.cancelAll();
-            }
-        }
-
         setContentView(R.layout.activity_main);
         mBus.registerSticky(this);
-
         mBus.postSticky(new ShowDisclaimerEvent());
+        Intent intent = this.getIntent();
+        handleIntent(intent);
     }
 
     @Override
     protected void onPostResume() {
         super.onPostResume();
         if (mPendingFragment != null) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.details, mPendingFragment);
-            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-            ft.commit();
-            mPendingFragment = null;
+            doFragmentTransition();
         }
+    }
+
+    private void doFragmentTransition() {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.details, mPendingFragment);
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+        ft.commit();
+        mPendingFragment = null;
     }
 
     @Override
@@ -195,6 +212,12 @@ public class MainActivity extends SherlockFragmentActivity {
         mBus.post(new NavigateToEvent(NavigationTarget.MY_TRAINS));
     }
 
+    @Override
+    protected void onPause() {
+        isPaused = true;
+        super.onPause();
+    }
+
     @SuppressWarnings("UnusedDeclaration")
     public void onEventMainThread(NavigateToEvent event) {
 
@@ -214,6 +237,9 @@ public class MainActivity extends SherlockFragmentActivity {
                 this.startActivity(settingsIntent);
                 break;
         }
+
+        if (!isPaused)
+            doFragmentTransition();
     }
 
     @Override

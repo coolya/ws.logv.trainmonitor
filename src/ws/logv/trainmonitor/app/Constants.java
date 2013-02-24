@@ -20,6 +20,16 @@ public class Constants {
 
     public class IntentsExtra {
         public static final String NOTIFICATION = "ws.logv.trainmonitor.notification";
+        public static final String COMMAND = "ws.logv.trainmonitor.COMMAND";
+    }
+
+    public static class Commands {
+        public static final String SYNC_TRAINS = "SYNC_TRAINS";
+        public static final String SYNC_STATIONA = "SYNC_STATIONS";
+    }
+
+    public class Notification {
+        public static final int PROGRESS = 42;
     }
 
     public static class GCM {
@@ -36,6 +46,7 @@ public class Constants {
 
     public static class Actions {
         public static final String TRAIN_ACTION = "ws.logv.trainmonitor.SHOWTRAIN:";
+        public static final String SHOWW_ALL_TRAINS_FRAGMENT = "ws.logv.trainmonitor.SHOW_ALL_TRAINS_FRAGMENT";
     }
 
 
