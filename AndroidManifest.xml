@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="ws.logv.trainmonitor"
-          android:versionCode="00405"
-          android:versionName="0.4.5">
+          android:versionCode="00406"
+          android:versionName="0.4.6">
 
     <uses-sdk
         android:minSdkVersion="9"
