@@ -253,14 +253,17 @@ public class AllTrainsActivity extends FragmentActivity {
 
         private void showWaiter(boolean visible) {
             View v = getView();
-            View progressBar = v.findViewById(R.id.waiter);
-            View p2r = v.findViewById(R.id.pull_to_refresh_listview);
-            if (visible) {
-                progressBar.setVisibility(View.VISIBLE);
-                p2r.setVisibility(View.INVISIBLE);
-            } else {
-                progressBar.setVisibility(View.INVISIBLE);
-                p2r.setVisibility(View.VISIBLE);
+            if(v != null)
+            {
+                View progressBar = v.findViewById(R.id.waiter);
+                View p2r = v.findViewById(R.id.pull_to_refresh_listview);
+                if (visible) {
+                    progressBar.setVisibility(View.VISIBLE);
+                    p2r.setVisibility(View.INVISIBLE);
+                } else {
+                    progressBar.setVisibility(View.INVISIBLE);
+                    p2r.setVisibility(View.VISIBLE);
+                }
             }
         }
     }

@@ -37,7 +37,7 @@ import java.security.KeyStore;
  * Time: 21:23
  * To change this template use File | Settings | File Templates.
  */
-class LogvSslRequestHandler extends BasicRequestHandler{
+public class LogvSslRequestHandler extends BasicRequestHandler{
     private Context mContext;
     public LogvSslRequestHandler(Context context)
     {

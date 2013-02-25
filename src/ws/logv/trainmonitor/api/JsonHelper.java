@@ -22,7 +22,7 @@ import ws.logv.trainmonitor.model.TrainStatus;
 
 import java.lang.reflect.Type;
 
-class JsonHelper {
+public class JsonHelper {
 
 	public <T> T fromJson(String json, Type typeOfT)
 	{
