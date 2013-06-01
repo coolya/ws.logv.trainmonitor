@@ -18,7 +18,6 @@ package ws.logv.trainmonitor.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import ws.logv.trainmonitor.Workflow;
 import ws.logv.trainmonitor.event.AccountChoosnEvent;
 import ws.logv.trainmonitor.ui.fragments.ChooseAccountFragment;
@@ -30,7 +29,7 @@ import ws.logv.trainmonitor.ui.fragments.ChooseAccountFragment;
  * Time: 12:06
  * To change this template use File | Settings | File Templates.
  */
-public class ChooseAccountActivity extends FragmentActivity {
+public class ChooseAccountActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         final ChooseAccountActivity that = this;
@@ -40,6 +39,6 @@ public class ChooseAccountActivity extends FragmentActivity {
                 Workflow.getEventBus(that).post(new AccountChoosnEvent());
                 that.finish();
             }
-        }).show(getSupportFragmentManager(),"choose_account");
+        }).show(getFragmentManager(),"choose_account");
     }
 }

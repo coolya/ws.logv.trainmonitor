@@ -16,20 +16,16 @@
 
 package ws.logv.trainmonitor.ui;
 
-import android.app.ActivityManager;
-import android.app.NotificationManager;
+import android.app.*;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragment;
 import com.handmark.pulltorefresh.library.PullToRefreshBase;
 import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import de.greenrobot.event.EventBus;
@@ -52,7 +48,7 @@ import ws.logv.trainmonitor.ui.adapter.TrainAdapter;
 
 import java.util.LinkedList;
 
-public class AllTrainsActivity extends FragmentActivity {
+public class AllTrainsActivity extends Activity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,7 +57,7 @@ public class AllTrainsActivity extends FragmentActivity {
     }
 
 
-    public static class AllTrainsFragment extends SherlockFragment implements ActionBar.OnNavigationListener {
+    public static class AllTrainsFragment extends Fragment implements ActionBar.OnNavigationListener {
         private static final String LOG_TAG = AllTrainsFragment.class.getSimpleName();
 
         static AllTrainsFragment newInstance() {

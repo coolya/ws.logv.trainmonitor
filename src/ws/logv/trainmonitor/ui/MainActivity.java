@@ -16,23 +16,18 @@
 
 package ws.logv.trainmonitor.ui;
 
-import android.app.AlertDialog;
-import android.app.NotificationManager;
+import android.app.*;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.Window;
 import android.widget.ArrayAdapter;
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.widget.SearchView;
+import android.widget.SearchView;
 import com.korovyansk.android.slideout.SlideoutActivity;
 import de.greenrobot.event.EventBus;
 import ws.logv.trainmonitor.R;
@@ -49,7 +44,7 @@ import ws.logv.trainmonitor.ui.fragments.ChooseAccountFragment;
 import java.io.File;
 import java.util.Arrays;
 
-public class MainActivity extends SherlockFragmentActivity {
+public class MainActivity extends Activity {
 
     private MenuItem mMenueSearch;
     private MenuItem mMenueRefresh;
@@ -84,7 +79,6 @@ public class MainActivity extends SherlockFragmentActivity {
 
     @Override
     protected synchronized void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.Theme_Sherlock);
         super.onCreate(savedInstanceState);
         PreferenceManager.setDefaultValues(this, R.xml.settings, false);
 
@@ -126,7 +120,7 @@ public class MainActivity extends SherlockFragmentActivity {
     }
 
     private void doFragmentTransition() {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
         ft.replace(R.id.details, mPendingFragment);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         ft.commit();
@@ -148,16 +142,16 @@ public class MainActivity extends SherlockFragmentActivity {
             mMenueRefresh.setVisible(event.isRefreshEnabled());
 
         if (event.getDropDownItems() != null && event.getNavigationListener() != null) {
-            Context context = getSupportActionBar().getThemedContext();
+            Context context = getActionBar().getThemedContext();
 
-            ArrayAdapter<String> list = new ArrayAdapter<String>(context, R.layout.sherlock_spinner_item,
+            ArrayAdapter<String> list = new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item,
                     Arrays.asList(event.getDropDownItems()));
-            list.setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
-            getSupportActionBar().setNavigationMode(com.actionbarsherlock.app.ActionBar.NAVIGATION_MODE_LIST);
-            getSupportActionBar().setListNavigationCallbacks(list, event.getNavigationListener());
-            getSupportActionBar().setSelectedNavigationItem(event.getSelectedItem());
+            list.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+            getActionBar().setListNavigationCallbacks(list, event.getNavigationListener());
+            getActionBar().setSelectedNavigationItem(event.getSelectedItem());
         } else {
-            getSupportActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
+            getActionBar().setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         }
     }
 
@@ -199,7 +193,7 @@ public class MainActivity extends SherlockFragmentActivity {
                     Installation.setChooseAccountShown(that);
                     mBus.post(new AccountChoosnEvent());
                 }
-            }).show(getSupportFragmentManager(), "choose_account");
+            }).show(getFragmentManager(), "choose_account");
         } else {
             mBus.post(new AccountChoosnEvent());
         }
@@ -207,8 +201,8 @@ public class MainActivity extends SherlockFragmentActivity {
 
     @SuppressWarnings("UnusedDeclaration")
     public void onEventMainThread(AccountChoosnEvent event) {
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
         mBus.post(new NavigateToEvent(NavigationTarget.MY_TRAINS));
     }
 

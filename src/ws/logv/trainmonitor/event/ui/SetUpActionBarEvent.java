@@ -16,7 +16,7 @@
 
 package ws.logv.trainmonitor.event.ui;
 
-import com.actionbarsherlock.app.ActionBar;
+import android.app.ActionBar;
 
 /**
  * Created with IntelliJ IDEA.

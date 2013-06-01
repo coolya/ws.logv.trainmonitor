@@ -16,10 +16,10 @@
 
 package ws.logv.trainmonitor.ui.fragments;
 
+import android.app.ListFragment;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
-import com.actionbarsherlock.app.SherlockListFragment;
 import de.greenrobot.event.EventBus;
 import ws.logv.trainmonitor.R;
 import ws.logv.trainmonitor.event.ui.NavigateToEvent;
@@ -35,7 +35,7 @@ import ws.logv.trainmonitor.ui.contract.NavigationTarget;
  * Time: 20:30
  * To change this template use File | Settings | File Templates.
  */
-public class MenuFragment extends SherlockListFragment {
+public class MenuFragment extends ListFragment {
 
     private EventBus mBus = EventBus.getDefault();
 

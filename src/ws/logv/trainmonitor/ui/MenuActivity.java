@@ -16,11 +16,11 @@
 
 package ws.logv.trainmonitor.ui;
 
+import android.app.ActionBar;
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.KeyEvent;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.korovyansk.android.slideout.SlideoutHelper;
-import ws.logv.trainmonitor.R;
 import ws.logv.trainmonitor.ui.fragments.MenuFragment;
 
 /**
@@ -30,15 +30,15 @@ import ws.logv.trainmonitor.ui.fragments.MenuFragment;
  * Time: 20:14
  * To change this template use File | Settings | File Templates.
  */
-public class MenuActivity extends SherlockFragmentActivity {
+public class MenuActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.Theme_Sherlock_NoActionBar);
         super.onCreate(savedInstanceState);
-
+		ActionBar actionBar = getActionBar();
+		actionBar.hide();
         mSlideoutHelper = new SlideoutHelper(this);
         mSlideoutHelper.activate();
 
-        getSupportFragmentManager().beginTransaction().add(com.korovyansk.android.slideout.R.id.slideout_placeholder,
+        getFragmentManager().beginTransaction().add(com.korovyansk.android.slideout.R.id.slideout_placeholder,
                 new MenuFragment(), "menu").commit();
         mSlideoutHelper.open();
     }
