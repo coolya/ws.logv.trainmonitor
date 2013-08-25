@@ -1,3 +1,6 @@
 [submodule "dependencies/Eventbus"]
 	path = dependencies/Eventbus
 	url = https://github.com/greenrobot/EventBus.git
+[submodule "dependencies/Android-PullToRefresh"]
+	path = dependencies/Android-PullToRefresh
+	url = https://github.com/chrisbanes/Android-PullToRefresh.git
