@@ -32,7 +32,7 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
-class DatabaseHelper  extends OrmLiteSqliteOpenHelper{
+public class DatabaseHelper  extends OrmLiteSqliteOpenHelper{
 	// name of the database file for your application -- change to something appropriate for your app
 		private static final String DATABASE_NAME = "ws.logv.trainmonitor.db";
 		// any time you make changes to your database objects, you may have to increase the database version

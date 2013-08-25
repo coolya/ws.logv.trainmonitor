@@ -32,7 +32,7 @@ import ws.logv.trainmonitor.Workflow;
 import ws.logv.trainmonitor.app.Constants;
 import ws.logv.trainmonitor.command.fetch.FetchTrainDetailsCommand;
 import ws.logv.trainmonitor.command.fetch.FetchTrainDetailsResult;
-import ws.logv.trainmonitor.data.TrainRepository;
+import ws.logv.trainmonitor.data.legacy.TrainRepository;
 import ws.logv.trainmonitor.event.FavTrainEvent;
 import ws.logv.trainmonitor.event.NoConnectionEvent;
 import ws.logv.trainmonitor.model.StationInfo;

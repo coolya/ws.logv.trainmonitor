@@ -32,33 +32,30 @@
   <component name="ChangeListManager">
     <list id="f5929a66-7313-4250-a1b2-6de6930bc653" name="TM-64 Create Licence Fragment" comment="" />
     <list default="true" id="ee5e8089-03f1-45f5-9f5c-bdb566dfe2d9" name="TM-117 java.lang.NullPointerException in ws.logv.trainmonitor.ui.Train.onStop" comment="new Backend Service for Sync">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/AllTrainsActivity.java" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/AllTrainsActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/AndroidManifest.xml" afterPath="$PROJECT_DIR$/AndroidManifest.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/ChooseAccountActivity.java" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/ChooseAccountActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/contract/GenericDialogFragment.java" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/contract/GenericDialogFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/MainActivity.java" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/MainActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/MenuActivity.java" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/MenuActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/fragments/MenuFragment.java" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/fragments/MenuFragment.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/MyTrainsActivity.java" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/MyTrainsActivity.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/event/ui/SetUpActionBarEvent.java" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/event/ui/SetUpActionBarEvent.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Zugmonitor.iml" afterPath="$PROJECT_DIR$/Zugmonitor.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/libraries/android_support_v4.xml" afterPath="$PROJECT_DIR$/.idea/libraries/android_support_v4.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/modules.xml" afterPath="$PROJECT_DIR$/.idea/modules.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/data/Tables.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/data/TrainDB.java" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ApplicationBackupAgent.java" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/data/StationRepository.java" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/data/legacy/StationRepository.java" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/data/TrainRepository.java" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/data/legacy/TrainRepository.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/app/manager/BackendManager.java" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/app/manager/BackendManager.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/data/DatabaseHelper.java" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/data/DatabaseHelper.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/model/Train.java" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/model/Train.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/Train.java" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/Train.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ws/logv/trainmonitor/Workflow.java" afterPath="$PROJECT_DIR$/src/ws/logv/trainmonitor/Workflow.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="Zugmonitor.iws" />
     <ignored path=".idea/workspace.xml" />
-    <file path="/Dummy.txt" changelist="ee5e8089-03f1-45f5-9f5c-bdb566dfe2d9" time="1370104408215" ignored="false" />
+    <file path="/Dummy.txt" changelist="ee5e8089-03f1-45f5-9f5c-bdb566dfe2d9" time="1377416400436" ignored="false" />
     <file path="/TrainType.java" changelist="ee5e8089-03f1-45f5-9f5c-bdb566dfe2d9" time="1361659403006" ignored="false" />
     <file path="/strings.xml" changelist="ee5e8089-03f1-45f5-9f5c-bdb566dfe2d9" time="1361738865449" ignored="false" />
     <file path="/navigation.xml" changelist="ee5e8089-03f1-45f5-9f5c-bdb566dfe2d9" time="1360421334921" ignored="false" />
     <file path="/a.xml" changelist="ee5e8089-03f1-45f5-9f5c-bdb566dfe2d9" time="1361660299599" ignored="false" />
-    <file path="/Train.java" changelist="ee5e8089-03f1-45f5-9f5c-bdb566dfe2d9" time="1360416350670" ignored="false" />
+    <file path="/Train.java" changelist="ee5e8089-03f1-45f5-9f5c-bdb566dfe2d9" time="1377416633874" ignored="false" />
     <file path="/GCMIntentService.java" changelist="ee5e8089-03f1-45f5-9f5c-bdb566dfe2d9" time="1360418672746" ignored="false" />
     <file path="/SyncManager.java" changelist="f5929a66-7313-4250-a1b2-6de6930bc653" time="1356541543719" ignored="false" />
     <file path="/ApiClient.java" changelist="f5929a66-7313-4250-a1b2-6de6930bc653" time="1356634253196" ignored="false" />
-    <file path="/TrainRepository.java" changelist="ee5e8089-03f1-45f5-9f5c-bdb566dfe2d9" time="1360421225436" ignored="false" />
+    <file path="/TrainRepository.java" changelist="ee5e8089-03f1-45f5-9f5c-bdb566dfe2d9" time="1370108466967" ignored="false" />
     <file path="/SubscribtionRepository.java" changelist="f5929a66-7313-4250-a1b2-6de6930bc653" time="1356558054848" ignored="false" />
     <file path="/MainActivity.java" changelist="ee5e8089-03f1-45f5-9f5c-bdb566dfe2d9" time="1361658671548" ignored="false" />
     <file path="/UserManager.java" changelist="f5929a66-7313-4250-a1b2-6de6930bc653" time="1356616784046" ignored="false" />
@@ -154,6 +151,8 @@
     <file path="/TrainmonitorApplication.java" changelist="ee5e8089-03f1-45f5-9f5c-bdb566dfe2d9" time="1361817164451" ignored="false" />
     <file path="/ErrorReporter.java" changelist="ee5e8089-03f1-45f5-9f5c-bdb566dfe2d9" time="1361821757249" ignored="false" />
     <file path="/JsonHelper.java" changelist="ee5e8089-03f1-45f5-9f5c-bdb566dfe2d9" time="1361817945978" ignored="false" />
+    <file path="/Tables.java" changelist="ee5e8089-03f1-45f5-9f5c-bdb566dfe2d9" time="1370193075183" ignored="false" />
+    <file path="/TrainDB.java" changelist="ee5e8089-03f1-45f5-9f5c-bdb566dfe2d9" time="1370193907346" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -251,85 +250,82 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="AllTrainsActivity.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/AllTrainsActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="264" column="5" selection-start="9846" selection-end="9846" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#4088#4488#0" expanded="true" />
-                <element signature="e#4473#4474#0" expanded="true" />
-                <element signature="e#5565#5603#0" expanded="true" />
-                <element signature="e#6050#6088#0" expanded="true" />
-                <element signature="e#6329#6367#0" expanded="true" />
-                <element signature="e#6743#6781#0" expanded="true" />
-                <element signature="e#7233#7271#0" expanded="true" />
-                <element signature="e#7704#7742#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ChooseAccountActivity.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/ChooseAccountActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="20" column="0" selection-start="737" selection-end="737" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MenuFragment.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/fragments/MenuFragment.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="22" column="0" selection-start="809" selection-end="809" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MainActivity.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/MainActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="220" column="22" selection-start="8276" selection-end="8276" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#4667#4705#0" expanded="true" />
-                <element signature="e#5177#5185#0" expanded="true" />
-                <element signature="e#5762#5800#0" expanded="true" />
-                <element signature="e#6230#6575#0" expanded="true" />
-                <element signature="e#6552#6553#0" expanded="true" />
-                <element signature="e#6633#6884#0" expanded="true" />
-                <element signature="e#6861#6862#0" expanded="true" />
-                <element signature="e#7015#7053#0" expanded="true" />
-                <element signature="e#7250#7479#0" expanded="true" />
-                <element signature="e#7464#7465#0" expanded="true" />
-                <element signature="e#7614#7652#0" expanded="true" />
-                <element signature="e#8003#8041#0" expanded="true" />
-                <element signature="e#10597#10867#0" expanded="true" />
-                <element signature="e#10848#10849#0" expanded="true" />
-                <element signature="e#11011#11320#0" expanded="true" />
-                <element signature="e#11309#11310#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MyTrainsActivity.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/MyTrainsActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="117" column="0" selection-start="4044" selection-end="4044" vertical-scroll-proportion="0.0">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="GenericDialogFragment.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/contract/GenericDialogFragment.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="20" column="38" selection-start="796" selection-end="796" vertical-scroll-proportion="0.0">
+            <state line="35" column="16" selection-start="1158" selection-end="1158" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="StationRepository.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/data/legacy/StationRepository.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="46" column="45" selection-start="1710" selection-end="1710" vertical-scroll-proportion="0.017123288">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TrainRepository.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/data/legacy/TrainRepository.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="180" column="28" selection-start="7306" selection-end="7306" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="BackendManager.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/app/manager/BackendManager.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="83" column="36" selection-start="3128" selection-end="3128" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TrainDB.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/data/TrainDB.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="89" column="49" selection-start="2301" selection-end="2301" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Train.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/model/Train.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="99" column="48" selection-start="2859" selection-end="2859" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TrainStatus.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/model/TrainStatus.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="31" column="54" selection-start="938" selection-end="938" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="TrainType.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/data/TrainType.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="9" column="12" selection-start="203" selection-end="203" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Tables.java" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/data/Tables.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="21" column="25" selection-start="744" selection-end="750" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -338,36 +334,7 @@
       <file leaf-file-name="GCMIntentService.java" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/GCMIntentService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="30" column="42" selection-start="1173" selection-end="1173" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MenuActivity.java" pinned="false" current="true" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/MenuActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="52" column="5" selection-start="1806" selection-end="1806" vertical-scroll-proportion="0.97269624">
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="SettingsActivity.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/SettingsActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="42" column="43" selection-start="1502" selection-end="1502" vertical-scroll-proportion="0.0">
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Train.java" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/Train.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state line="42" column="13" selection-start="1595" selection-end="1595" vertical-scroll-proportion="0.0">
+            <state line="43" column="13" selection-start="1710" selection-end="1710" vertical-scroll-proportion="0.0">
               <folding />
             </state>
           </provider>
@@ -409,12 +376,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/res/values/strings.xml" />
-        <option value="$PROJECT_DIR$/res/values-de/strings.xml" />
-        <option value="$PROJECT_DIR$/src/ws/logv/trainmonitor/TrainmonitorApplication.java" />
-        <option value="$PROJECT_DIR$/src/ws/logv/trainmonitor/api/JsonHelper.java" />
-        <option value="$PROJECT_DIR$/src/ws/logv/trainmonitor/errorreporting/ErrorReporter.java" />
-        <option value="$PROJECT_DIR$/res/values/values.xml" />
         <option value="$PROJECT_DIR$/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/AllTrainsActivity.java" />
         <option value="$PROJECT_DIR$/src/ws/logv/trainmonitor/event/ui/SetUpActionBarEvent.java" />
@@ -425,6 +386,12 @@
         <option value="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/contract/GenericDialogFragment.java" />
         <option value="$PROJECT_DIR$/src/ws/logv/trainmonitor/GCMIntentService.java" />
         <option value="$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/MenuActivity.java" />
+        <option value="$PROJECT_DIR$/src/ws/logv/trainmonitor/ApplicationBackupAgent.java" />
+        <option value="$PROJECT_DIR$/src/ws/logv/trainmonitor/data/TrainRepository.java" />
+        <option value="$PROJECT_DIR$/src/ws/logv/trainmonitor/data/legacy/TrainRepository.java" />
+        <option value="$PROJECT_DIR$/src/ws/logv/trainmonitor/data/Tables.java" />
+        <option value="$PROJECT_DIR$/src/ws/logv/trainmonitor/data/TrainDB.java" />
+        <option value="$PROJECT_DIR$/src/ws/logv/trainmonitor/model/Train.java" />
       </list>
     </option>
   </component>
@@ -438,9 +405,10 @@
     <scope name="Zugmonitor" pattern="src[Zugmonitor]:*..*" />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="y" value="24" />
-    <option name="width" value="1920" />
-    <option name="height" value="1056" />
+    <option name="x" value="-10" />
+    <option name="y" value="19" />
+    <option name="width" value="1940" />
+    <option name="height" value="1071" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
     <OptionsSetting value="true" id="Add" />
@@ -475,7 +443,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
@@ -531,27 +498,112 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="ui" />
+              <option name="myItemId" value="model" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Zugmonitor" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ws.logv.trainmonitor" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trainmonitor" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="data" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Zugmonitor" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ws.logv.trainmonitor" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trainmonitor" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="data" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="legacy" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Zugmonitor" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ws.logv.trainmonitor" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="src" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="trainmonitor" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="command" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Zugmonitor" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="ws.logv.trainmonitor" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="libs" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
+    <property name="project.structure.last.edited" value="SDKs" />
     <property name="SHOW_ALL_PROCESSES" value="false" />
-    <property name="project.structure.last.edited" value="Modules" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth0" value="133" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth1" value="151" />
-    <property name="project.structure.proportion" value="0.15" />
     <property name="OverrideImplement.combined" value="true" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatWidth1" value="151" />
     <property name="options.splitter.main.proportions" value="0.29916668" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth0" value="155" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder1" value="1" />
-    <property name="ExportedApkPath" value="$USER_HOME$/zugmonitor.apk" />
-    <property name="MemberChooser.sorted" value="false" />
     <property name="recentsLimit" value="5" />
+    <property name="MemberChooser.sorted" value="false" />
+    <property name="ExportedApkPath" value="$USER_HOME$/zugmonitor.apk" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder1" value="1" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeWidth0" value="155" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder0" value="0" />
     <property name="ExportedModule" value="Zugmonitor" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../android-fb-like-slideout-navigation/lib" />
@@ -564,21 +616,22 @@
     <property name="DEBUGGABLE_PROCESS" value="ws.logv.trainmonitor" />
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder2" value="2" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder3" value="3" />
     <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_AVD" value="volkempfaenger" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_flatOrder3" value="3" />
+    <property name="FullScreen" value="false" />
     <property name="MemberChooser.showClasses" value="true" />
     <property name="GoToClass.includeLibraries" value="false" />
     <property name="options.splitter.details.proportions" value="0.2" />
-    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder0" value="0" />
-    <property name="last_directory_selection" value="$PROJECT_DIR$/src/ws/logv/trainmonitor" />
     <property name="GoToFile.includeJavaFiles" value="false" />
+    <property name="last_directory_selection" value="$PROJECT_DIR$/src/ws/logv/trainmonitor" />
+    <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder0" value="0" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder3" value="3" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder1" value="1" />
     <property name="FileHistory.git4idea.history.GitHistoryProvider_treeOrder2" value="2" />
     <property name="options.lastSelected" value="preferences.sourceCode.XML" />
     <property name="AndroidLayoutSelectedEditor" value="text-editor" />
-    <property name="DefaultHtmlFileTemplate" value="Html5" />
     <property name="project.structure.side.proportion" value="0.2" />
+    <property name="DefaultHtmlFileTemplate" value="Html5" />
     <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_SERIALS" value="" />
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="AndroidRunProguardForReleaseBuild" value="false" />
@@ -860,7 +913,10 @@
       <option name="issue" value="true" />
       <option name="type" value="BUG" />
       <updated>1356798413536</updated>
-      <workItem from="1370104406924" duration="1825000" />
+      <workItem from="1370104406924" duration="4504000" />
+      <workItem from="1370179069411" duration="13000" />
+      <workItem from="1370191359081" duration="5942000" />
+      <workItem from="1377416398791" duration="278000" />
     </task>
     <task id="LOCAL-00024" summary="V0.3.1">
       <created>1356799270303</created>
@@ -906,7 +962,7 @@
     </servers>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="1825000" />
+    <option name="totallyTimeSpent" value="10737000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -929,23 +985,23 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="24" width="1920" height="1056" extended-state="6" />
-    <editor active="false" />
+    <frame x="-10" y="19" width="1940" height="1071" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3281768" sideWeight="0.4939394" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32954547" sideWeight="0.67571884" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.40994474" sideWeight="0.9166667" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32428116" sideWeight="0.5128788" order="11" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+      <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3258786" sideWeight="0.4939394" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32486188" sideWeight="0.4878788" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="true" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3237569" sideWeight="0.48181817" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3248337" sideWeight="0.48879403" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="true" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3237569" sideWeight="0.48181817" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32747602" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32953683" sideWeight="0.60032105" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39924243" sideWeight="0.672524" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.255603" sideWeight="0.67624307" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.255603" sideWeight="0.6751663" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3290735" sideWeight="0.4969697" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32924226" sideWeight="0.58945686" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32954547" sideWeight="0.67571884" order="2" side_tool="false" content_ui="tabs" />
@@ -954,9 +1010,9 @@
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32924226" sideWeight="0.58945686" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3287879" sideWeight="0.5" order="5" side_tool="true" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3287879" sideWeight="0.60032105" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32428116" sideWeight="0.5098485" order="10" side_tool="true" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3248337" sideWeight="0.511206" order="10" side_tool="true" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39889503" sideWeight="0.48181817" order="4" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
@@ -1050,18 +1106,21 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/model/Train.java">
+    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="24" column="13" selection-start="848" selection-end="848" vertical-scroll-proportion="0.0">
+        <state line="220" column="22" selection-start="8276" selection-end="8276" vertical-scroll-proportion="0.0" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/MyTrainsActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="117" column="0" selection-start="4044" selection-end="4044" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/res/values/values.xml">
+    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/MenuActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="23" column="12" selection-start="1077" selection-end="1077" vertical-scroll-proportion="-13.8">
-          <folding />
-        </state>
+        <state line="40" column="20" selection-start="1375" selection-end="1375" vertical-scroll-proportion="0.0" />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/AndroidManifest.xml">
@@ -1071,126 +1130,83 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/event/ui/SetUpActionBarEvent.java">
+    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/GCMIntentService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="18" column="14" selection-start="702" selection-end="702" vertical-scroll-proportion="0.0">
+        <state line="43" column="13" selection-start="1710" selection-end="1710" vertical-scroll-proportion="0.0">
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/fragments/ChooseAccountFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="50" column="13" selection-start="1659" selection-end="1659" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/fragments/SettingsFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="38" column="37" selection-start="1290" selection-end="1290" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/AllTrainsActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="264" column="5" selection-start="9846" selection-end="9846" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#4088#4488#0" expanded="true" />
-            <element signature="e#4473#4474#0" expanded="true" />
-            <element signature="e#5565#5603#0" expanded="true" />
-            <element signature="e#6050#6088#0" expanded="true" />
-            <element signature="e#6329#6367#0" expanded="true" />
-            <element signature="e#6743#6781#0" expanded="true" />
-            <element signature="e#7233#7271#0" expanded="true" />
-            <element signature="e#7704#7742#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/SettingsActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="42" column="43" selection-start="1502" selection-end="1502" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/Train.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="42" column="13" selection-start="1595" selection-end="1595" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/ChooseAccountActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="0" selection-start="737" selection-end="737" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/fragments/MenuFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="22" column="0" selection-start="809" selection-end="809" vertical-scroll-proportion="0.0">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/MainActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="220" column="22" selection-start="8276" selection-end="8276" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#4667#4705#0" expanded="true" />
-            <element signature="e#5177#5185#0" expanded="true" />
-            <element signature="e#5762#5800#0" expanded="true" />
-            <element signature="e#6230#6575#0" expanded="true" />
-            <element signature="e#6552#6553#0" expanded="true" />
-            <element signature="e#6633#6884#0" expanded="true" />
-            <element signature="e#6861#6862#0" expanded="true" />
-            <element signature="e#7015#7053#0" expanded="true" />
-            <element signature="e#7250#7479#0" expanded="true" />
-            <element signature="e#7464#7465#0" expanded="true" />
-            <element signature="e#7614#7652#0" expanded="true" />
-            <element signature="e#8003#8041#0" expanded="true" />
-            <element signature="e#10597#10867#0" expanded="true" />
-            <element signature="e#10848#10849#0" expanded="true" />
-            <element signature="e#11011#11320#0" expanded="true" />
-            <element signature="e#11309#11310#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/MyTrainsActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="117" column="0" selection-start="4044" selection-end="4044" vertical-scroll-proportion="0.0">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/contract/GenericDialogFragment.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="38" selection-start="796" selection-end="796" vertical-scroll-proportion="0.0">
+        <state line="35" column="16" selection-start="1158" selection-end="1158" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/GCMIntentService.java">
+    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/data/legacy/TrainRepository.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="30" column="42" selection-start="1173" selection-end="1173" vertical-scroll-proportion="0.0">
+        <state line="180" column="28" selection-start="7306" selection-end="7306" vertical-scroll-proportion="0.0">
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/ui/MenuActivity.java">
+    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/app/manager/BackendManager.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="52" column="5" selection-start="1806" selection-end="1806" vertical-scroll-proportion="0.97269624">
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
+        <state line="83" column="36" selection-start="3128" selection-end="3128" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/sdk/platforms/android-17/android.jar!/java/util/Collection.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="6" column="17" selection-start="156" selection-end="156" vertical-scroll-proportion="0.12864494" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/data/TrainDB.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="89" column="49" selection-start="2301" selection-end="2301" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$APPLICATION_HOME_DIR$/sdk/platforms/android-17/android.jar!/java/util/Date.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="153" column="28" selection-start="3517" selection-end="3517" vertical-scroll-proportion="0.6655232" />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/data/Tables.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="21" column="25" selection-start="744" selection-end="750" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/data/TrainType.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="9" column="12" selection-start="203" selection-end="203" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/model/TrainStatus.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="31" column="54" selection-start="938" selection-end="938" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/model/Train.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="99" column="48" selection-start="2859" selection-end="2859" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ws/logv/trainmonitor/data/legacy/StationRepository.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="46" column="45" selection-start="1710" selection-end="1710" vertical-scroll-proportion="0.017123288">
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1247,7 +1263,7 @@
       </state>
       <state key="JdkListConfigurable.UI">
         <settings>
-          <last-edited>1.6</last-edited>
+          <last-edited>Android 4.2.2</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>

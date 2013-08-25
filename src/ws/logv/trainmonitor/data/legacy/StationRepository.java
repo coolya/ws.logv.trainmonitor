@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package ws.logv.trainmonitor.data;
+package ws.logv.trainmonitor.data.legacy;
 
 import android.content.Context;
 import com.j256.ormlite.android.apptools.OpenHelperManager;
@@ -23,6 +23,7 @@ import de.greenrobot.event.EventBus;
 import ws.logv.trainmonitor.Workflow;
 import ws.logv.trainmonitor.command.load.LoadStationCommand;
 import ws.logv.trainmonitor.command.load.LoadStationResult;
+import ws.logv.trainmonitor.data.DatabaseHelper;
 import ws.logv.trainmonitor.event.FatalErrorEvent;
 import ws.logv.trainmonitor.event.StationSyncCompleteEvent;
 import ws.logv.trainmonitor.event.StationSyncEvent;

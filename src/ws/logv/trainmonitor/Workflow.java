@@ -16,14 +16,12 @@
 
 package ws.logv.trainmonitor;
 
-import android.accounts.AccountManager;
 import android.content.Context;
 import de.greenrobot.event.EventBus;
 import ws.logv.trainmonitor.app.manager.BackendManager;
 import ws.logv.trainmonitor.app.manager.DeviceManager;
-import ws.logv.trainmonitor.app.manager.UserManager;
-import ws.logv.trainmonitor.data.StationRepository;
-import ws.logv.trainmonitor.data.TrainRepository;
+import ws.logv.trainmonitor.data.legacy.StationRepository;
+import ws.logv.trainmonitor.data.legacy.TrainRepository;
 import ws.logv.trainmonitor.debug.FatalEventListener;
 import ws.logv.trainmonitor.event.WorkflowWiredUpEvent;
 

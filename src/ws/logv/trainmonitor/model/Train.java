@@ -16,11 +16,17 @@
 
 package ws.logv.trainmonitor.model;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 
+import android.content.ContentValues;
+import android.database.Cursor;
 import com.google.gson.annotations.SerializedName;
 import com.j256.ormlite.field.DatabaseField;
+import ws.logv.trainmonitor.data.Tables;
 
 public class Train {
 	@DatabaseField
@@ -73,4 +79,35 @@ public class Train {
 	private Date nextrun;
 	@DatabaseField
 	private Date finished;
+
+	public static Train fromCursor(Cursor cursor) {
+		Train ret = new Train();
+
+		try {
+			ret.setFinished(DateFormat.getInstance().parse(cursor.getString(Tables.Train.ColumnIds.FINISHED)));
+			ret.setNextrun(DateFormat.getInstance().parse(cursor.getString(Tables.Train.ColumnIds.NEXT_RUN)));
+			ret.setStarted(DateFormat.getInstance().parse(cursor.getString(Tables.Train.ColumnIds.STARTED)));
+			ret.setTrainId(cursor.getString(Tables.Train.ColumnIds.TRAIN_ID));
+			ret.id = cursor.getInt(Tables.Train.ColumnIds.ID);
+		} catch (ParseException e) {
+			return null;
+		}
+
+		return ret;
+	}
+
+	public static ContentValues toContent(Train train) {
+		ContentValues ret = new ContentValues();
+
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+
+
+		ret.put(Tables.Train.ColumnNames.FINISHED, format.format(train.getFinished()));
+		ret.put(Tables.Train.ColumnNames.NEXT_RUN, format.format(train.getNextrun()));
+		ret.put(Tables.Train.ColumnNames.STARTED, format.format(train.getStarted()));
+		//ret.put(Tables.Train.ColumnNames.STATUS, train.getStatus().toString() );
+		ret.put(Tables.Train.ColumnNames.TRAIN_ID, train.getTrainId());
+
+		return ret;
+	}
 }
