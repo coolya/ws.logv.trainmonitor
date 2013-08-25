@@ -13,6 +13,8 @@
       <directory url="file://$PROJECT_DIR$/../Android-PullToRefresh/library/gen" includeSubdirectories="true" />
       <directory url="file://$PROJECT_DIR$/../EventBus/EventBus/gen" includeSubdirectories="true" />
       <directory url="file://$PROJECT_DIR$/../android-fb-like-slideout-navigation/lib/gen" includeSubdirectories="true" />
+      <directory url="file://$PROJECT_DIR$/dependencies/Android-PullToRefresh/library/gen" includeSubdirectories="true" />
+      <directory url="file://$PROJECT_DIR$/dependencies/slideout/lib/gen" includeSubdirectories="true" />
     </excludeFromCompile>
     <resourceExtensions />
     <wildcardResourcePatterns>
