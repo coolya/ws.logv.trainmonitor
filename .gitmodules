@@ -1,0 +1,3 @@
+[submodule "dependencies/Eventbus"]
+	path = dependencies/Eventbus
+	url = https://github.com/greenrobot/EventBus.git
