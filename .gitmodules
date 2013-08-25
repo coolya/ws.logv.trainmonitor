@@ -4,3 +4,6 @@
 [submodule "dependencies/Android-PullToRefresh"]
 	path = dependencies/Android-PullToRefresh
 	url = https://github.com/chrisbanes/Android-PullToRefresh.git
+[submodule "dependencies/slideout"]
+	path = dependencies/slideout
+	url = https://github.com/korovyansk/android-fb-like-slideout-navigation.git
